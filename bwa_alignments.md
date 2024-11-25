@@ -41,11 +41,11 @@ for i in `cat $KROH_scripts/cKIWA_IDS.txt`; do mv $WarblerROH_folder/${i}/${i}_t
 
 ## Indexing the Reference
 Memory requirements (time estimate: 3hrs):
-- bwtsw: 5GB (human genome)
-- aln (short reads): ~3.2GB
-- sampe: 5.4GB
 
 `bwa index -p mywagenomev2.1 -a bwtsw mywagenomev2.1.fa`
+- `bwtsw`: 5GB (human genome)
+- `aln`: ~3.2GB (short reads)
+- `sampe`: 5.4GB
 
 ```bash
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
@@ -73,30 +73,33 @@ bwa index -p mywagenomev2.1 -a bwtsw $ref_folder/mywagenomev2.1.fa
 ```
 
 ## Aligning the contemporary samples
-`bwa mem -R "@RG\tSM:sample1" -M -t 2 \
-reference.fasta \
-trimmed.pair1.truncated.gz \
-trimmed.pair2.truncated.gz \ > aligned_reads.sam \
-2> logs/bwa.err`
+`bwa mem -R "@RG\tID:${i}\tSM:${i}" -M -t 2 \
+reference. \
+${i}_trimmed.pair1.truncated.gz \
+${i}_trimmed.pair2.truncated.gz \ > ${i}.sam \
+2> logs/${i}_bwa.err`
 
-- bwa mem: Aligns paired-end reads to a reference genome
-- -M: Mark shorter split hits as secondary (for Picard compatibility).
-- -R: Read group information
-- -t: Number of threads
-- 2> logs/bwa.err: Redirects stderr (error messages) to the log file logs/bwa.err
+- `bwa mem`: Aligns paired-end reads to a reference genome
+- `-M`: Mark shorter split hits as secondary (for Picard compatibility).
+- `-R`: Read group information
+- `-t`: Number of threads
+- `2> logs/bwa.err`: Redirects stderr (error messages) to the log file logs/bwa.err
 
 ```bash
 #Make a directory for sam files
 mkdir ~/SzpiechLab/abc6435/KROH/data/sam
 
+#Create a script for each contemporary file
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
-for i in `cat $scripts_folder/cKIWA_IDS.txt`; do echo"
+for i in `cat $scripts_folder/cKIWA_IDS.txt`; do 
+    cat <<EOT > $scripts_folder/bwa_alignments_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=4
-#SBATCH --mem=5GB
-#SBATCH --time=1:00:00
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=20GB
+#SBATCH --time=24:00:00
 #SBATCH --account=zps5164_sc
 #SBATCH --job-name=bwa_alignments_${i}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.err
@@ -108,10 +111,26 @@ err_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output"
 mywa_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_ref/mywa_reference"
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
-bwa mem -R "@RG\tSM:${i}" -M -t 2 \
-$mywa_folder/mywagenomev2.1.fa \
-$data_folder/trimmed/${i}_trimmed.pair1.truncated.gz \
-$data_folder/trimmed/${i}_trimmed.pair2.truncated.gz \ > $data_folder/sam/${i}.sam \
-2> $err_folder/${i}_bwa.err"; done
+bwa mem -R "@RG\tID:${i}\tSM:${i}" -M -t 2 \\
+\$mywa_folder/mywagenomev2.1 \\
+\$data_folder/trimmed/${i}_trimmed.pair1.truncated.gz \\
+\$data_folder/trimmed/${i}_trimmed.pair2.truncated.gz > \$data_folder/sam/${i}.sam 2> \$err_folder/${i}_bwa.err
+EOT
+done
 
+#Check Job
+squeue -o "%.18i %.9P %.30j %.8u %.2t %.10M %.6D %R" -u abc6435
+```
+
+## Computing Efficiency
+Before submitting all the jobs, check the memory and time requirements of one sample
+
+```bash
+#Checking stats
+seff 28259642
+
+#Edit the #SBATCH header for all jobs and submit the remaining jobs
+samples=(183195332 183194861 183195321 183195304 183195326 183195312)
+
+for i in ${samples[@]}; do sbatch $scripts_folder/bwa_alignments_${i}.bash; done
 ```

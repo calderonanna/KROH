@@ -98,8 +98,8 @@ for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
-#SBATCH --mem=20GB
-#SBATCH --time=24:00:00
+#SBATCH --mem=10GB
+#SBATCH --time=48:00:00
 #SBATCH --account=zps5164_sc
 #SBATCH --job-name=bwa_alignments_${i}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.err
@@ -118,19 +118,21 @@ bwa mem -R "@RG\tID:${i}\tSM:${i}" -M -t 2 \\
 EOT
 done
 
+#Submit Each Script
+scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+for i in $scripts_folder/bwa_alignments*; do
+    sbatch ${i}
+done
+
 #Check Job
 squeue -o "%.18i %.9P %.30j %.8u %.2t %.10M %.6D %R" -u abc6435
 ```
 
-## Computing Efficiency
-Before submitting all the jobs, check the memory and time requirements of one sample
-
+## Checking Alignment Stats
 ```bash
-#Checking stats
-seff 28259642
-
-#Edit the #SBATCH header for all jobs and submit the remaining jobs
-samples=(183195332 183194861 183195321 183195304 183195326 183195312)
-
-for i in ${samples[@]}; do sbatch $scripts_folder/bwa_alignments_${i}.bash; done
-```
+#Set Variable
+sam_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/sam"
+for i in $sam_folder/*.sam; do
+    echo "$(basename ${i})" >> alignment_stats.txt
+    samtools flagstat ${i} >> alignment_stats.txt
+done

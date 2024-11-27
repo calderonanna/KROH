@@ -136,3 +136,4 @@ for i in $sam_folder/*.sam; do
     echo "$(basename ${i})" >> alignment_stats.txt
     samtools flagstat ${i} >> alignment_stats.txt
 done
+```

@@ -133,7 +133,9 @@ squeue -o "%.18i %.9P %.30j %.8u %.2t %.10M %.6D %R" -u abc6435
 #Set Variable
 sam_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/sam"
 for i in $sam_folder/*.sam; do
-    echo "$(basename ${i})" >> alignment_stats.txt
-    samtools flagstat ${i} >> alignment_stats.txt
+    echo "$(basename ${i})" >> $sam_folder/alignment_stats.txt
+    echo "----------------------" >> $sam_folder/alignment_stats.txt
+    samtools flagstat ${i} >> $sam_folder/alignment_stats.txt
+    echo " " >> $sam_folder/alignment_stats.txt
 done
 ```

@@ -44,6 +44,7 @@ for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
     sbatch $scripts_folder/sam_to_bam_${i}.bash
 done
 
+#Check Job Status
 squeue -o "%.18i %.9P %.30j %.8u %.2t %.10M %.6D %R" -u abc6435
 ```
 

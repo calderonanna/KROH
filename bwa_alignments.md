@@ -21,7 +21,6 @@ cd bwa; make
 export PATH=/storage/home/abc6435/SzpiechLab/bin/bwa:$PATH
 echo 'export PATH=/storage/home/abc6435/SzpiechLab/bin/bwa:$PATH' >> ~/.bashrc
 source ~/.bashrc
-
 ```
 
 

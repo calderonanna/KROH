@@ -34,6 +34,7 @@ for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
 #Set Variables
 data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
 
+#Run samtools
 samtools view -S -b $data_folder/sam/${i}.sam > $data_folder/bam/${i}.bam
 EOT
 done

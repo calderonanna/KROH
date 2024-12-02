@@ -3,8 +3,9 @@
 # Marking Duplicated Reads In Sorted BAM Files
 Unless you specify, MarkDuplicates does not remove the duplicates, but rather flags them. Removing duplicates would reduce coverage. By flaggin them downstream GATK tools can ignore the reads, and most GATK tools will ignore the duplicates by default. 
 
-`java -jar picard.jar MarkDuplicates I=input.bam O=marked_duplicates.bam M=marked_dup_metrics.txt MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000`
+`java -Xmx[ng] -jar picard.jar MarkDuplicates I=input.bam O=marked_duplicates.bam M=marked_dup_metrics.txt MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000`
 
+- `-Xmx[ng]`: Memory where n is the number of gigabytes. Must match PBS/SLURM header and if you don't give it sufficient memory, it will kill your job. 
 - `I`:One or more input SAM or BAM files to analyze. Must be coordinate sorted. Default value: null. This option may be specified 0 or more times.
 - `O`: The output file to write marked records to Required.
 - `METRICS_FILE`: File to write duplication metrics required.
@@ -16,14 +17,13 @@ Unless you specify, MarkDuplicates does not remove the duplicates, but rather fl
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
 
-###RERUN THIS SHIT USING THE RIGHT MEMORY. 
 #Run Loop
 for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
     cat<<EOT > $scripts_folder/mark_duplicates_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --mem=2GB
+#SBATCH --mem=20GB
 #SBATCH --time=24:00:00
 #SBATCH --account=zps5164_sc
 #SBATCH --job-name=mark_duplicates_${i}
@@ -35,7 +35,7 @@ data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
 picard_tools_folder="/storage/home/abc6435/ToewsLab/bin/picard_tools_2.20.8"
 
 #Run Picard Tools
-java -Xmx2g -jar \$picard_tools_folder/picard.jar MarkDuplicates INPUT=\$data_folder/bam/${i}_sorted.bam OUTPUT=\$data_folder/bam/${i}_marked.bam METRICS_FILE=\$data_folder/bam/${i}_metrics.txt MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000
+java -Xmx20g -jar \$picard_tools_folder/picard.jar MarkDuplicates INPUT=\$data_folder/bam/${i}_sorted.bam OUTPUT=\$data_folder/bam/${i}_marked.bam METRICS_FILE=\$data_folder/bam/${i}_metrics.txt MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000
 EOT
 done
 

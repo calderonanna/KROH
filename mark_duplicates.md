@@ -16,6 +16,7 @@ Unless you specify, MarkDuplicates does not remove the duplicates, but rather fl
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
 
+###RERUN THIS SHIT USING THE RIGHT MEMORY. 
 #Run Loop
 for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
     cat<<EOT > $scripts_folder/mark_duplicates_${i}.bash
@@ -34,7 +35,7 @@ data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
 picard_tools_folder="/storage/home/abc6435/ToewsLab/bin/picard_tools_2.20.8"
 
 #Run Picard Tools
-java -Xmx300g -jar \$picard_tools_folder/picard.jar MarkDuplicates INPUT=\$data_folder/bam/${i}_sorted.bam OUTPUT=\$data_folder/bam/${i}_marked.bam METRICS_FILE=\$data_folder/bam/${i}_metrics.txt MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000
+java -Xmx2g -jar \$picard_tools_folder/picard.jar MarkDuplicates INPUT=\$data_folder/bam/${i}_sorted.bam OUTPUT=\$data_folder/bam/${i}_marked.bam METRICS_FILE=\$data_folder/bam/${i}_metrics.txt MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000
 EOT
 done
 

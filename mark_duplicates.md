@@ -11,6 +11,8 @@ Unless you specify, MarkDuplicates does not remove the duplicates, but rather fl
 - `METRICS_FILE`: File to write duplication metrics required.
 - `MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000``: Maximum number of file handles to keep open when spilling read ends to disk. Set this number a little lower than the per-process maximum number of file that may be open. This number can be found by executing the 'ulimit -n' command on a Unix system. Default value: 8000. This option can be set to 'null' to clear the default value.
 
+## Memory Usage
+When I ran this, it took about 25-40 minutes and a total memory of 16GB. 
 ## Create Scripts
 ```bash
 #Set Variables

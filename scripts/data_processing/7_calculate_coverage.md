@@ -38,11 +38,11 @@ data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
 #Extract Depth
 samtools depth -a \$data_folder/bam/${i}_marked.bam > \$data_folder/coverage/${i}_depth.txt
 
-#Remove mito and scafolds
-sed -i '/^scaffold/d; /^mito/d' \$data_folder/coverage/${i}_depth.txt
+#Remove mito, scafolds, and chrz
+sed -i '/^scaffold/d; /^mito/d; /^chrz/d' \$data_folder/coverage/${i}_depth.txt
 
 #Calculate Average Depth
-awk '{sum+=\$3} END { print "sample_${i} = " sum/NR }' \$data_folder/coverage/${i}_depth.txt >> \$data_folder/coverage/cKIWA_coverage.txt
+awk '{sum+=\$3} END { print "sample_${i} = " sum/NR }' \$data_folder/coverage/${i}_depth.txt >> \$data_folder/coverage/cKIWA_autosomal_coverage.txt
 EOT
 done
 

@@ -22,25 +22,6 @@ export PATH=/storage/home/abc6435/SzpiechLab/bin/bwa:$PATH
 echo 'export PATH=/storage/home/abc6435/SzpiechLab/bin/bwa:$PATH' >> ~/.bashrc
 source ~/.bashrc
 ```
-
-
-## File Prep
-I'm going to move the trimmed contemporary files from the WarblerROH folder into the KROH folder
-```bash
-#Set Variables
-WarblerROH_folder="/storage/home/abc6435/SzpiechLab/abc6435/WarblerROH"
-
-KROH_data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
-
-KROH_scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
-
-#Moving trimmed contemporary files to KROH
-for i in `cat $KROH_scripts/cKIWA_IDS.txt`; do mv $WarblerROH_folder/${i}/${i}_trimmed* $KROH_data_folder/trimmed; done
-```
-
-## Indexing the Reference
-Memory requirements (time estimate: 3hrs):
-
 `bwa index -p mywagenomev2.1 -a bwtsw mywagenomev2.1.fa`
 - `bwtsw`: 5GB (human genome)
 - `aln`: ~3.2GB (short reads)
@@ -74,9 +55,8 @@ bwa index -p mywagenomev2.1 -a bwtsw $ref_folder/mywagenomev2.1.fa
 ## Aligning the contemporary samples
 `bwa mem -R "@RG\tID:${i}\tSM:${i}" -M -t 2 \
 reference. \
-${i}_trimmed.pair1.truncated.gz \
-${i}_trimmed.pair2.truncated.gz \ > ${i}.sam \
-2> logs/${i}_bwa.err`
+${i}_pair1.truncated.gz \
+${i}_.pair2.truncated.gz > ${i}.sam 2> logs/${i}_bwa.err`
 
 - `bwa mem`: Aligns paired-end reads to a reference genome
 - `-M`: Mark shorter split hits as secondary (for Picard compatibility).
@@ -120,7 +100,6 @@ EOT
 done
 
 #Submit Each Script
-scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 for i in $scripts_folder/bwa_alignments*; do
     sbatch ${i}
 done

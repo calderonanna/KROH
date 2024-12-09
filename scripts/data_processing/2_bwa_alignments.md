@@ -86,7 +86,9 @@ ${i}_trimmed.pair2.truncated.gz \ > ${i}.sam \
 
 ```bash
 #Make a directory for sam files
-mkdir ~/SzpiechLab/abc6435/KROH/data/sam
+if [ ! -d "$data_folder/sam" ]; then
+    mkdir -p "$data_folder/sam"
+fi
 
 #Create a script for each contemporary file
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
@@ -96,7 +98,7 @@ for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=2
+#SBATCH --cpus-per-task=4
 #SBATCH --mem=10GB
 #SBATCH --time=48:00:00
 #SBATCH --account=zps5164_sc
@@ -110,10 +112,10 @@ err_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output"
 mywa_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_ref/mywa_reference"
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
-bwa mem -R "@RG\tID:${i}\tSM:${i}" -M -t 2 \\
+bwa mem -R "@RG\tID:${i}\tSM:${i}" -M -t 4 \\
 \$mywa_folder/mywagenomev2.1 \\
-\$data_folder/trimmed/${i}_trimmed.pair1.truncated.gz \\
-\$data_folder/trimmed/${i}_trimmed.pair2.truncated.gz > \$data_folder/sam/${i}.sam 2> \$err_folder/${i}_bwa.err
+\$data_folder/trim/${i}_R1_trimmed.fastq.gz \\
+\$data_folder/trim/${i}_R2_trimmed.fastq.gz > \$data_folder/sam/${i}.sam 2> \$err_folder/${i}_bwa.err
 EOT
 done
 

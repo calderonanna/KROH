@@ -79,8 +79,8 @@ for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=10GB
-#SBATCH --time=48:00:00
+#SBATCH --mem=5GB
+#SBATCH --time=5:00:00
 #SBATCH --account=zps5164_sc
 #SBATCH --job-name=bwa_alignments_${i}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.err

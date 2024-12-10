@@ -1,17 +1,24 @@
 
 # Eager Script
 
-## Making sure Nextflow Works
+## Testing Nextflow
 ```bash
 cd ~/SzpiechLab/abc6435/KROH/eager_test
-
 NXF_VER=22.10.6 /storage/home/abc6435/SzpiechLab/abc6435/KROH/software/nextflow run nf-core/eager -profile test -r 2.4.7 singularity
 ```
 
+## Eager Script
+This script defines the locations of reference genomes, list of fastq files, alignment tool to be used and parameters. 
 ```bash
-cd /storage/home/abc6435/SzpiechLab/abc6435/KROH/eager_src
-nano eager_script_R_KIWA_NextSeq2000_WGS__30bp_q30Q30.sh
+#Create a folder
+KROH_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH"
+if [ ! -d "$KROH_folder/eager_src" ]; then
+    mkdir -p "$KROH_folder/eager_src"
+fi
 
+
+nano $KROH_folder/eager_src/eager_script_R_KIWA_NextSeq2000_WGS__30bp_q30Q30.sh
+#---------------NANO--------------
 NXF_VER=22.10.6 /storage/home/abc6435/SzpiechLab/abc6435/KROH/software/nextflow run nf-core/eager \
 -r 2.4.7 \
 -c eager_config_R_KIWA_NextSeq2000_WGS.sh \
@@ -41,4 +48,5 @@ NXF_VER=22.10.6 /storage/home/abc6435/SzpiechLab/abc6435/KROH/software/nextflow 
 --bam_filter_minreadlength 30 \
 --bam_mapping_quality_threshold 30 \
 --bam_unmapped_type 'discard' \
+#---------------EOS--------------
 ```

@@ -4,7 +4,7 @@ https://github.com/OpenGene/fastp
 Not using adapterremoval because it creates a seperate file for unpaired reads making it really difficult to work with BWA. 
 
 `fastp -i R1.fastq.gz -I R2.fastq.gz -o out.R1.fq.gz -O out.R2.fq.gz`
- 
+
 ## Installation
 ```bash
 #Install to bin
@@ -43,8 +43,8 @@ for i in `cat $scripts_folder/KIWA_IDS.txt`; do
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --mem=5GB
-#SBATCH --time=48:00:00
+#SBATCH --mem=10GB
+#SBATCH --time=3:00:00
 #SBATCH --account=zps5164_sc
 #SBATCH --job-name=trim_${i}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.err
@@ -62,4 +62,10 @@ done
 for i in $scripts_folder/trim_*.bash; do
     sbatch ${i}
 done
+```
+
+## Error Output
+Just making sure jobs were not killed due to insufficient memory
+```bash
+ls -lhat trim*err* | grep "Dec 11" | awk '{print $9}' | xargs grep "OOM"
 ```

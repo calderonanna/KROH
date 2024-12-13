@@ -25,11 +25,11 @@ for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --mem=30GB
+#SBATCH --mem=20GB
 #SBATCH --time=24:00:00
 #SBATCH --account=zps5164_sc
 #SBATCH --job-name=mark_duplicates_${i}
-#SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.err
+#SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
 #SBATCH --output=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
 
 #Set Variables

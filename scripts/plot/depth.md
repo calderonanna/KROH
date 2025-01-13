@@ -152,7 +152,7 @@ nano plot_depth.bash
 #!/bin/bash 
 #SBATCH --nodes=1 
 #SBATCH --ntasks=1 
-#SBATCH --mem=60GB 
+#SBATCH --mem=300GB 
 #SBATCH --time=6:00:00 
 #SBATCH --account=zps5164_sc 
 #SBATCH --partition=sla-prio 

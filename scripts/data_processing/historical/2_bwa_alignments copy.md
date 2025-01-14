@@ -33,7 +33,7 @@ for i in `cat $scripts_folder/hKIWA_IDS.txt`; do
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=5GB
-#SBATCH --time=5:00:00
+#SBATCH --time=24:00:00
 #SBATCH --account=zps5164_sc
 #SBATCH --job-name=bwa_alignments_${i}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out

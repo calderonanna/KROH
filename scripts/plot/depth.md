@@ -143,7 +143,7 @@ DP <- ggarrange(
         nrow=4,
         ncol=3)
 
-ggsave("/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/depth_grid.png", RL, width = 12, height = 8)
+ggsave("/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/depth_grid.png", DP, width = 12, height = 8)
 ```
 
 ## Run R Script as Job

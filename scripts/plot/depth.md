@@ -15,7 +15,6 @@ Rscript -e "options(repos = c(CRAN = 'https://cloud.r-project.org')); install.pa
 Rscript -e "options(repos = c(CRAN = 'https://cloud.r-project.org')); install.packages('dplyr', dependencies=TRUE, lib='/storage/group/zps5164/default/bin/.R')"
 
 ```
-
 ## Create R Script
 ```R
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
@@ -46,6 +45,7 @@ for(id in ids){
 }
 
 # PLOT AND SAVE
+DP_183194841$CHR <- factor(DP_183194841$CHR, levels = unique(DP_183194841$CHR))
 DP_183194841 <-  ggplot(avg_depth_183194841, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",
@@ -60,6 +60,7 @@ DP_183194841 <-  ggplot(avg_depth_183194841, aes(x = CHR, y = DEPTH)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
+DP_183195312$CHR <- factor(DP_183195312$CHR, levels = unique(DP_183195312$CHR))
 DP_183195312 <-  ggplot(avg_depth_183195312, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",
@@ -74,6 +75,7 @@ DP_183195312 <-  ggplot(avg_depth_183195312, aes(x = CHR, y = DEPTH)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
+DP_183195332$CHR <- factor(DP_183195332$CHR, levels = unique(DP_183195332$CHR))
 DP_183195332 <-  ggplot(avg_depth_183195332, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",
@@ -88,6 +90,7 @@ DP_183195332 <-  ggplot(avg_depth_183195332, aes(x = CHR, y = DEPTH)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
+DP_183194861$CHR <- factor(DP_183194861$CHR, levels = unique(DP_183194861$CHR))
 DP_183194861 <-  ggplot(avg_depth_183194861, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",
@@ -102,6 +105,7 @@ DP_183194861 <-  ggplot(avg_depth_183194861, aes(x = CHR, y = DEPTH)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
+DP_183195321$CHR <- factor(DP_183195321$CHR, levels = unique(DP_183195321$CHR))
 DP_183195321 <-  ggplot(avg_depth_183195321, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",
@@ -116,6 +120,7 @@ DP_183195321 <-  ggplot(avg_depth_183195321, aes(x = CHR, y = DEPTH)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
+DP_183195304$CHR <- factor(DP_183195304$CHR, levels = unique(DP_183195304$CHR))
 DP_183195304 <-  ggplot(avg_depth_183195304, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",
@@ -130,6 +135,7 @@ DP_183195304 <-  ggplot(avg_depth_183195304, aes(x = CHR, y = DEPTH)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
+DP_183195326$CHR <- factor(DP_183195326$CHR, levels = unique(DP_183195326$CHR))
 DP_183195326<-  ggplot(avg_depth_183195326, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",
@@ -186,3 +192,4 @@ R --file=$scripts_folder/plots/plot_depth.R
 ## Download
 ```bash
 rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/depth_grid.png /Users/abc6435/Desktop/KROH/figures
+```

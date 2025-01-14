@@ -52,6 +52,7 @@ DP_183194841 <-  ggplot(avg_depth_183194841, aes(x = CHR, y = DEPTH)) +
        y = "Average Depth") +
  theme_minimal() +
   theme(
+    axis.text.x = element_text(angle = 45),
     panel.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -64,6 +65,7 @@ DP_183195312 <-  ggplot(avg_depth_183195312, aes(x = CHR, y = DEPTH)) +
        y = "Average Depth") +
  theme_minimal() +
   theme(
+    axis.text.x = element_text(angle = 45),
     panel.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -76,6 +78,7 @@ DP_183195332 <-  ggplot(avg_depth_183195332, aes(x = CHR, y = DEPTH)) +
        y = "Average Depth") +
  theme_minimal() +
   theme(
+    axis.text.x = element_text(angle = 45),
     panel.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -88,6 +91,7 @@ DP_183194861 <-  ggplot(avg_depth_183194861, aes(x = CHR, y = DEPTH)) +
        y = "Average Depth") +
  theme_minimal() +
   theme(
+    axis.text.x = element_text(angle = 45),
     panel.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -100,6 +104,7 @@ DP_183195321 <-  ggplot(avg_depth_183195321, aes(x = CHR, y = DEPTH)) +
        y = "Average Depth") +
  theme_minimal() +
   theme(
+    axis.text.x = element_text(angle = 45),
     panel.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -112,6 +117,7 @@ DP_183195304 <-  ggplot(avg_depth_183195304, aes(x = CHR, y = DEPTH)) +
        y = "Average Depth") +
  theme_minimal() +
   theme(
+    axis.text.x = element_text(angle = 45),
     panel.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -124,6 +130,7 @@ DP_183195326<-  ggplot(avg_depth_183195326, aes(x = CHR, y = DEPTH)) +
        y = "Average Depth") +
  theme_minimal() +
   theme(
+    axis.text.x = element_text(angle = 45),
     panel.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -171,4 +178,4 @@ R --file=$scripts_folder/plots/plot_depth.R
 
 ## Download
 ```bash
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/depth_grid.png /Users/abc6435/Desktop/KROH/plots
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/depth_grid.png /Users/abc6435/Desktop/KROH/figures

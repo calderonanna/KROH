@@ -52,7 +52,8 @@ DP_183194841 <-  ggplot(avg_depth_183194841, aes(x = CHR, y = DEPTH)) +
        y = "Average Depth") +
  theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45),
+    axis.text = element_text(size=10),
+    axis.text.x = element_text(angle = 90),
     panel.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -65,7 +66,8 @@ DP_183195312 <-  ggplot(avg_depth_183195312, aes(x = CHR, y = DEPTH)) +
        y = "Average Depth") +
  theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45),
+    axis.text = element_text(size=10),
+    axis.text.x = element_text(angle = 90),
     panel.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -78,7 +80,8 @@ DP_183195332 <-  ggplot(avg_depth_183195332, aes(x = CHR, y = DEPTH)) +
        y = "Average Depth") +
  theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45),
+    axis.text = element_text(size=10),
+    axis.text.x = element_text(angle = 90),
     panel.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -91,7 +94,8 @@ DP_183194861 <-  ggplot(avg_depth_183194861, aes(x = CHR, y = DEPTH)) +
        y = "Average Depth") +
  theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45),
+    axis.text = element_text(size=10),
+    axis.text.x = element_text(angle = 90),
     panel.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -104,7 +108,8 @@ DP_183195321 <-  ggplot(avg_depth_183195321, aes(x = CHR, y = DEPTH)) +
        y = "Average Depth") +
  theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45),
+    axis.text = element_text(size=10),
+    axis.text.x = element_text(angle = 90),
     panel.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -117,7 +122,8 @@ DP_183195304 <-  ggplot(avg_depth_183195304, aes(x = CHR, y = DEPTH)) +
        y = "Average Depth") +
  theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45),
+    axis.text = element_text(size=10),
+    axis.text.x = element_text(angle = 90),
     panel.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -130,7 +136,8 @@ DP_183195326<-  ggplot(avg_depth_183195326, aes(x = CHR, y = DEPTH)) +
        y = "Average Depth") +
  theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45),
+    axis.text = element_text(size=10),
+    axis.text.x = element_text(angle = 90),
     panel.background = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),
@@ -150,7 +157,7 @@ DP <- ggarrange(
         nrow=4,
         ncol=3)
 
-ggsave("/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/depth_grid.png", DP, width = 12, height = 8)
+ggsave("/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/depth_grid.png", DP, width = 15, height = 8, dpi=300)
 ```
 
 ## Run R Script as Job

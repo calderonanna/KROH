@@ -45,7 +45,12 @@ for(id in ids){
 }
 
 # PLOT AND SAVE
-DP_183194841$CHR <- factor(DP_183194841$CHR, levels = unique(DP_183194841$CHR))
+chr_order <- c("chr1", "chr1a", "chr2", "chr3", "chr4", "chr5", "chr7", "chr8",
+"chr9", "chr10", "chr11", "chr12", "chr13", "chr14", "chr15", "chr17",
+"chr18", "chr19", "chr20", "chr21", "chr22", "chr23", "chr24", "chr25",
+"chr26", "chr27", "chr28", "chr29")
+
+DP_183194841$CHR <- factor(DP_183194841$CHR, levels = chr_order)
 DP_183194841 <-  ggplot(avg_depth_183194841, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",
@@ -60,7 +65,7 @@ DP_183194841 <-  ggplot(avg_depth_183194841, aes(x = CHR, y = DEPTH)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
-DP_183195312$CHR <- factor(DP_183195312$CHR, levels = unique(DP_183195312$CHR))
+DP_183195312$CHR <- factor(DP_183195312$CHR, levels = chr_order)
 DP_183195312 <-  ggplot(avg_depth_183195312, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",
@@ -75,7 +80,7 @@ DP_183195312 <-  ggplot(avg_depth_183195312, aes(x = CHR, y = DEPTH)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
-DP_183195332$CHR <- factor(DP_183195332$CHR, levels = unique(DP_183195332$CHR))
+DP_183195332$CHR <- factor(DP_183195332$CHR, levels = chr_order)
 DP_183195332 <-  ggplot(avg_depth_183195332, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",
@@ -90,7 +95,7 @@ DP_183195332 <-  ggplot(avg_depth_183195332, aes(x = CHR, y = DEPTH)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
-DP_183194861$CHR <- factor(DP_183194861$CHR, levels = unique(DP_183194861$CHR))
+DP_183194861$CHR <- factor(DP_183194861$CHR, levels = chr_order)
 DP_183194861 <-  ggplot(avg_depth_183194861, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",
@@ -105,7 +110,7 @@ DP_183194861 <-  ggplot(avg_depth_183194861, aes(x = CHR, y = DEPTH)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
-DP_183195321$CHR <- factor(DP_183195321$CHR, levels = unique(DP_183195321$CHR))
+DP_183195321$CHR <- factor(DP_183195321$CHR, levels = chr_order)
 DP_183195321 <-  ggplot(avg_depth_183195321, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",
@@ -120,7 +125,7 @@ DP_183195321 <-  ggplot(avg_depth_183195321, aes(x = CHR, y = DEPTH)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
-DP_183195304$CHR <- factor(DP_183195304$CHR, levels = unique(DP_183195304$CHR))
+DP_183195304$CHR <- factor(DP_183195304$CHR, levels = chr_order)
 DP_183195304 <-  ggplot(avg_depth_183195304, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",
@@ -135,7 +140,7 @@ DP_183195304 <-  ggplot(avg_depth_183195304, aes(x = CHR, y = DEPTH)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
-DP_183195326$CHR <- factor(DP_183195326$CHR, levels = unique(DP_183195326$CHR))
+DP_183195326$CHR <- factor(DP_183195326$CHR, levels = chr_order)
 DP_183195326<-  ggplot(avg_depth_183195326, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",

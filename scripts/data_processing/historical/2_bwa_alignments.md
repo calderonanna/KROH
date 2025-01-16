@@ -31,13 +31,10 @@ for i in `cat $scripts_folder/hKIWA_IDS.txt`; do
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=5GB
-#SBATCH --time=24:00:00
+#SBATCH --mem=10GB
+#SBATCH --time=72:00:00
 #SBATCH --account=zps5164_sc
 #SBATCH --job-name=bwa_alignments_${i}
-#SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
-#SBATCH --output=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
 
 #Set Variables
 data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
@@ -45,17 +42,33 @@ err_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output"
 mywa_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_ref/mywa_reference"
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
-#Run BWA (with resource profiling)
-/usr/bin/time -v bwa aln -n 0.01 -l 1024 -o 2 -t 4 \\
+#bwaaln R1
+bwa aln -n 0.01 -l 1024 -o 2 \\
 \$mywa_folder/mywagenomev2.1 \\
+\$data_folder/trim/${i}_R1_trimmed.fastq.gz > $data_folder/sai/${i}_R1.sai \\
+2> \$err_folder/${i}_R1_bwaaln.err
+
+#bwaaln R2
+bwa aln -n 0.01 -l 1024 -o 2 \\
+\$mywa_folder/mywagenomev2.1 \\
+\$data_folder/trim/${i}_R2_trimmed.fastq.gz > $data_folder/sai/${i}_R2.sai \\
+2> \$err_folder/${i}_R2_bwaaln.err
+
+#sai to sam
+bwa sampe -r "@RG\tID:${i}\tSM:${i}" \\
+\$mywa_folder/mywagenomev2.1 \\
+$data_folder/sai/${i}_R1.sai $data_folder/sai/${i}_R2.sai \\
 \$data_folder/trim/${i}_R1_trimmed.fastq.gz \\
-\$data_folder/trim/${i}_R2_trimmed.fastq.gz > \$data_folder/sai/${i}.sai 2> \$err_folder/${i}_bwa.err
+\$data_folder/trim/${i}_R2_trimmed.fastq.gz \\
+> \$data_folder/sam/${i}.sam \\
+2> \$err_folder/${i}_bwasampe.err
+
 EOT
 done
 
 #Submit Each Script
-for i in $scripts_folder/bwa_alignments*; do
-    sbatch ${i}
+for i in `cat $scripts_folder/hKIWA_IDS.txt`; do
+    sbatch $scripts_folder/bwa_alignments_${i}.bash
 done
 
 #Check Job

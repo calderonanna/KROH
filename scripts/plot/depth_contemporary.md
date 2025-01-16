@@ -64,21 +64,6 @@ DP_183194841 <-  ggplot(avg_depth_183194841, aes(x = CHR, y = DEPTH)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
-avg_depth_183195312 <- factor(avg_depth_183195312, levels = chr_order)
-DP_183195312 <-  ggplot(avg_depth_183195312, aes(x = CHR, y = DEPTH)) +
-  geom_bar(stat = "identity", fill = "gray") +
-  labs(x = "",
-       y = "Average Depth") +
- theme_minimal() +
-  theme(
-    axis.text = element_text(size=10),
-    axis.text.x = element_text(angle = 90),
-    panel.background = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.border = element_rect(color = "black", fill = NA)
-  )
-
 avg_depth_183195332$CHR <- factor(avg_depth_183195332$CHR, levels = chr_order)
 DP_183195332 <-  ggplot(avg_depth_183195332, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
@@ -140,7 +125,7 @@ DP_183195304 <-  ggplot(avg_depth_183195304, aes(x = CHR, y = DEPTH)) +
   )
 
 avg_depth_183195326$CHR <- factor(avg_depth_183195326$CHR, levels = chr_order)
-DP_183195326<-  ggplot(avg_depth_183195326, aes(x = CHR, y = DEPTH)) +
+DP_183195326 <-  ggplot(avg_depth_183195326, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",
        y = "Average Depth") +
@@ -154,16 +139,30 @@ DP_183195326<-  ggplot(avg_depth_183195326, aes(x = CHR, y = DEPTH)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
+avg_depth_183195312$CHR <- factor(avg_depth_183195312$CHR, levels = chr_order)
+DP_183195312 <-  ggplot(avg_depth_183195312, aes(x = CHR, y = DEPTH)) +
+  geom_bar(stat = "identity", fill = "gray") +
+  labs(x = "",
+       y = "Average Depth") +
+ theme_minimal() +
+  theme(
+    axis.text = element_text(size=10),
+    axis.text.x = element_text(angle = 90),
+    panel.background = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_rect(color = "black", fill = NA)
+  )
 
 # ARRANGE AND SAVE
 DP <- ggarrange(
         DP_183194841,
-        DP_183194861, 
-        DP_183195304, 
-        DP_183195312, 
-        DP_183195321, 
-        DP_183195326, 
         DP_183195332, 
+        DP_183194861, 
+        DP_183195321, 
+        DP_183195304, 
+        DP_183195326, 
+        DP_183195312, 
         nrow=4,
         ncol=3)
 

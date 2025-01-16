@@ -17,17 +17,17 @@ avg_depth_test <- data.frame(
   DEPTH = c(73.0, 38.0, 74.0, 73.0, 38.5, 74.0)
 )
 
-avg_depth_test$CHR <- factor(avg_depth_test$CHR, levels = sort(unique(avg_depth_test$CHR)))
-
+avg_depth_test$CHR <- factor(avg_depth_test$CHR,
+                             levels = sort(unique(avg_depth_test$CHR)))
 
 #Plot
 ggplot(avg_depth_test, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
   labs(x = "",
        y = "Average Depth") +
- theme_minimal() +
+  theme_minimal() +
   theme(
-    axis.text = element_text(size=10),
+    axis.text = element_text(size = 10),
     axis.text.x = element_text(angle = 90),
     panel.background = element_blank(),
     panel.grid.major = element_blank(),

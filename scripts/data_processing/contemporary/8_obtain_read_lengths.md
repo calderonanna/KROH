@@ -12,7 +12,6 @@ if [ ! -d "$data_folder/seq_stats" ]; then
 fi
 
 nano $scripts_folder/extract_readlenghts.bash
-#----------------------NANO-------------------
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -27,7 +26,6 @@ scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
 
 for i in `cat $scripts_folder/cKIWA_IDS.txt`; do samtools view $data_folder/bam/${i}.bam | awk '{print length($10)}' >> $data_folder/seq_stats/${i}_readlength.txt; done 
-#------------------EOS----------------------
 ```
 
 ## Download to Local Machine

@@ -1,7 +1,7 @@
 # Index Marked BAM files
-`samtools index sample.bam sample.bai`
 
 ## Create Scripts
+`samtools index sample.bam sample.bai`
 ```bash
 #Set Variables
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"

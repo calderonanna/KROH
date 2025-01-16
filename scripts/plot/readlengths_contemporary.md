@@ -16,8 +16,8 @@ Rscript -e "options(repos = c(CRAN = 'https://cloud.r-project.org')); install.pa
 ## Create R Script
 ```R
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
-
 nano $scripts_folder/plots/plot_readlengths.R
+
 #!/usr/bin/env Rscript
 
 # CALL PACKAGES

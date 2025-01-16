@@ -3,8 +3,6 @@ https://github.com/OpenGene/fastp
 
 Not using adapterremoval because it creates a seperate file for unpaired reads making it really difficult to work with BWA. 
 
-`fastp -i R1.fastq.gz -I R2.fastq.gz -o out.R1.fq.gz -O out.R2.fq.gz`
-
 ## Installation
 ```bash
 #Install to bin
@@ -26,7 +24,9 @@ for i in `cat ~/SzpiechLab/abc6435/KROH/scripts/cKIWA_IDS.txt`; do
 done
 
 ```
-##  fastp script
+
+## Create Scripts
+`fastp -i R1.fastq.gz -I R2.fastq.gz -o out.R1.fq.gz -O out.R2.fq.gz`
 ```bash
 #Set Variables
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
@@ -58,7 +58,7 @@ fastp -i \$data_folder/fastq/${i}_R1.fastq.gz -I \$data_folder/fastq/${i}_R2.fas
 EOT
 done
 
-#submit jobs
+#Submit Jobs
 for i in $scripts_folder/trim_*.bash; do
     sbatch ${i}
 done

@@ -22,6 +22,8 @@ export PATH=/storage/home/abc6435/SzpiechLab/bin/bwa:$PATH
 echo 'export PATH=/storage/home/abc6435/SzpiechLab/bin/bwa:$PATH' >> ~/.bashrc
 source ~/.bashrc
 ```
+
+## Index Reference
 `bwa index -p mywagenomev2.1 -a bwtsw mywagenomev2.1.fa`
 - `bwtsw`: 5GB (human genome)
 - `aln`: ~3.2GB (short reads)
@@ -30,7 +32,6 @@ source ~/.bashrc
 ```bash
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 nano $scripts_folder/bwa_index_ref.bash
---------------------NANO------------------
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=4
@@ -49,10 +50,9 @@ cd $ref_folder
 
 #Run BWA with the bwtsw algorithm
 bwa index -p mywagenomev2.1 -a bwtsw $ref_folder/mywagenomev2.1.fa
---------------------EOS-------------------
 ```
 
-## Aligning the contemporary samples
+## Create Scripts
 `bwa mem -R "@RG\tID:${i}\tSM:${i}" -M -t 2 \
 reference. \
 ${i}_pair1.truncated.gz \
@@ -111,7 +111,7 @@ done
 squeue -o "%.18i %.9P %.30j %.8u %.2t %.10M %.6D %R" -u abc6435
 ```
 
-## Checking Alignment Stats
+## Alignment Stats
 ```bash
 #Set Variable
 sam_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/sam"

@@ -2,12 +2,12 @@
 In order to do anything meaningful, we need to convert our SAM files to binary format (BAM) with `samtools`. 
 http://quinlanlab.org/tutorials/samtools/samtools.html#converting-sam-to-bam-with-samtools-view
 
+## Create Scripts
 `samtools view -S -b sample.sam > sample.bam`
 - `-S`: specifies that the input file is a sam file
 - `-b`: species that we want to produce a bam file
 - `>`: denotes where to store the output bam file.
 
-## Create a script for all samples
 ```bash
 #Set Variables
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"

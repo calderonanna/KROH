@@ -4,11 +4,11 @@ https://www.biostars.org/p/5165/
 
 This will calculate the average depth of coverage across the entire genome. First samtools extracts the depth at every position, sed exludes the mitochondrial genome and any unmapped scaffolds, then awk takes the average depth across all positions. 
 
+## Create Scripts
 `samtools depth -a input.bam |  awk '{sum+=$3} END { print "Average = ",sum/NR}'`
 - `a`: obtains the depth at every position. 
 - `awk`: sums the depth at every position and divides by number of positions.
 
-## Create Scripts
 ```bash
 #Set Variables
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"

@@ -32,7 +32,7 @@ for i in `cat $scripts_folder/hKIWA_IDS.txt`; do
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --mem=10GB
-#SBATCH --time=72:00:00
+#SBATCH --time=200:00:00
 #SBATCH --account=zps5164_sc
 #SBATCH --job-name=bwa_alignments_${i}
 

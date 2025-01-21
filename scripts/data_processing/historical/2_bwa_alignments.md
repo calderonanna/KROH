@@ -1,5 +1,8 @@
-# Aligning Contemporary Samples with BWA
+# BWA- aln Alignments
 https://bio-bwa.sourceforge.net/bwa.shtml
+
+For aDNA or hDNA is prone to "reference bias", biases against alleles not found in the reference. In other words, reads carrying alleles not found in the reference are less likely to be mapped, so this will result in less alternate alleles and this is more problematic for aDNA because of contamination and postmortem damage.
+Parameters for bwa aln were set based on recommendations for aDNA short reads from Oliva et al. 2021 (https://doi.org/10.1093/bib/bbab076, and DOI: 10.1002/ece3.8297). 
 
 ## Installation
 See [contemporary/2_bwa_alignments](../contemporary/2_bwa_alignments.md)

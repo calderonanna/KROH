@@ -34,7 +34,7 @@ for i in `cat $scripts_folder/hKIWA_IDS.txt`; do
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --mem=10GB
+#SBATCH --mem=100GB
 #SBATCH --time=200:00:00
 #SBATCH --account=zps5164_sc
 #SBATCH --job-name=bwa_alignments_${i}
@@ -46,19 +46,19 @@ mywa_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_ref/mywa_re
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
 #bwaaln R1
-bwa aln -n 0.01 -l 1024 -o 2 \\
+/usr/bin/time -v bwa aln -n 0.01 -l 1024 -o 2 \\
 \$mywa_folder/mywagenomev2.1 \\
 \$data_folder/trim/${i}_R1_trimmed.fastq.gz > $data_folder/sai/${i}_R1.sai \\
 2> \$err_folder/${i}_R1_bwaaln.err
 
 #bwaaln R2
-bwa aln -n 0.01 -l 1024 -o 2 \\
+/usr/bin/time -v bwa aln -n 0.01 -l 1024 -o 2 \\
 \$mywa_folder/mywagenomev2.1 \\
 \$data_folder/trim/${i}_R2_trimmed.fastq.gz > $data_folder/sai/${i}_R2.sai \\
 2> \$err_folder/${i}_R2_bwaaln.err
 
 #sai to sam
-bwa sampe -r "@RG\tID:${i}\tSM:${i}" \\
+/usr/bin/time -v bwa sampe -r "@RG\tID:${i}\tSM:${i}" \\
 \$mywa_folder/mywagenomev2.1 \\
 $data_folder/sai/${i}_R1.sai $data_folder/sai/${i}_R2.sai \\
 \$data_folder/trim/${i}_R1_trimmed.fastq.gz \\

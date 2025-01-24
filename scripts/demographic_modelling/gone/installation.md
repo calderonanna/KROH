@@ -16,6 +16,7 @@ chmod +x GONEaverage
 chmod +x LD_SNP_REAL3
 chmod +x MANAGE_CHROMOSOMES2
 chmod +x SUMM_REP_CHROM3
+chmod +x GONEparallel.sh
 
 #remove any unnecessary folders and files
 rm 'GONE TUTORIAL.pdf' README.md 'USER'$'\302\264''S GUIDE.pdf'

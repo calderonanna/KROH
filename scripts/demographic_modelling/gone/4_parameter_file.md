@@ -1,18 +1,18 @@
 ## Modify Parameter File
 ```bash
 #Set Variables
-data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
+gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
 
-nano $data_folder/gone/Linux/INPUT_PARAMETERS_FILE
+nano $gone_folder/INPUT_PARAMETERS_FILE
 #INPUT_PARAMETERS_FILE
 
 ########################################################
 
 PHASE=2 ### Phase = 0 (pseudohaploids), 1 (known phase), 2 (unknown phase)
-cMMb=1  ### CentiMorgans per Megabase (if distance is not available in map file).
+cMMb=4.82  ### CentiMorgans per Megabase (if distance is not available in map file).
 DIST=1  ### none (0), Haldane correction (1) or Kosambi correction (2)
-NGEN=200 ### Number of generations for which linkage data is obtained in bins
-NBIN=200  ### Number of bins (e.g. if 400, each bin includes NGEN/NBIN = 2000/400 = 5 generations)
+NGEN=120 ### Number of generations for which linkage data is obtained in bins
+NBIN=60  ### Number of bins (e.g. if 400, each bin includes NGEN/NBIN = 2000/400 = 5 generations)
 MAF=0.0   ### Minor allele frequency (0-1) (recommended 0)
 ZERO=0    ### 0: Remove SNPs with zeroes (1: allow for them)
 maxNCHROM=-99  ### Maximum number of chromosomes to be analysed (-99 = all chromosomes; maximum number is 200)
@@ -22,13 +22,6 @@ REPS=40   ### Number of replicates to run GONE (recommended 40)
 threads=-99  ### Number of threads (if -99 it uses all possible processors)
 
 ###################################################################
-
-
-
-
-
-
-
 ```
 
 

@@ -1,9 +1,7 @@
 # Run GONE
 
+## Create bash script
 ```bash
-#Remove any old files 
-rm -rf *.nosex *.log *.fam *.bed *.bim *no_miss* *sub* *time* *seed* TEMPORARY_FILES/ *OUT* *out* *Out* *chrom* *param* *data*
-
 #Set Variables 
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
@@ -19,7 +17,14 @@ nano $scripts_folder/run_gone.sh
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.err
 #SBATCH --output=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.err
 
- cd /storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/Linux
+#Set Variables
+gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
 
+#Run GONE
+cd $gone_folder
 bash script_GONE.sh gone
 ```
+
+
+
+

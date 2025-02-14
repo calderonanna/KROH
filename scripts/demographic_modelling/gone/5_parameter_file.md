@@ -1,4 +1,8 @@
 ## Modify Parameter File
+I used the genome-wide average recombination rate from Passer domesticus recombination map from Hagen et al.2019 (DOI: 10.1111/1755-0998.13134). The Passeridae family is apparently closer to the Parulidae family than is the Muscicapidae (ficedulla albicollis) according to Stiller et al. 2024 (https://doi.org/10.1038/s41586-024-07323-1). 
+
+Using Passer domesticus average recombination rate of 4.82cM/Mb resulted in more resonable Ne estimates than using the average genome-wide recombination rate of  3.1cM/Mb from Ficedulla albicollis. 
+
 ```bash
 #Set Variables
 gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"

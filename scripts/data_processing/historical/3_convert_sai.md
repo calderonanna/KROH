@@ -1,14 +1,18 @@
 # Convert sai to sam
 
 ```bash
+#Set Variables
+
+scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
 for i in `cat $scripts_folder/hKIWA_IDS.txt`; do 
     cat <<EOT > $scripts_folder/bwa_sampe_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --mem=10GB
-#SBATCH --time=10:00:00
-#SBATCH --account=zps5164_sc
+#SBATCH --time=5:00:00
+#SBATCH --account=open
 #SBATCH --job-name=bwa_sampe_${i}
 
 #Set Variables

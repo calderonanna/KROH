@@ -22,7 +22,7 @@ cd $gone_folder
 plink --vcf $gone_folder/gone.vcf.gz --recode --allow-extra-chr --chr-set 29 --make-bed --out gone
 
 #Remove any unnessary files
-rm -rf *.nosex *.log *.fam *.bed *.bim *time* *seed* TEMPORARY_FILES/ *OUT* *out* *Out* *chrom* *param* *data*
+rm -rf *.nosex *.log *.fam *.bed *.bim *chrom* *param* *data*
 ```
 
 ## Reformat .ped and .map

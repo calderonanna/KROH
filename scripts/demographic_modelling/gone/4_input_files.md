@@ -16,23 +16,26 @@ rate to keep constant.
 ```bash
 #Set Variables
 gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
+vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf"
 
 #Create .ped and .map
 cd $gone_folder
-plink --vcf $gone_folder/gone.vcf.gz --recode --allow-extra-chr --chr-set 29 --make-bed --out gone
+for i in $(seq 1 10); do
+    plink --vcf $vcf_folder/rep${i}/rep${i}_merged_sorted.vcf.gz --recode --allow-extra-chr --chr-set 30 --make-bed --out $gone_folder/gone_rep${i};
+done
 
 #Remove any unnessary files
-rm -rf *.nosex *.log *.fam *.bed *.bim *chrom* *param* *data*
+rm -rf *.nosex *.log *.fam *.bed *.bim
 ```
 
-## Reformat .ped and .map
+## Reformat .ped and .map files
 ```bash
+#Reformat .ped and .map files
 cd $gone_folder
 
-#Reformat .ped 
-awk '{$2="IND"NR; print}' OFS=" " gone.ped > temp && mv -f temp gone.ped
-awk '{$1=1; print}' OFS=" " gone.ped > temp && mv -f temp gone.ped
-
-#Reformat .map and add recombination rates
-awk '{print $1,$2="SNP"NR,$3,$4}' gone.map > temp && mv -f temp gone.map
+for i in $(seq 1 10); do
+    awk '{$2="IND"NR; print}' OFS=" " gone_rep${i}.ped > temp_${i} && mv -f temp_${i} gone_rep${i}.ped
+    awk '{$1=1; print}' OFS=" " gone_rep${i}.ped > temp_${i} && mv -f temp_${i} gone_rep${i}.ped
+    awk '{print $1,$2="SNP"NR,$3,$4}' gone_rep${i}.map > temp_${i} && mv -f temp_${i} gone_rep${i}.map;
+done
 ```

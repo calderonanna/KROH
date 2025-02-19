@@ -1,30 +1,36 @@
-# Randomly sample sites 
-I will do this several times to create replicates and then run gone several times across these replicates. 
+# Sample Chromosomes
+GONE does not need all sites in a vcf to run (it actually might crash the program). In the GitHub issues, Armando recommends to have NO MORE than 100K sites per chromosome and no more than 10 Million SNPS genome-wide. 
 
-## Pick Chromosomes With Plenty SNPS
-Since I'm going to sub-sample repeatedly, I wanted to pick chromosomes with plenty of snps. 
+## Split VCF by chromosomes
+Note: You only have to do this step once.
 ```bash
+#Set Variables 
+scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+
+nano $scripts_folder/split_vcf.bash
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem=5GB
+#SBATCH --time=10:00:00
+#SBATCH --account=open
+
 #Set Variables
 vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf"
-scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+
+#Split VCF by CHR
 chr_list=($(cut -f1 $vcf_folder/rename_chr.txt))
 
-#Count Number of SNPs Per Chromosome
 for i in "${chr_list[@]}"; do
-    echo ${i} >> $vcf_folder/snps_per_site.txt
-    bcftools view -H $vcf_folder/${i}.vcf.gz | wc -l >> $vcf_folder/snps_per_chr.txt;
+    bcftools view $vcf_folder/auto_nmiss.vcf.gz -r ${i} -Oz -o $vcf_folder/${i}.vcf.gz; 
 done
-
-#Remove chr22, 25, and 27-29 from analysis
-nano $vcf_folder/rename_chr.txt
-awk '{print $1,$2="chr"NR}' OFS="\t" $vcf_folder/rename_chr.txt > $vcf_folder/temp && mv -f $vcf_folder/temp $vcf_folder/rename_chr.txt
 ```
 
-## Create Bash Script
-Create several of these scripts for each replicate. Doing this manually because nested loops are ugly and confusing and I literally cannot right now. 
+## Randomly sample sites 
+I will do this several times to create replicates and then run gone several times across these replicates. 
 ```bash
 #Make replicate folders
-for i in $(seq 1 10); do
+for i in $(seq 3 4); do
     mkdir $vcf_folder/rep${i};
 done
 
@@ -39,11 +45,12 @@ nano $scripts_folder/gone_vcf_repx.bash
 
 #Set Variables
 vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf"
+gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
 chr_list=($(cut -f1 $vcf_folder/rename_chr.txt))
 
 #Randomly sample sites 
 for i in "${chr_list[@]}"; do
-    bcftools view -H $vcf_folder/${i}.vcf.gz | shuf -n 100000 | cut -f1,2 > $vcf_folder/repx/${i}_sites.txt;
+    bcftools view -H $vcf_folder/${i}.vcf.gz | shuf -n 500000 | cut -f1,2 > $vcf_folder/repx/${i}_sites.txt;
 done
 
 #Extract sites from vcf files
@@ -68,13 +75,18 @@ bcftools annotate --rename-chrs $vcf_folder/rename_chr.txt -o $vcf_folder/repx/g
 ## Copy and Modify Script
 Create a script for each replicate 
 ```bash
-for i in $(seq 1 10); do
+#Set Variables
+vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf"
+gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
+scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+
+for i in $(seq 3 4); do
     cp "$scripts_folder/gone_vcf_repx.bash" "$scripts_folder/gone_vcf_rep${i}.bash"
     sed -i "s/repx/rep${i}/g" $scripts_folder/gone_vcf_rep${i}.bash;
 done
 
 #Submit scripts
-for i in $(seq 1 10); do
+for i in $(seq 3 4); do
     sbatch $scripts_folder/gone_vcf_rep${i}.bash;
 done
 ```

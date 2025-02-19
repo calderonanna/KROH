@@ -23,7 +23,7 @@ for i in $(seq 1 10); do
     bash script_GONE.sh gone_rep${i}
     cd $gone_folder
     mkdir gone_rep${i}
-    mv seedfile timefile outfileHWD *rep${i}* TEMPORARY_FILES/ gone_rep${i}; 
+    mv seedfile timefile outfileHWD *rep${i}.* *rep${i}TEMPORARY_FILES/ gone_rep${i}; 
 done
 ```
 

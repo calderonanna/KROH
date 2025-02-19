@@ -18,14 +18,15 @@ if [ ! -d "$data_folder/bam" ]; then
 fi
 
 #Run loop
-for i in `cat $scripts_folder/cKIWA_IDS.txt`; do 
+for i in `cat $scripts_folder/hKIWA_IDS.txt`; do 
     cat <<EOT > $scripts_folder/sam_to_bam_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --mem=2GB
 #SBATCH --time=48:00:00
-#SBATCH --account=zps5164_sc
+#SBATCH --account=zps5164_cr_default
+#SBATCH --partition=basic
 #SBATCH --job-name=sam_to_bam_${i}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.err
 #SBATCH --output=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
@@ -39,7 +40,7 @@ EOT
 done
 
 #Submit each script and check job
-for i in `cat $scripts_folder/cKIWA_IDS.txt`; do 
+for i in `cat $scripts_folder/hKIWA_IDS.txt`; do 
     sbatch $scripts_folder/sam_to_bam_${i}.bash
 done
 

@@ -20,12 +20,12 @@ if [ ! -d "$data_folder/coverage" ]; then
 fi
 
 #Run loop
-for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
+for i in `cat $scripts_folder/hKIWA_IDS.txt`; do
     cat<<EOT > $scripts_folder/calculate_coverage_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --mem=100MB
+#SBATCH --mem=1GB
 #SBATCH --time=05:00:00
 #SBATCH --account=zps5164_sc
 #SBATCH --job-name=calculate_coverage_${i}

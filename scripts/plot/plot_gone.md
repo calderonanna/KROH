@@ -1,5 +1,30 @@
 # Plot GONE 
 
+## Download Data
+```bash
+#Set Variables
+gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
+#Rename Files in cluster and remove first line
+for i in $(seq 2 5); do
+  mv $gone_folder/gone_${i}M/Output_Ne_gone $gone_folder/gone_${i}M/Output_Ne_gone_${i}M
+  sed -i '1d' $gone_folder/gone_${i}M/Output_Ne_gone_${i}M;
+done
+
+for i in $(seq 1 10); do
+  sed -i '1d' $gone_folder/gone_${i}00K/Output_Ne_gone_rep${i};
+done
+
+#Set Variables
+gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
+#Download Files to local
+for i in $(seq 2 5); do
+  rsync abc6435@submit.hpc.psu.edu:$gone_folder/gone_${i}M/Output_Ne_gone_${i}M /Users/abc6435/Desktop/KROH/data/gone;
+done
+
+for i in $(seq 1 10); do
+  rsync abc6435@submit.hpc.psu.edu:$gone_folder/gone_${i}00K/Output_Ne_gone_rep${i} /Users/abc6435/Desktop/KROH/data/gone;
+done
+
 ## Setup
 ```r
 library(ggplot2)

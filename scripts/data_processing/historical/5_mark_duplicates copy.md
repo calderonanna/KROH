@@ -18,7 +18,7 @@ scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
 
 #Run Loop
-for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
+for i in `cat $scripts_folder/hKIWA_IDS.txt`; do
     cat<<EOT > $scripts_folder/mark_duplicates_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
@@ -40,8 +40,8 @@ EOT
 done
 
 #Submit each job
-for i in $scripts_folder/mark_duplicates_*.bash; do
-    sbatch ${i}
+for i in `cat $scripts_folder/hKIWA_IDS.txt`; do
+    sbatch $scripts_folder/mark_duplicates_${i}.bash;
 done
 
 #Check Job Status

@@ -22,11 +22,10 @@ for i in $(seq 1 10); do
     cd $gone_folder
     bash script_GONE.sh gone_rep${i}
     cd $gone_folder
-    mkdir gone_rep${i}
-    mv seedfile timefile outfileHWD *rep${i}.* *rep${i}TEMPORARY_FILES/ gone_rep${i}; 
+    mkdir gone_${i}00K
+    mv OUTPUT_gone_rep${i} Output_Ne_gone_rep${i} Output_d2_gone_rep${i} TEMPORARY_FILES/ gone_rep${i}.map gone_rep${i}.ped outfileHWD seedfile timefile gone_${i}00K/; 
 done
 ```
-
 
 
 

@@ -6,12 +6,12 @@
 #Set Variables
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
-for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
+for i in `cat $scripts_folder/hKIWA_IDS.txt`; do
     cat<<EOT > $scripts_folder/index_bam_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --mem=20MB
+#SBATCH --mem=1GB
 #SBATCH --time=00:30:00
 #SBATCH --account=zps5164_sc
 #SBATCH --job-name=index_bam_${i}
@@ -27,8 +27,8 @@ EOT
 done
 
 #Submit each script
-for i in $scripts_folder/index_bam*.bash; do
-    sbatch ${i}
+for i in `cat $scripts_folder/hKIWA_IDS.txt`; do
+    sbatch $scripts_folder/index_bam_${i}.bash;
 done
 
 #Check Job Status

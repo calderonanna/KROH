@@ -29,11 +29,17 @@ done
 ## Randomly sample sites 
 I will do this several times to create replicates and then run gone several times across these replicates. 
 ```bash
+#Set Variables
+vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf"
+gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
+scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+
 #Make replicate folders
-for i in $(seq 3 4); do
+for i in $(seq 1 10); do
     mkdir $vcf_folder/rep${i};
 done
 
+#Create Scripts
 nano $scripts_folder/gone_vcf_repx.bash
 #!/bin/bash
 #SBATCH --nodes=1
@@ -47,10 +53,11 @@ nano $scripts_folder/gone_vcf_repx.bash
 vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf"
 gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
 chr_list=($(cut -f1 $vcf_folder/rename_chr.txt))
+n_sites=
 
 #Randomly sample sites 
 for i in "${chr_list[@]}"; do
-    bcftools view -H $vcf_folder/${i}.vcf.gz | shuf -n 500000 | cut -f1,2 > $vcf_folder/repx/${i}_sites.txt;
+    bcftools view -H $vcf_folder/${i}.vcf.gz | shuf -n $n_sites | cut -f1,2 > $vcf_folder/repx/${i}_sites.txt;
 done
 
 #Extract sites from vcf files
@@ -69,24 +76,20 @@ bcftools concat -Oz -o repx_merged.vcf.gz *_sites.vcf.gz
 bcftools sort -Oz -o repx_merged_sorted.vcf.gz repx_merged.vcf.gz
 
 #Rename chromosomes (required)
-bcftools annotate --rename-chrs $vcf_folder/rename_chr.txt -o $vcf_folder/repx/gone_repx.vcf.gz $vcf_folder/repx/repx_merged_sorted.vcf.gz
+bcftools annotate --rename-chrs $vcf_folder/rename_chr.txt -Oz -o $vcf_folder/repx/gone_repx.vcf.gz $vcf_folder/repx/repx_merged_sorted.vcf.gz
  ```
 
 ## Copy and Modify Script
 Create a script for each replicate 
 ```bash
-#Set Variables
-vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf"
-gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
-scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
-
-for i in $(seq 3 4); do
+for i in $(seq 1 10); do
     cp "$scripts_folder/gone_vcf_repx.bash" "$scripts_folder/gone_vcf_rep${i}.bash"
-    sed -i "s/repx/rep${i}/g" $scripts_folder/gone_vcf_rep${i}.bash;
+    sed -i "s/repx/rep${i}/g" $scripts_folder/gone_vcf_rep${i}.bash
+    sed -i "s/n_sites=/n_sites=${i}00000/g" $scripts_folder/gone_vcf_rep${i}.bash;
 done
 
 #Submit scripts
-for i in $(seq 3 4); do
+for i in $(seq 1 10); do
     sbatch $scripts_folder/gone_vcf_rep${i}.bash;
 done
 ```

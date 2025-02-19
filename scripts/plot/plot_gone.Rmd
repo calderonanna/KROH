@@ -1,0 +1,152 @@
+---
+title: "gone"
+author: "Anna Maria Calderon"
+date: "2025-02-18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(reshape2)
+```
+
+```{r import_data}
+setwd("/Users/abc6435/Desktop/KROH/data/gone")
+
+Ne_gone_2M <- read.table("Output_Ne_gone_2M", header = TRUE)
+Ne_gone_3M <- read.table("Output_Ne_gone_3M", header = TRUE)
+Ne_gone_4M <- read.table("Output_Ne_gone_4M", header = TRUE)
+Ne_gone_5M <- read.table("Output_Ne_gone_5M", header = TRUE)
+Ne_gone_100K <- read.table("Output_Ne_gone_rep1", header = TRUE)
+Ne_gone_200K <- read.table("Output_Ne_gone_rep2", header = TRUE)
+Ne_gone_300K <- read.table("Output_Ne_gone_rep3", header = TRUE)
+Ne_gone_400K <- read.table("Output_Ne_gone_rep4", header = TRUE)
+Ne_gone_500K <- read.table("Output_Ne_gone_rep5", header = TRUE)
+Ne_gone_600K <- read.table("Output_Ne_gone_rep6", header = TRUE)
+Ne_gone_700K <- read.table("Output_Ne_gone_rep7", header = TRUE)
+Ne_gone_800K <- read.table("Output_Ne_gone_rep8", header = TRUE)
+Ne_gone_900K <- read.table("Output_Ne_gone_rep9", header = TRUE)
+Ne_gone_1000K <- read.table("Output_Ne_gone_rep10", header = TRUE)
+```
+
+```{r modify_data}
+#Subset the frist 191 generations
+Ne_gone_2M <- Ne_gone_2M[1:191,2]
+Ne_gone_3M <- Ne_gone_3M[1:191,2]
+Ne_gone_4M <- Ne_gone_4M[1:191,2]
+Ne_gone_5M <- Ne_gone_5M[1:191,2]
+Ne_gone_100K <- Ne_gone_100K[1:191,2]
+Ne_gone_200K <- Ne_gone_200K[1:191,2]
+Ne_gone_300K <- Ne_gone_300K[1:191,2]
+Ne_gone_400K <- Ne_gone_400K[1:191,2]
+Ne_gone_500K <- Ne_gone_500K[1:191,2]
+Ne_gone_600K <- Ne_gone_600K[1:191,2]
+Ne_gone_700K <- Ne_gone_700K[1:191,2]
+Ne_gone_800K <- Ne_gone_800K[1:191,2]
+Ne_gone_900K <- Ne_gone_900K[1:191,2]
+Ne_gone_1000K <- Ne_gone_1000K[1:191,2]
+
+#Bind Dfs 
+Ne_GW <- as.data.frame(cbind(
+  seq(1:191), Ne_gone_2M, Ne_gone_3M, Ne_gone_4M,
+  Ne_gone_5M))
+
+Ne_CHR <- as.data.frame(cbind(
+  seq(1:191), Ne_gone_100K, Ne_gone_200K,
+  Ne_gone_300K, Ne_gone_400K, Ne_gone_500K,
+  Ne_gone_600K, Ne_gone_700K, Ne_gone_800K,
+  Ne_gone_900K, Ne_gone_1000K))
+
+#Renmae Columns
+colnames(Ne_GW) <- c("Generation", "2M", "3M", "4M", "5M")
+
+colnames(Ne_CHR) <- c("Generation", "100K/CHR (2.79M)", "200K/CHR (5.08M)", "300K/CHR (7.18M)", "400K/CHR (9.06M)", "500K/CHR (10.8M)", "600K/CHR (12.4M)", "700K/CHR (13.9M)", "800K/CHR (15.3M)", "900K/CHR (16.3M)", "1000K/CHR (17.3M)")
+
+#Add a "Year" Column
+Ne_GW$Years_Ago <- (Ne_GW$Generation*2)
+Ne_CHR$Years_Ago <- (Ne_CHR$Generation*2)
+
+#Melt df
+Ne_GW_melt <- melt(Ne_GW, id.vars = c("Generation","Years_Ago"), value.name = "Geom_mean_Ne", variable.name = "sites")
+
+Ne_CHR_melt <- melt(Ne_CHR, id.vars = c("Generation","Years_Ago"), value.name = "Geom_mean_Ne", variable.name = "sites")
+```
+
+## Plot Genome Wide Ne Estimates
+
+```{r plot_GW, echo=FALSE}
+#Subsetted Dataset
+ggplot(subset(Ne_GW_melt, Ne_GW_melt$sites!="2M"), aes(x=Years_Ago, y=Geom_mean_Ne, color =sites)) + 
+  geom_line() +
+  scale_color_manual(values=c("#00ff55", "#913bb9", "#4ebbff", "#f722ff"))+
+  scale_x_continuous(breaks=seq(0, 400, 40), sec.axis=
+                       sec_axis(~2006-., name="Year", breaks=seq(1606, 2006, 40)))  +
+  scale_y_continuous(breaks = seq(0, 30000, 3000)) +
+  xlab("Years Ago") +
+  ylab("Geometric Mean Ne") +
+  ggtitle("Genome Wide Estimates") +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(color="black", fill = NA))
+  
+
+#Full Dataset
+ggplot(Ne_GW_melt, aes(x=Years_Ago, y=Geom_mean_Ne, color =sites)) + 
+  geom_line() +
+  scale_color_manual(values=c("#00ff55", "#913bb9", "#4ebbff", "#f722ff"))+
+  scale_x_continuous(breaks=seq(0, 400, 40), sec.axis=
+                       sec_axis(~2006-., name="Year", breaks=seq(1606, 2006, 40)))  +
+  scale_y_continuous(breaks = seq(0, 140000, 10000)) +
+  xlab("Years Ago") +
+  ylab("Geometric Mean Ne") +
+  ggtitle("Genome Wide Estimates") +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(color="black", fill = NA))
+  
+
+
+```
+
+## Plot Per Chromosome Ne Estimates
+
+```{r plot_CHR, echo=FALSE}
+#Full Dataset
+ggplot(Ne_CHR_melt, aes(x=Years_Ago, y=Geom_mean_Ne, color =sites)) + 
+  geom_line() +
+  scale_color_manual(values=c("#ff7777", "#ffb877", "#ffe21c", "#d5ff1c",
+                              "#62ff1c", "#1cffbe", "#1ccdff", "#1c91ff",
+                              "#561cff", "#c31cff"))+
+  scale_x_continuous(breaks=seq(0, 400, 40), sec.axis=
+                       sec_axis(~2006-., name="Year", breaks=seq(1606, 2006, 40)))  +
+  scale_y_continuous(breaks = seq(0, 200000, 10000)) +
+  xlab("Years Ago") +
+  ylab("Geometric Mean Ne") +
+  ggtitle("Per Chromosome Estimates") +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(color="black", fill = NA))
+
+#Subsetted Dataset
+ggplot(subset(Ne_CHR_melt, Ne_CHR_melt$Years_Ago < 10), aes(x=Years_Ago, y=Geom_mean_Ne, color =sites)) + 
+  geom_line() +
+  scale_color_manual(values=c("#ff7777", "#ffb877", "#ffe21c", "#d5ff1c",
+                              "#62ff1c", "#1cffbe", "#1ccdff", "#1c91ff",
+                              "#561cff", "#c31cff"))+
+  scale_x_continuous(breaks=seq(0, 40, 5))  +
+  scale_y_continuous(breaks = seq(0, 40000, 5000)) +
+  xlab("Years Ago") +
+  ylab("Geometric Mean Ne") +
+  ggtitle("Per Chromosome Estimates") +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(color="black", fill = NA))
+
+#Subetted Data
+ggplot(subset(Ne_CHR_melt, Ne_CHR_melt$Years_Ago < 10), aes(x=Years_Ago, y=Geom_mean_Ne, color =sites)) + 
+  geom_line() +
+  scale_color_manual(values=c("#ff7777", "#ffb877", "#ffe21c", "#d5ff1c",
+                              "#62ff1c", "#1cffbe", "#1ccdff", "#1c91ff",
+                              "#561cff", "#c31cff"))+
+  xlab("Years Ago") +
+  ylab("Geometric Mean Ne") +
+  ggtitle("Per Chromosome Estimates") +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(color="black", fill = NA))
+```

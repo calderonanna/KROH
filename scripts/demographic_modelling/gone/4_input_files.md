@@ -38,23 +38,24 @@ sed -i 's/\t/ /g' gone.map
 
 ## Create .ped and .map file (Per Replicate)
 ```bash
+salloc --nodes=1 --ntasks=1 --mem=4GB --time=5:00:00 --account=open  
+
 #Set Variables
 gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
 vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf"
 
 #Create .ped and .map
 cd $gone_folder
-for i in $(seq 3 4); do
-    plink --vcf $vcf_folder/rep${i}/rep${i}_merged_sorted.vcf.gz --recode --allow-extra-chr --chr-set 25 --make-bed --out $gone_folder/gone_rep${i};
+for i in $(seq 1 10); do
+    plink --vcf $vcf_folder/rep${i}/gone_rep${i}.vcf.gz --recode --allow-extra-chr --chr-set 30 --make-bed --out $gone_folder/gone_rep${i};
 done
 
 #Remove any unnessary files
+cd $gone_folder
 rm -rf *.nosex *.log *.fam *.bed *.bim
 
 #Reformat .ped and .map files
-cd $gone_folder
-
-for i in $(seq 3 4); do
+for i in $(seq 1 10); do
     awk '{$2="IND"NR; print}' OFS=" " gone_rep${i}.ped > temp_${i} && mv -f temp_${i} gone_rep${i}.ped
     awk '{$1=1; print}' OFS=" " gone_rep${i}.ped > temp_${i} && mv -f temp_${i} gone_rep${i}.ped
     awk '{print $1,$2="SNP"NR,$3,$4}' gone_rep${i}.map > temp_${i} && mv -f temp_${i} gone_rep${i}.map;

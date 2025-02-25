@@ -24,7 +24,7 @@ mkdir $vcf_folder/200K $vcf_folder/400K $vcf_folder/600K
 
 #Split VCF by CHR and randomly sample sites 
 for i in "${chr_list[@]}"; do
-    bcftools view $vcf_folder/auto_nmiss.vcf.gz -r ${i} -Oz -o $vcf_folder/${i}.vcf.gz; 
+    bcftools view $vcf_folder/auto_nmiss.vcf.gz -r ${i} -Oz -o $vcf_folder/${i}.vcf.gz
     bcftools view -H $vcf_folder/${i}.vcf.gz | shuf -n 200000 | cut -f1,2 > $vcf_folder/200K/${i}_sites.txt
     bcftools view -H $vcf_folder/${i}.vcf.gz | shuf -n 400000 | cut -f1,2 > $vcf_folder/400K/${i}_sites.txt
     bcftools view -H $vcf_folder/${i}.vcf.gz | shuf -n 600000 | cut -f1,2 > $vcf_folder/600K/${i}_sites.txt;

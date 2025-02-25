@@ -3,7 +3,7 @@
 salloc --nodes=1 --ntasks=1 --mem=4GB --time=5:00:00 --account=open
 
 #Set Variables
-vcf="/storage/home/abc6435/SzpiechLab/abc6435/WROH/data/vcf/kirtlandii_filtered_isec_nomono.vcf.gz"
+vcf="/storage/home/abc6435/SzpiechLab/abc6435/WROH/data/vcf/ruticilla_filtered_isec_nomono.vcf.gz"
 vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf"
 gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
 

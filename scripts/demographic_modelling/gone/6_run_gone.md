@@ -23,7 +23,9 @@ for i in $(seq 1 10); do
     bash script_GONE.sh gone_rep${i}
     cd $gone_folder
     mkdir gone_${i}00K
-    mv OUTPUT_gone_rep${i} Output_Ne_gone_rep${i} Output_d2_gone_rep${i} TEMPORARY_FILES/ gone_rep${i}.map gone_rep${i}.ped outfileHWD seedfile timefile gone_${i}00K/; 
+    mv OUTPUT_gone_rep${i} Output_Ne_gone_rep${i} Output_d2_gone_rep${i} TEMPORARY_FILES/ gone_rep${i}.map gone_rep${i}.ped outfileHWD seedfile timefile gone_${i}00K/
+    mv $gone_folder/gone_${i}M/Output_Ne_gone $gone_folder/gone_${i}M/Output_Ne_gone_${i}M
+    sed -i '1d' $gone_folder/gone_${i}M/Output_Ne_gone_${i}M;
 done
 ```
 

@@ -10,7 +10,7 @@ vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf"
 gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
 
 #Randomly sample sites 
-bcftools view -H $vcf_folder/auto_nmiss.vcf.gz | shuf -n 3000000 | cut -f1,2 > $vcf_folder/auto_nmiss_sites.txt
+bcftools view -H $vcf_folder/auto_nmiss.vcf.gz | shuf -n 5000000 | cut -f1,2 > $vcf_folder/auto_nmiss_sites.txt
 
 #Extract sites from vcf file
 bcftools view -T $vcf_folder/auto_nmiss_sites.txt -Oz -o $vcf_folder/auto_nmiss_sites.vcf.gz $vcf_folder/auto_nmiss.vcf.gz

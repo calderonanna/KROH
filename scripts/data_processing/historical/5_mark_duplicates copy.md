@@ -24,7 +24,7 @@ for i in `cat $scripts_folder/hKIWA_IDS.txt`; do
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --mem=20GB
-#SBATCH --time=24:00:00
+#SBATCH --time=1:00:00
 #SBATCH --account=zps5164_sc
 #SBATCH --job-name=mark_duplicates_${i}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
@@ -35,7 +35,7 @@ data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
 picard_tools_folder="/storage/home/abc6435/ToewsLab/bin/picard_tools_2.20.8"
 
 #Run Picard Tools
-java -Xmx20g -jar \$picard_tools_folder/picard.jar MarkDuplicates INPUT=\$data_folder/bam/${i}_sorted.bam OUTPUT=\$data_folder/bam/${i}_marked.bam METRICS_FILE=\$data_folder/bam/${i}_metrics.txt MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000
+java -Xmx20g -jar \$picard_tools_folder/picard.jar MarkDuplicates  INPUT=\$data_folder/bam/${i}_sorted.bam OUTPUT=\$data_folder/bam/${i}_marked.bam METRICS_FILE=\$data_folder/bam/${i}_metrics.txt MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000 VALIDATION_STRINGENCY=LENIENT
 EOT
 done
 

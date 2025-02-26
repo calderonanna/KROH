@@ -122,9 +122,7 @@ gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
 #Make a list of chromosome names
 bcftools query -f '%CHROM\n' "$vcf" | uniq > $vcf_folder/rename_chr.txt
 awk '{print $1,$2="chr"NR}' OFS="\t" $vcf_folder/rename_chr.txt > $vcf_folder/temp && mv -f $vcf_folder/temp $vcf_folder/rename_chr.txt
-sed -i 's/scaffold/""/g' $vcf_folder/rename_chr.txt
-sed -i 's/mito/""/g' $vcf_folder/rename_chr.txt
-sed -i 's/chrz/""/g' $vcf_folder/rename_chr.txt
+cat $vcf_folder/rename_chr.txt | awk '!($1 ~ /scaffold/)' | awk '!($1 ~ /chrz/)'| awk '!($1 ~ /mito/)' > $vcf_folder/temp && mv -f $vcf_folder/temp $vcf_folder/rename_chr.txt
 
 #Extract autosomes
 chr_list=($(cut -f1 $vcf_folder/rename_chr.txt))

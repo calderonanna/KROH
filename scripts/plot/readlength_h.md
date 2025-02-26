@@ -16,7 +16,7 @@ Rscript -e "options(repos = c(CRAN = 'https://cloud.r-project.org')); install.pa
 ## Create R Script
 ```R
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
-nano $scripts_folder/plots/plot_readlengths.R
+nano $scripts_folder/plots/plot_readlengths_h.R
 
 #!/usr/bin/env Rscript
 
@@ -26,8 +26,8 @@ library(ggplot2, lib.loc='/storage/group/zps5164/default/bin/.R')
 library(tidyverse, lib.loc='/storage/group/zps5164/default/bin/.R')
 
 # IMPORT DATA
-ids <- c(183194841, 183195312, 183195332,
-         183194861,183195321, 183195304, 183195326)
+ids <- c(29779, 383194, 383202,
+         383205,507264, 507265, 759877)
 
 base_path <- "/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/seq_stats/"
 
@@ -38,10 +38,10 @@ readlengths <- lapply(ids, function(id) {
 names(readlengths) <- paste0("readlength_", ids)
 
 # PLOT DATA
-RL_183194841 <- ggplot(readlengths$readlength_183194841, aes(x = V1)) +
-  geom_histogram(binwidth = 10, fill = "gray") +
+RL_29779 <- ggplot(readlengths$readlength_29779, aes(x = V1)) +
+  geom_histogram(binwidth = 10, fill = "#008182") +
   xlab("Read Lengths (bp)") +
-  ggtitle(paste("Sample 183194841")) + 
+  ggtitle(paste("Sample 29779")) + 
  theme_minimal() +
   theme(
     panel.background = element_blank(),
@@ -49,10 +49,10 @@ RL_183194841 <- ggplot(readlengths$readlength_183194841, aes(x = V1)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
-RL_183195312 <- ggplot(readlengths$readlength_183195312, aes(x = V1)) +
-  geom_histogram(binwidth = 10, fill = "gray") +
+RL_383194 <- ggplot(readlengths$readlength_383194, aes(x = V1)) +
+  geom_histogram(binwidth = 10, fill = "#008182") +
   xlab("Read Lengths (bp)") +
-  ggtitle(paste("Sample 183195312")) + 
+  ggtitle(paste("Sample 383194")) + 
   theme_minimal() +
   theme(
     panel.background = element_blank(),
@@ -60,10 +60,10 @@ RL_183195312 <- ggplot(readlengths$readlength_183195312, aes(x = V1)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
-RL_183195332 <- ggplot(readlengths$readlength_183195332, aes(x = V1)) +
-  geom_histogram(binwidth = 10, fill = "gray") +
+RL_383202 <- ggplot(readlengths$readlength_383202, aes(x = V1)) +
+  geom_histogram(binwidth = 10, fill = "#008182") +
   xlab("Read Lengths (bp)") +
-  ggtitle(paste("Sample 183195332")) + 
+  ggtitle(paste("Sample 383202")) + 
   theme_minimal() + 
   theme(
     panel.background = element_blank(),
@@ -71,10 +71,10 @@ RL_183195332 <- ggplot(readlengths$readlength_183195332, aes(x = V1)) +
     panel.border = element_rect(color = "black", fill = NA)  
   )
 
-RL_183194861 <- ggplot(readlengths$readlength_183194861, aes(x = V1)) +
-  geom_histogram(binwidth = 10, fill = "gray") +
+RL_383205 <- ggplot(readlengths$readlength_383205, aes(x = V1)) +
+  geom_histogram(binwidth = 10, fill = "#008182") +
   xlab("Read Lengths (bp)") +
-  ggtitle(paste("Sample 183194861")) + 
+  ggtitle(paste("Sample 383205")) + 
   theme_minimal() +
   theme(
     panel.background = element_blank(),
@@ -82,10 +82,10 @@ RL_183194861 <- ggplot(readlengths$readlength_183194861, aes(x = V1)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
-RL_183195321 <- ggplot(readlengths$readlength_183195321, aes(x = V1)) +
-  geom_histogram(binwidth = 10, fill = "gray") +
+RL_507264 <- ggplot(readlengths$readlength_507264, aes(x = V1)) +
+  geom_histogram(binwidth = 10, fill = "#008182") +
   xlab("Read Lengths (bp)") +
-  ggtitle(paste("Sample 183195321")) + 
+  ggtitle(paste("Sample 507264")) + 
   theme_minimal() +
   theme(
     panel.background = element_blank(),
@@ -93,10 +93,10 @@ RL_183195321 <- ggplot(readlengths$readlength_183195321, aes(x = V1)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
-RL_183195304 <- ggplot(readlengths$readlength_183195304, aes(x = V1)) +
-  geom_histogram(binwidth = 10, fill = "gray") +
+RL_507265 <- ggplot(readlengths$readlength_507265, aes(x = V1)) +
+  geom_histogram(binwidth = 10, fill = "#008182") +
   xlab("Read Lengths (bp)") +
-  ggtitle(paste("Sample 183195304")) + 
+  ggtitle(paste("Sample 507265")) + 
   theme_minimal() +
   theme(
     panel.background = element_blank(),
@@ -104,10 +104,10 @@ RL_183195304 <- ggplot(readlengths$readlength_183195304, aes(x = V1)) +
     panel.border = element_rect(color = "black", fill = NA)
   )
 
-RL_183195326 <- ggplot(readlengths$readlength_183195326, aes(x = V1)) +
-  geom_histogram(binwidth = 10, fill = "gray") +
+RL_759877 <- ggplot(readlengths$readlength_759877, aes(x = V1)) +
+  geom_histogram(binwidth = 10, fill = "#008182") +
   xlab("Read Lengths (bp)") +
-  ggtitle(paste("Sample 183195326")) + 
+  ggtitle(paste("Sample 759877")) + 
   theme_minimal() +
   theme(
     panel.background = element_blank(),
@@ -117,36 +117,34 @@ RL_183195326 <- ggplot(readlengths$readlength_183195326, aes(x = V1)) +
 
 # ARRANGE AND SAVE
 RL <- ggarrange(
-        RL_183194841,
-        RL_183194861, 
-        RL_183195304, 
-        RL_183195312, 
-        RL_183195321, 
-        RL_183195326, 
-        RL_183195332, 
+        RL_29779,
+        RL_383194, 
+        RL_383202, 
+        RL_383205, 
+        RL_507264, 
+        RL_507265, 
+        RL_759877, 
         nrow=4,
         ncol=3)
 
-ggsave("/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/readlengths_grid.png", RL, width = 12, height = 8)
+ggsave("/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/readlengths_grid_h.png", RL, width = 12, height = 8)
 ```
 
 ## Run R Script Via Command Line
-Do this if your script doesn't need too many resources
 ```bash
-chmod +x plot_readlengths.R
-./plot_readlengths.R
+chmod +x plot_readlengths_h.R
+./plot_readlengths_h.R
 ```
 
 ## Run R Script as Job
 ```bash
-nano plot_readlengths.bash
+nano plot_readlengths_h.bash
 #!/bin/bash 
 #SBATCH --nodes=1 
 #SBATCH --ntasks=1 
 #SBATCH --mem=50GB 
 #SBATCH --time=3:00:00 
-#SBATCH --account=zps5164_sc 
-#SBATCH --partition=sla-prio 
+#SBATCH --account=open 
 
 #Set Variables
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
@@ -157,9 +155,9 @@ module use /storage/icds/RISE/sw8/modules/r
 module load r/4.2.1-gcc-8.5.0
 
 #Run R script
-R --file=$scripts_folder/plots/plot_readlengths.R
+R --file=$scripts_folder/plots/plot_readlengths_h.R
 ```
 
 ## Download
 ```bash
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/readlengths_grid.png /Users/abc6435/Desktop/KROH/plots
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/readlengths_grid_h.png /Users/abc6435/Desktop/KROH/figures

@@ -18,7 +18,7 @@ Rscript -e "options(repos = c(CRAN = 'https://cloud.r-project.org')); install.pa
 ## Create R Script
 ```R
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
-nano $scripts_folder/plots/plot_depth.R
+nano $scripts_folder/plots/plot_depth_c.R
 
 #!/usr/bin/env Rscript
 
@@ -29,7 +29,7 @@ library(tidyverse, lib.loc='/storage/group/zps5164/default/bin/.R')
 library(dplyr, lib.loc='/storage/group/zps5164/default/bin/.R')
 
 # SET VARIABLES AND IMPORT DATA
-setwd("/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/coverage/")
+setwd("/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/seq_stats")
 ids <- c(183194841, 183195312, 183195332,
          183194861,183195321, 183195304, 183195326)
 
@@ -51,11 +51,12 @@ chr_order <- c("chr1","chr1a","chr2","chr3","chr4","chr4a","chr5","chr6","chr7",
 
 avg_depth_183194841$CHR <- factor(avg_depth_183194841$CHR, levels = chr_order)
 DP_183194841 <-  ggplot(avg_depth_183194841, aes(x = CHR, y = DEPTH)) +
-  geom_bar(stat = "identity", fill = "gray") +
+  geom_bar(stat = "identity", fill = "#FFC464") +
   labs(x = "",
        y = "Average Depth") +
+  ggtitle(paste("Sample 183194841")) + 
  theme_minimal() +
-  theme(
+theme(
     axis.text = element_text(size=10),
     axis.text.x = element_text(angle = 90),
     panel.background = element_blank(),
@@ -66,11 +67,12 @@ DP_183194841 <-  ggplot(avg_depth_183194841, aes(x = CHR, y = DEPTH)) +
 
 avg_depth_183195332$CHR <- factor(avg_depth_183195332$CHR, levels = chr_order)
 DP_183195332 <-  ggplot(avg_depth_183195332, aes(x = CHR, y = DEPTH)) +
-  geom_bar(stat = "identity", fill = "gray") +
+  geom_bar(stat = "identity", fill = "#FFC464") +
   labs(x = "",
        y = "Average Depth") +
+  ggtitle(paste("Sample 183195332")) + 
  theme_minimal() +
-  theme(
+theme(
     axis.text = element_text(size=10),
     axis.text.x = element_text(angle = 90),
     panel.background = element_blank(),
@@ -81,11 +83,12 @@ DP_183195332 <-  ggplot(avg_depth_183195332, aes(x = CHR, y = DEPTH)) +
 
 avg_depth_183194861$CHR <- factor(avg_depth_183194861$CHR, levels = chr_order)
 DP_183194861 <-  ggplot(avg_depth_183194861, aes(x = CHR, y = DEPTH)) +
-  geom_bar(stat = "identity", fill = "gray") +
+  geom_bar(stat = "identity", fill = "#FFC464") +
   labs(x = "",
        y = "Average Depth") +
+  ggtitle(paste("Sample 183194861")) + 
  theme_minimal() +
-  theme(
+theme(
     axis.text = element_text(size=10),
     axis.text.x = element_text(angle = 90),
     panel.background = element_blank(),
@@ -96,11 +99,12 @@ DP_183194861 <-  ggplot(avg_depth_183194861, aes(x = CHR, y = DEPTH)) +
 
 avg_depth_183195321$CHR <- factor(avg_depth_183195321$CHR, levels = chr_order)
 DP_183195321 <-  ggplot(avg_depth_183195321, aes(x = CHR, y = DEPTH)) +
-  geom_bar(stat = "identity", fill = "gray") +
+  geom_bar(stat = "identity", fill = "#FFC464") +
   labs(x = "",
        y = "Average Depth") +
+  ggtitle(paste("Sample 183195321")) + 
  theme_minimal() +
-  theme(
+theme(
     axis.text = element_text(size=10),
     axis.text.x = element_text(angle = 90),
     panel.background = element_blank(),
@@ -111,11 +115,12 @@ DP_183195321 <-  ggplot(avg_depth_183195321, aes(x = CHR, y = DEPTH)) +
 
 avg_depth_183195304$CHR <- factor(avg_depth_183195304$CHR, levels = chr_order)
 DP_183195304 <-  ggplot(avg_depth_183195304, aes(x = CHR, y = DEPTH)) +
-  geom_bar(stat = "identity", fill = "gray") +
+  geom_bar(stat = "identity", fill = "#FFC464") +
   labs(x = "",
        y = "Average Depth") +
+  ggtitle(paste("Sample 183195304")) + 
  theme_minimal() +
-  theme(
+theme(
     axis.text = element_text(size=10),
     axis.text.x = element_text(angle = 90),
     panel.background = element_blank(),
@@ -126,11 +131,12 @@ DP_183195304 <-  ggplot(avg_depth_183195304, aes(x = CHR, y = DEPTH)) +
 
 avg_depth_183195326$CHR <- factor(avg_depth_183195326$CHR, levels = chr_order)
 DP_183195326 <-  ggplot(avg_depth_183195326, aes(x = CHR, y = DEPTH)) +
-  geom_bar(stat = "identity", fill = "gray") +
+  geom_bar(stat = "identity", fill = "#FFC464") +
   labs(x = "",
        y = "Average Depth") +
+  ggtitle(paste("Sample 183195326")) + 
  theme_minimal() +
-  theme(
+theme(
     axis.text = element_text(size=10),
     axis.text.x = element_text(angle = 90),
     panel.background = element_blank(),
@@ -141,11 +147,12 @@ DP_183195326 <-  ggplot(avg_depth_183195326, aes(x = CHR, y = DEPTH)) +
 
 avg_depth_183195312$CHR <- factor(avg_depth_183195312$CHR, levels = chr_order)
 DP_183195312 <-  ggplot(avg_depth_183195312, aes(x = CHR, y = DEPTH)) +
-  geom_bar(stat = "identity", fill = "gray") +
+  geom_bar(stat = "identity", fill = "#FFC464") +
   labs(x = "",
        y = "Average Depth") +
+  ggtitle(paste("Sample 183195312")) + 
  theme_minimal() +
-  theme(
+theme(
     axis.text = element_text(size=10),
     axis.text.x = element_text(angle = 90),
     panel.background = element_blank(),
@@ -166,12 +173,12 @@ DP <- ggarrange(
         nrow=4,
         ncol=3)
 
-ggsave("/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/depth_grid.png", DP, width = 15, height = 8, dpi=300)
+ggsave("/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/depth_grid_c.png", DP, width = 15, height = 8, dpi=300)
 ```
 
 ## Run R Script as Job
 ```bash
-nano plot_depth.bash
+nano plot_depth_c.bash
 #!/bin/bash 
 #SBATCH --nodes=1 
 #SBATCH --ntasks=1 
@@ -189,10 +196,10 @@ module use /storage/icds/RISE/sw8/modules/r
 module load r/4.2.1-gcc-8.5.0
 
 #Run R script
-R --file=$scripts_folder/plots/plot_depth.R
+R --file=$scripts_folder/plots/plot_depth_c.R
 ```
 
 ## Download
 ```bash
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/depth_grid.png /Users/abc6435/Desktop/KROH/figures
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/depth_grid_c.png /Users/abc6435/Desktop/KROH/figures
 ```

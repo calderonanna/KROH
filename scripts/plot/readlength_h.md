@@ -39,7 +39,7 @@ names(readlengths) <- paste0("readlength_", ids)
 
 # PLOT DATA
 RL_29779 <- ggplot(readlengths$readlength_29779, aes(x = V1)) +
-  geom_histogram(binwidth = 10, fill = "#008182") +
+  geom_histogram(binwidth = 10, fill = "#AF2C8B") +
   xlab("Read Lengths (bp)") +
   ggtitle(paste("Sample 29779")) + 
  theme_minimal() +
@@ -50,7 +50,7 @@ RL_29779 <- ggplot(readlengths$readlength_29779, aes(x = V1)) +
   )
 
 RL_383194 <- ggplot(readlengths$readlength_383194, aes(x = V1)) +
-  geom_histogram(binwidth = 10, fill = "#008182") +
+  geom_histogram(binwidth = 10, fill = "#AF2C8B") +
   xlab("Read Lengths (bp)") +
   ggtitle(paste("Sample 383194")) + 
   theme_minimal() +
@@ -61,7 +61,7 @@ RL_383194 <- ggplot(readlengths$readlength_383194, aes(x = V1)) +
   )
 
 RL_383202 <- ggplot(readlengths$readlength_383202, aes(x = V1)) +
-  geom_histogram(binwidth = 10, fill = "#008182") +
+  geom_histogram(binwidth = 10, fill = "#AF2C8B") +
   xlab("Read Lengths (bp)") +
   ggtitle(paste("Sample 383202")) + 
   theme_minimal() + 
@@ -72,7 +72,7 @@ RL_383202 <- ggplot(readlengths$readlength_383202, aes(x = V1)) +
   )
 
 RL_383205 <- ggplot(readlengths$readlength_383205, aes(x = V1)) +
-  geom_histogram(binwidth = 10, fill = "#008182") +
+  geom_histogram(binwidth = 10, fill = "#AF2C8B") +
   xlab("Read Lengths (bp)") +
   ggtitle(paste("Sample 383205")) + 
   theme_minimal() +
@@ -83,7 +83,7 @@ RL_383205 <- ggplot(readlengths$readlength_383205, aes(x = V1)) +
   )
 
 RL_507264 <- ggplot(readlengths$readlength_507264, aes(x = V1)) +
-  geom_histogram(binwidth = 10, fill = "#008182") +
+  geom_histogram(binwidth = 10, fill = "#AF2C8B") +
   xlab("Read Lengths (bp)") +
   ggtitle(paste("Sample 507264")) + 
   theme_minimal() +
@@ -94,7 +94,7 @@ RL_507264 <- ggplot(readlengths$readlength_507264, aes(x = V1)) +
   )
 
 RL_507265 <- ggplot(readlengths$readlength_507265, aes(x = V1)) +
-  geom_histogram(binwidth = 10, fill = "#008182") +
+  geom_histogram(binwidth = 10, fill = "#AF2C8B") +
   xlab("Read Lengths (bp)") +
   ggtitle(paste("Sample 507265")) + 
   theme_minimal() +
@@ -105,7 +105,7 @@ RL_507265 <- ggplot(readlengths$readlength_507265, aes(x = V1)) +
   )
 
 RL_759877 <- ggplot(readlengths$readlength_759877, aes(x = V1)) +
-  geom_histogram(binwidth = 10, fill = "#008182") +
+  geom_histogram(binwidth = 10, fill = "#AF2C8B") +
   xlab("Read Lengths (bp)") +
   ggtitle(paste("Sample 759877")) + 
   theme_minimal() +

@@ -19,7 +19,7 @@ for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=20GB
+#SBATCH --mem=100GB
 #SBATCH --time=12:00:00
 #SBATCH --account=open
 #SBATCH --job-name=hofi_alignments_${i}
@@ -49,7 +49,7 @@ vcf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf_kirt/kirtlandii
 #samtools sort \$work_dir/${i}.bam -T \$work_dir/${i}_temp.bam -o \$work_dir/${i}_sorted.bam
 
 #Mark Duplicates
-java -Xmx20g -jar \$picard_tools_folder/picard.jar MarkDuplicates INPUT=\$work_dir/${i}_sorted.bam OUTPUT=\$work_dir/${i}_marked.bam METRICS_FILE=\$work_dir/${i}_metrics.txt MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000
+java -Xmx100g -jar \$picard_tools_folder/picard.jar MarkDuplicates INPUT=\$work_dir/${i}_sorted.bam OUTPUT=\$work_dir/${i}_marked.bam METRICS_FILE=\$work_dir/${i}_metrics.txt MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000
 
 #Index BAM Files
 samtools index \$work_dir/${i}_marked.bam \$work_dir/${i}_marked.bai
@@ -68,7 +68,7 @@ nano $scripts_folder/call_variants_gone.bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=4
-#SBATCH --mem=10GB
+#SBATCH --mem=20GB
 #SBATCH --time=11:00:00
 #SBATCH --account=open
 #SBATCH --job-name=call_variants_gone
@@ -76,29 +76,24 @@ nano $scripts_folder/call_variants_gone.bash
 #SBATCH --output=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
 
 #Set Variables
-hofi_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/hofi_ref"
+ref="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/hofi_ref/hofigenome.fna"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf_kirt"
 vcf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf_kirt/kirtlandii"
+bam_list="183194841_marked.bam 183194861_marked.bam 183195304_marked.bam 183195312_marked.bam 183195321_marked.bam 183195326_marked.bam 183195332_marked.bam"
 
 #Call Variants
-samtools mpileup -f \$hofi_folder/hofigenome.fna \$work_dir/*_marked.bam  | bcftools call -mv -Oz -o \$work_dir/kirtlandii.vcf.gz
+samtools mpileup -f $ref $bam_list > $work_dir/kirtlandii.mpileup
+bcftools call -mv --ploidy 2 -Oz -o $work_dir/kirtlandii.vcf.gz $work_dir/kirtlandii.mpileup
 
 #Filter Variants
-bcftools view -m2 -M2 -v snps \$vcf.vcf.gz -Oz -o \$vcf.biallelic.vcf.gz
-
-bcftools view -i 'QUAL>=50' \$vcf.biallelic.vcf.gz -Oz -o \$vcf.biallelic.qual.vcf.gz
-
-bcftools view -e 'SUM(FMT/DP)<95 | SUM(FMT/DP)>185' \$vcf.biallelic.qual.vcf.gz -Oz -o \$vcf.biallelic.qual.dpsites.vcf.gz
-
-bcftools filter \$vcf.biallelic.qual.dpsites.vcf.gz -e 'FMT/DP<6' -S . -Oz -o \$vcf.biallelic.qual.dpsites.dpgt.vcf.gz
-
-bcftools filter \$vcf.biallelic.qual.dpsites.dpgt.vcf.gz -e 'FMT/GQ<20' -S . -Oz -o \$vcf.biallelic.qual.dpsites.dpgt.gq.vcf.gz
-
-bcftools view -e 'GT="./."' \$vcf.biallelic.qual.dpsites.dpgt.gq.vcf.gz -Oz -o \$vcf.biallelic.qual.dpsites.dpgt.gq.nmiss.vcf.gz
-
-bcftools view -e 'COUNT(GT="het")>=6' \$vcf.biallelic.qual.dpsites.dpgt.gq.nmiss.vcf.gz -Oz -o \$vcf.biallelic.qual.dpsites.dpgt.gq.nmiss.exhet.vcf.gz
-
-bcftools index \$vcf.biallelic.qual.dpsites.dpgt.gq.nmiss.exhet.vcf.gz
+bcftools view -m2 -M2 -v snps $vcf.vcf.gz -Oz -o $vcf.biallelic.vcf.gz
+bcftools view -i 'QUAL>=50' $vcf.biallelic.vcf.gz -Oz -o $vcf.biallelic.qual.vcf.gz
+bcftools view -e 'SUM(FMT/DP)<95 | SUM(FMT/DP)>185' $vcf.biallelic.qual.vcf.gz -Oz -o $vcf.biallelic.qual.dpsites.vcf.gz
+bcftools filter $vcf.biallelic.qual.dpsites.vcf.gz -e 'FMT/DP<6' -S . -Oz -o $vcf.biallelic.qual.dpsites.dpgt.vcf.gz
+bcftools filter $vcf.biallelic.qual.dpsites.dpgt.vcf.gz -e 'FMT/GQ<20' -S . -Oz -o $vcf.biallelic.qual.dpsites.dpgt.gq.vcf.gz
+bcftools view -e 'GT="./."' $vcf.biallelic.qual.dpsites.dpgt.gq.vcf.gz -Oz -o $vcf.biallelic.qual.dpsites.dpgt.gq.nmiss.vcf.gz
+bcftools view -e 'COUNT(GT="het")>=6' $vcf.biallelic.qual.dpsites.dpgt.gq.nmiss.vcf.gz -Oz -o \$vcf.biallelic.qual.dpsites.dpgt.gq.nmiss.exhet.vcf.gz
+bcftools index $vcf.biallelic.qual.dpsites.dpgt.gq.nmiss.exhet.vcf.gz
 ```
 
 ## Clean VCF 

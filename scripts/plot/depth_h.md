@@ -52,7 +52,7 @@ chr_order <- c("chr1","chr1a","chr2","chr3","chr4","chr4a","chr5","chr6","chr7",
 
 avg_depth_29779$CHR <- factor(avg_depth_29779$CHR, levels = chr_order)
 DP_29779 <-  ggplot(avg_depth_29779, aes(x = CHR, y = DEPTH)) +
-  geom_bar(stat = "identity", fill = "#008182") +
+  geom_bar(stat = "identity", fill = "#AF2C8B") +
   labs(x = "",
        y = "Average Depth") +
  ggtitle(paste("Sample 29779")) + 
@@ -68,7 +68,7 @@ DP_29779 <-  ggplot(avg_depth_29779, aes(x = CHR, y = DEPTH)) +
 
 avg_depth_383194$CHR <- factor(avg_depth_383194$CHR, levels = chr_order)
 DP_383194 <-  ggplot(avg_depth_383194, aes(x = CHR, y = DEPTH)) +
-  geom_bar(stat = "identity", fill = "#008182") +
+  geom_bar(stat = "identity", fill = "#AF2C8B") +
   labs(x = "",
        y = "Average Depth") +
  ggtitle(paste("Sample 383194")) + 
@@ -84,7 +84,7 @@ DP_383194 <-  ggplot(avg_depth_383194, aes(x = CHR, y = DEPTH)) +
 
 avg_depth_383202$CHR <- factor(avg_depth_383202$CHR, levels = chr_order)
 DP_383202 <-  ggplot(avg_depth_383202, aes(x = CHR, y = DEPTH)) +
-  geom_bar(stat = "identity", fill = "#008182") +
+  geom_bar(stat = "identity", fill = "#AF2C8B") +
   labs(x = "",
        y = "Average Depth") +
  ggtitle(paste("Sample 383202")) + 
@@ -100,7 +100,7 @@ DP_383202 <-  ggplot(avg_depth_383202, aes(x = CHR, y = DEPTH)) +
 
 avg_depth_383205$CHR <- factor(avg_depth_383205$CHR, levels = chr_order)
 DP_383205 <-  ggplot(avg_depth_383205, aes(x = CHR, y = DEPTH)) +
-  geom_bar(stat = "identity", fill = "#008182") +
+  geom_bar(stat = "identity", fill = "#AF2C8B") +
   labs(x = "",
        y = "Average Depth") +
  ggtitle(paste("Sample 383205")) + 
@@ -116,7 +116,7 @@ DP_383205 <-  ggplot(avg_depth_383205, aes(x = CHR, y = DEPTH)) +
 
 avg_depth_507264$CHR <- factor(avg_depth_507264$CHR, levels = chr_order)
 DP_507264 <-  ggplot(avg_depth_507264, aes(x = CHR, y = DEPTH)) +
-  geom_bar(stat = "identity", fill = "#008182") +
+  geom_bar(stat = "identity", fill = "#AF2C8B") +
   labs(x = "",
        y = "Average Depth") +
  ggtitle(paste("Sample 507264")) + 
@@ -132,7 +132,7 @@ DP_507264 <-  ggplot(avg_depth_507264, aes(x = CHR, y = DEPTH)) +
 
 avg_depth_507265$CHR <- factor(avg_depth_507265$CHR, levels = chr_order)
 DP_507265 <-  ggplot(avg_depth_507265, aes(x = CHR, y = DEPTH)) +
-  geom_bar(stat = "identity", fill = "#008182") +
+  geom_bar(stat = "identity", fill = "#AF2C8B") +
   labs(x = "",
        y = "Average Depth") +
  ggtitle(paste("Sample 507265")) + 
@@ -148,7 +148,7 @@ DP_507265 <-  ggplot(avg_depth_507265, aes(x = CHR, y = DEPTH)) +
 
 avg_depth_759877$CHR <- factor(avg_depth_759877$CHR, levels = chr_order)
 DP_759877 <-  ggplot(avg_depth_759877, aes(x = CHR, y = DEPTH)) +
-  geom_bar(stat = "identity", fill = "#008182") +
+  geom_bar(stat = "identity", fill = "#AF2C8B") +
   labs(x = "",
        y = "Average Depth") +
  ggtitle(paste("Sample 759877")) + 

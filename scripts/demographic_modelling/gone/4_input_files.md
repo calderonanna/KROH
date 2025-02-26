@@ -12,52 +12,39 @@ rate to keep constant.
 1 IND2 0 0 0 -9 A C G...
 1 IND3 0 0 0 -9 A A G...
 
-## Create .ped and .map (Genome Wide)
+## Create .ped and .map 
 ```bash
-plink --vcf $vcf_folder/gone.vcf.gz --recode --allow-extra-chr --chr-set 30 --make-bed --out $gone_folder/gone
+#Set Variables 
+scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+nano $scripts_folder/map_ped.bash
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem=5GB
+#SBATCH --time=10:00:00
+#SBATCH --account=open
+
+#Set Variables
+vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf_rut"
+gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
+
+plink --vcf $vcf_folder/auto.100K.vcf.gz  --recode --allow-extra-chr --chr-set 30 --make-bed --out $gone_folder/100K
+
+plink --vcf $vcf_folder/auto.8M.vcf.gz  --recode --allow-extra-chr --chr-set 30 --make-bed --out $gone_folder/8M
 
 #Remove any unnessary files
+cd $gone_folder
 rm -rf *.nosex *.log *.fam *.bed *.bim
 
 #Reformat .ped and .map
-awk '{$2="IND"NR; print}' OFS=" " gone.ped > temp && mv -f temp gone.ped
-awk '{$1=1; print}' OFS=" " gone.ped > temp && mv -f temp gone.ped
-awk '{print $1,$2="SNP"NR,$3,$4}' gone.map > temp && mv -f temp gone.map
-
-#Obtain snps per chrom
-sed -i 's/ /\t/g' gone.map
-
-for i in $(seq 1 30); do
-    echo "chr"${i}
-    cut -f1 gone.map | grep ${i} | wc -l;
-done
-
-sed -i 's/\t/ /g' gone.map
-
-```
-
-## Create .ped and .map file (Per Replicate)
-```bash
-salloc --nodes=1 --ntasks=1 --mem=4GB --time=5:00:00 --account=open  
-
-#Set Variables
-gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
-vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf"
-
-#Create .ped and .map
 cd $gone_folder
-for i in $(seq 1 10); do
-    plink --vcf $vcf_folder/rep${i}/gone_rep${i}.vcf.gz --recode --allow-extra-chr --chr-set 30 --make-bed --out $gone_folder/gone_rep${i};
-done
+awk '{$2="IND"NR; print}' OFS=" " 100K.ped > temp && mv -f temp 100K.ped
+awk '{$1=1; print}' OFS=" " 100K.ped > temp && mv -f temp 100K.ped
+awk '{print $1,$2="SNP"NR,$3,$4}' 100K.map > temp && mv -f temp 100K.map 
 
-#Remove any unnessary files
-cd $gone_folder
-rm -rf *.nosex *.log *.fam *.bed *.bim
+awk '{$2="IND"NR; print}' OFS=" " 8M.ped > temp && mv -f temp 8M.ped
+awk '{$1=1; print}' OFS=" " 8M.ped > temp && mv -f temp 8M.ped
+awk '{print $1,$2="SNP"NR,$3,$4}' 8M.map > temp && mv -f temp 8M.map 
 
-#Reformat .ped and .map files
-for i in $(seq 1 10); do
-    awk '{$2="IND"NR; print}' OFS=" " gone_rep${i}.ped > temp_${i} && mv -f temp_${i} gone_rep${i}.ped
-    awk '{$1=1; print}' OFS=" " gone_rep${i}.ped > temp_${i} && mv -f temp_${i} gone_rep${i}.ped
-    awk '{print $1,$2="SNP"NR,$3,$4}' gone_rep${i}.map > temp_${i} && mv -f temp_${i} gone_rep${i}.map;
-done
+#Merge .map files with HOSP.map
 ```

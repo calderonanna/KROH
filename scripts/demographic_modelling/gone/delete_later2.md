@@ -6,7 +6,7 @@ GONE does not need all sites in a vcf to run (it actually might crash the progra
 #Set Variables 
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
-nano $scripts_folder/sample_vcf_kirt.bash
+nano $scripts_folder/sample_vcf_rut.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -15,7 +15,7 @@ nano $scripts_folder/sample_vcf_kirt.bash
 #SBATCH --account=open
 
 #Set Variables
-vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf_kirt"
+vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf_rut"
 gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
 chr_list=($(cut -f1 $vcf_folder/rename_chr.txt))
 
@@ -34,8 +34,7 @@ done
 for i in "${chr_list[@]}"; do
     bcftools view -T $vcf_folder/200K/${i}_sites.txt -Oz -o $vcf_folder/200K/${i}_sites.vcf.gz $vcf_folder/${i}.vcf.gz
     bcftools index $vcf_folder/200K/${i}_sites.vcf.gz
-    bcftools view -T $vcf_folder/400K/${i}_sites.txt -Oz -o $vcf_folder/
-    400K/${i}_sites.vcf.gz $vcf_folder/${i}.vcf.gz
+    bcftools view -T $vcf_folder/400K/${i}_sites.txt -Oz -o $vcf_folder/400K/${i}_sites.vcf.gz $vcf_folder/${i}.vcf.gz
     bcftools index $vcf_folder/400K/${i}_sites.vcf.gz
     bcftools view -T $vcf_folder/600K/${i}_sites.txt -Oz -o $vcf_folder/600K/${i}_sites.vcf.gz $vcf_folder/${i}.vcf.gz
     bcftools index $vcf_folder/600K/${i}_sites.vcf.gz

@@ -1,33 +1,31 @@
 # Run GONE
 
-## Create bash script
 ```bash
 #Set Variables 
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
-nano $scripts_folder/run_gone.sh
+nano $scripts_folder/run_gone_kirt.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --mem=4GB
+#SBATCH --mem=10GB
 #SBATCH --time=5:00:00
-#SBATCH --account=zps5164_cr_default
+#SBATCH --account=open
 #SBATCH --partition=basic
 
-#Set Variables
+#Setup
 gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
+sites="8M"
+cd $gone_folder
+mkdir $gone_folder/results
 
 #Run GONE
-for i in $(seq 1 10); do
-    cd $gone_folder
-    bash script_GONE.sh gone_rep${i}
-    cd $gone_folder
-    mkdir gone_${i}00K
-    mv OUTPUT_gone_rep${i} Output_Ne_gone_rep${i} Output_d2_gone_rep${i} TEMPORARY_FILES/ gone_rep${i}.map gone_rep${i}.ped outfileHWD seedfile timefile gone_${i}00K/
-    mv $gone_folder/gone_${i}M/Output_Ne_gone $gone_folder/gone_${i}M/Output_Ne_gone_${i}M
-    sed -i '1d' $gone_folder/gone_${i}M/Output_Ne_gone_${i}M;
-done
+bash script_GONE.sh $sites
+sed -i '1d' Output_Ne_$sites
+mv TEMPORARY_FILES/ TEMPORARY_FILES_$sites/
+mv seedfile seedfile_$sites
+mv timefile timefile_$sites
+mv outfileHWD outfileHWD_$sites
+
+mv OUTPUT_$sites Output_Ne_$sites Output_d2_$sites TEMPORARY_FILES_$sites/ $sites.map $sites.ped outfileHWD_$sites seedfile_$sites timefile_$sites $gone_folder/results
 ```
-
-
-

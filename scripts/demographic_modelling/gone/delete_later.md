@@ -1,4 +1,4 @@
-# Clean VCF 
+## Clean VCF 
 ```bash
 #Set Variables 
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
@@ -13,7 +13,7 @@ nano $scripts_folder/gone_vcf_kirt.bash
 #SBATCH --partition=basic
 
 #Set Variables
-vcf="/storage/home/abc6435/SzpiechLab/abc6435/WROH/data/vcf/kirtlandii_filtered_isec_nomono.vcf.gz"
+vcf=""
 vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf_kirt"
 gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
 

@@ -35,18 +35,18 @@ work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf_kirt"
 vcf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf_kirt/kirtlandii"
 
 #Run BWA 
-#bwa mem -R "@RG\tID:${i}\tSM:${i}" -M -t 4 \\
-#\$hofi_folder/hofigenome \\
-#\$data_folder/trim/${i}_R1_trimmed.fastq.gz \\
-#\$data_folder/trim/${i}_R2_trimmed.fastq.gz > \\
-#\$work_dir/${i}.sam 2> \\
-#\$err_folder/${i}_bwa_hofi.err
+bwa mem -R "@RG\tID:${i}\tSM:${i}" -M -t 4 \\
+\$hofi_folder/hofigenome \\
+\$data_folder/trim/${i}_R1_trimmed.fastq.gz \\
+\$data_folder/trim/${i}_R2_trimmed.fastq.gz > \\
+\$work_dir/${i}.sam 2> \\
+\$err_folder/${i}_bwa_hofi.err
 
 #Convert sam to bam
-#samtools view -S -b \$work_dir/${i}.sam > \$work_dir/${i}.bam
+samtools view -S -b \$work_dir/${i}.sam > \$work_dir/${i}.bam
 
 #sort
-#samtools sort \$work_dir/${i}.bam -T \$work_dir/${i}_temp.bam -o \$work_dir/${i}_sorted.bam
+samtools sort \$work_dir/${i}.bam -T \$work_dir/${i}_temp.bam -o \$work_dir/${i}_sorted.bam
 
 #Mark Duplicates
 java -Xmx100g -jar \$picard_tools_folder/picard.jar MarkDuplicates INPUT=\$work_dir/${i}_sorted.bam OUTPUT=\$work_dir/${i}_marked.bam METRICS_FILE=\$work_dir/${i}_metrics.txt MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000
@@ -67,25 +67,23 @@ nano $scripts_folder/call_variants_gone.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
 #SBATCH --mem=20GB
-#SBATCH --time=11:00:00
-#SBATCH --account=open
+#SBATCH --time=48:00:00
+#SBATCH --account=zps5164_sc
 #SBATCH --job-name=call_variants_gone
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
-#SBATCH --output=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
+
 
 #Set Variables
 ref="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/hofi_ref/hofigenome.fna"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf_kirt"
-vcf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf_kirt/kirtlandii"
-bam_list="183194841_marked.bam 183194861_marked.bam 183195304_marked.bam 183195312_marked.bam 183195321_marked.bam 183195326_marked.bam 183195332_marked.bam"
 
 #Call Variants
-samtools mpileup -f $ref $bam_list > $work_dir/kirtlandii.mpileup
-bcftools call -mv --ploidy 2 -Oz -o $work_dir/kirtlandii.vcf.gz $work_dir/kirtlandii.mpileup
+bcftools mpileup -f $ref -b $work_dir/bam_list.txt | bcftools call -mv --ploidy 2 -Oz -o $work_dir/KIWA_gone.vcf.gz
+```
 
-#Filter Variants
+## Filter Variants
+```bash
 bcftools view -m2 -M2 -v snps $vcf.vcf.gz -Oz -o $vcf.biallelic.vcf.gz
 bcftools view -i 'QUAL>=50' $vcf.biallelic.vcf.gz -Oz -o $vcf.biallelic.qual.vcf.gz
 bcftools view -e 'SUM(FMT/DP)<95 | SUM(FMT/DP)>185' $vcf.biallelic.qual.vcf.gz -Oz -o $vcf.biallelic.qual.dpsites.vcf.gz

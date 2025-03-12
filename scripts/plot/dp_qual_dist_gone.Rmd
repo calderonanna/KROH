@@ -1,0 +1,33 @@
+---
+title: "seq_dist_gone"
+author: "Anna Maria Calderon"
+date: "2025-03-03"
+output: html_document
+---
+# Obtain Depth Distribution
+```{bash}
+work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf_kirt"
+bcftools query -f '%DP\n' $work_dir/KIWA_gone.vcf.gz | sort -n | uniq -c > $work_dir/depth_dist_gone.txt
+rsync abc6435@submit.hpc.psu.edu:$work_dir/dp_dist_gone.txt /Users/abc6435/Desktop/KROH/data/gone
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+```
+
+# Import Data
+
+```{r import_data}
+setwd("/Users/abc6435/Desktop/KROH/data/gone")
+dp <- read.table("depth_dist_gone.txt", header = FALSE,
+                 col.names = c("count", "DP"))
+```
+
+# Calculate Percentiles
+```{r calculate percentiles, echo=FALSE}
+expand_dp <- dp %>% uncount(count)
+quantile(expand_dp$DP, probs = c(0.05, 0.95))
+```

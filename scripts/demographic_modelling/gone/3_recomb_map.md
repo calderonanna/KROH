@@ -1,4 +1,4 @@
-# Obtain a Recombination Map
+# Recombination Map
 In the issues page, Armando stresses the importance of a good recombination map. I obtained a recombination map from Hagen et al. 2019. (https://datadryad.org/dataset/doi:10.5061/dryad.00000000n)
 
 ## Download the recombination map from the dryad db

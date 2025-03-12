@@ -1,4 +1,4 @@
-# Obtain VCF File
+# Prepare VCF 
 ## Alignments
 HOSP REF: PRJNA255814
 ```bash
@@ -95,7 +95,6 @@ bcftools index $work_dir/KIWA_gone_bi_qual_dp_nmiss_exhet_poly.vcf.gz
 ```
 
 ## Split VCF by CHR
-![alt text](../../../diagrams/hosp_chr_names.png)
 ```bash
 salloc --nodes 1 --ntasks 1 --mem=100G --time=8:00:00 
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/vcf_kirt"

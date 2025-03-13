@@ -24,14 +24,19 @@ done
 ## Import Data
 
 ```{r import_data, include=FALSE}
-setwd("/Users/abc6435/Desktop/KROH/data/gone")
+setwd("/Users/annamariacalderon/Desktop/KROH/data/gone")
 
-kirt_200K <- read.table("Output_Ne_kirt_200K", header = TRUE)
-kirt_400K <- read.table("Output_Ne_kirt_400K", header = TRUE)
-kirt_600K <- read.table("Output_Ne_kirt_600K", header = TRUE)
-kirt_4M <- read.table("Output_Ne_kirt_4M", header = TRUE)
-kirt_6M <- read.table("Output_Ne_kirt_6M", header = TRUE)
-kirt_8M <- read.table("Output_Ne_kirt_8M", header = TRUE)
+R0 <- read.table("Output_Ne_R0", header = TRUE)
+R1 <- read.table("Output_Ne_R1", header = TRUE)
+R2 <- read.table("Output_Ne_R2", header = TRUE)
+R3 <- read.table("Output_Ne_R3", header = TRUE)
+R4 <- read.table("Output_Ne_R4", header = TRUE)
+R5 <- read.table("Output_Ne_R5", header = TRUE)
+R6 <- read.table("Output_Ne_R6", header = TRUE)
+R7 <- read.table("Output_Ne_R7", header = TRUE)
+R8 <- read.table("Output_Ne_R8", header = TRUE)
+R9 <- read.table("Output_Ne_R9", header = TRUE)
+R10 <- read.table("Output_Ne_R10", header = TRUE)
 
 ```
 
@@ -39,35 +44,64 @@ kirt_8M <- read.table("Output_Ne_kirt_8M", header = TRUE)
 
 ```{r modify_data}
 #Subset the frist 120 generations and bind datasets
-Ne_kirt <- as.data.frame(cbind(
-                         kirt_200K[5:120,1],
-                         kirt_200K[5:120,2],
-                         kirt_400K[5:120,2],
-                         kirt_600K[5:120,2],
-                         kirt_4M[5:120,2],
-                         kirt_6M[5:120,2],
-                         kirt_8M[5:120,2]))
+Ne <- as.data.frame(cbind(
+                         R0[1:120,],
+                         R1[1:120,2],
+                         R2[1:120,2],
+                         R3[1:120,2],
+                         R4[1:120,2],
+                         R5[1:120,2],
+                         R6[1:120,2],
+                         R7[1:120,2],
+                         R8[1:120,2],
+                         R9[1:120,2],
+                         R10[1:120,2]))
 
 #Renmae Columns
-colnames(Ne_kirt) <- c("Generation", "200K", "400K",
-                     "600K", "4M", "6M", "8M")
+colnames(Ne) <- c("Generation", "R0", "R1", "R2", "R3", "R4", "R5", "R6",
+                  "R7", "R8", "R9", "R10")
 
 #Melt df
-Ne_kirt_melt <- melt(Ne_kirt, id.vars = "Generation", value.name = "Geom_mean_Ne", variable.name = "sites")
+Ne_m <- melt(Ne, id.vars = "Generation", value.name = "Geom_mean_Ne", variable.name = "rep")
 ```
+
+## Calculate Confidence Intervals
+
+Sample mean +/- (t-multiplied \* SE)
+
+```{r}
+#Calculate Mean Ne across reps
+n <- 10
+df <- n-1
+a <- 0.05
+mean <- rowMeans(Ne)
+se <- (apply(Ne[, -1], 1, sd))/sqrt(10)
+t_score <- print(qt(p=a/2, df=df, lower.tail=F))
+margin_err <- (t_score * se)
+lower <- (mean - margin_err)
+upper <- (mean + margin_err)
+
+Ne_CI <- cbind(mean, lower, upper)
+```
+
+## *{r}* #Caclulate the mean across replicates for each generation
 
 ## Plot Ne Estimates
 
 ```{r plot, echo=FALSE}
 #Full Dataset
-ggplot(Ne_kirt_melt, aes(x=Generation, y=Geom_mean_Ne, color=sites)) + 
+ggplot(Ne_m, aes(x=Generation, y=Geom_mean_Ne, alpha=rep)) + 
   geom_line() +
-  scale_color_manual(values = c("#ff7777", "#ffe21c", "#62ff1c",
-   "#1cffbe", "#1ccdff", "#561cff")) +
+  scale_alpha_discrete(range=c(0.3, 0.3)) +
   scale_x_continuous(breaks=seq(0, 120, 5))  +
   xlab("Generation") +
   ylab("Geometric Mean Ne") +
-  ggtitle("KIWA, cMMb=4.82, hc=0.025") +
+  ggtitle("hc=0.025") +
   theme(panel.background = element_blank(),
+        legend.position="none",
         panel.border = element_rect(color = "black", fill = NA))
 ```
+
+## Calculate Confidence Intervals
+
+t-value: 2.262, df=9, n=10

@@ -22,7 +22,8 @@ nano $scripts_folder/map_ped_R0.bash
 #SBATCH --ntasks=1
 #SBATCH --mem=4GB
 #SBATCH --time=1:00:00
-#SBATCH --account=zps5164_sc
+#SBATCH --account=zps5164_cr_default
+#SBATCH --partition=basic
 #SBATCH --job-name=map_ped_R0
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
 #SBATCH --output=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
@@ -83,7 +84,7 @@ awk 'BEGIN {OFS="\t"} {print $1, $2="SNP"NR, $3, $4}' R0.map > temp_R0 && mv -f 
 
 ## Replicate Script
 ```bash
-for i in $(seq 251 500); do
+for i in $(seq 1 10); do
     rm -rf $scripts_folder/map_ped_R${i}.bash
     cp $scripts_folder/map_ped_R0.bash $scripts_folder/map_ped_R${i}.bash
     sed -i "s/\bR0\b/R${i}/g" $scripts_folder/map_ped_R${i}.bash
@@ -91,3 +92,4 @@ for i in $(seq 251 500); do
     sed -i "s/#SBATCH --job-name=map_ped_R0/#SBATCH --job-name=map_ped_R${i}/g" $scripts_folder/map_ped_R${i}.bash
     sbatch $scripts_folder/map_ped_R${i}.bash;
 done
+```

@@ -146,5 +146,5 @@ done
 #give it a key
 awk 'BEGIN {OFS="\t"} {print $0, $1"_"$4}' gone.map > temp && mv -f temp gone.map
 
-mv gone.map ~/SzpiechLab/abc6435/KROH/data/gone
+cp gone.map ~/SzpiechLab/abc6435/KROH/data/gone
 ```

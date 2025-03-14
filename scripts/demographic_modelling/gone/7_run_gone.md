@@ -18,7 +18,7 @@ nano $scripts_folder/run_gone.bash
 gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
 
 #Run GONE
-for i in $(seq 1 10); do
+for i in $(seq 11 20); do
     cd $gone_folder
     bash script_GONE.sh R${i}
     sed -i '1d' Output_Ne_R${i}

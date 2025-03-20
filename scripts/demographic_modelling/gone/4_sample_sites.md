@@ -26,8 +26,9 @@ bcftools view -h $work_dir/KIWA_gone_bi_qual_dp_nmiss_exhet_poly_renamed.vcf.gz 
 
 #Sample sites
 for i in "${chr_list[@]}"; do
-    bcftools view -H $work_dir/${i}.vcf.gz | shuf -n 25000 >> $work_dir/R0.vcf;
+    bcftools view -H $work_dir/${i}.vcf.gz | shuf -n 25000 | sort -g --key=2,3 >> $work_dir/R0.vcf;
 done
+ 
  ```
 
 ## Replicate Script

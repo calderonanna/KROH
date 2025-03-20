@@ -31,16 +31,22 @@ bcftools view -i 'N_MISSING<3' $work_dir/KIWA_tags_bi_qual_dp.vcf.gz -Oz -o $wor
 #Excess Heterozygosity (>80%)
 bcftools view -e 'COUNT(GT="het")>=11' $work_dir/KIWA_tags_bi_qual_dp_nmiss.vcf.gz -Oz -o $work_dir/KIWA_tags_bi_qual_dp_nmiss_exhet.vcf.gz
 
-#HWE
-bcftools view -i 'INFO/HWE>0.001' $work_dir/KIWA_tags_bi_qual_dp_nmiss_exhet.vcf.gz -Oz -o $work_dir/KIWA_tags_bi_qual_dp_nmiss_exhet_HWE.vcf.gz
-
 #Remove chrZ
-bcftools view -h $work_dir/KIWA_tags_bi_qual_dp_nmiss_exhet_HWE.vcf.gz | grep '^##contig=<ID=chr' >> $work_dir/chrs.txt
+bcftools view -h $work_dir/KIWA_tags_bi_qual_dp_nmiss_exhet.vcf.gz | grep '^##contig=<ID=chr' >> $work_dir/chrs.txt
 sed -i 's/##contig=<ID=//g' $work_dir/chrs.txt
 sed -i 's/,.*//g' $work_dir/chrs.txt
 sed -i '$d' $work_dir/chrs.txt
 chr_list=$(cat $work_dir/chrs.txt | tr "\n" "," | sed 's/,$//')
 
-bcftools index $work_dir/KIWA_tags_bi_qual_dp_nmiss_exhet_HWE.vcf.gz
-bcftools view -r $chr_list $work_dir/KIWA_tags_bi_qual_dp_nmiss_exhet_HWE.vcf.gz -Oz -o $work_dir/KIWA_tags_bi_qual_dp_nmiss_exhet_HWE_auto.vcf.gz
+bcftools index $work_dir/KIWA_tags_bi_qual_dp_nmiss_exhet.vcf.gz
+bcftools view -r $chr_list $work_dir/KIWA_tags_bi_qual_dp_nmiss_exhet.vcf.gz -Oz -o $work_dir/KIWA_tags_bi_qual_dp_nmiss_exhet_auto.vcf.gz
 ```
+
+## Subset VCF by Population
+```bash
+scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+vcf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/vcf/KIWA_tags_bi_qual_dp_nmiss_exhet_auto"
+
+bcftools view -S $scripts/cKIWA_IDS.txt $vcf.vcf.gz -Oz -o $vcf.c.vcf.gz 
+
+bcftools view -S $scripts/hKIWA_IDS.txt $vcf.vcf.gz -Oz -o $vcf.h.vcf.gz 

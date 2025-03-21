@@ -9,7 +9,7 @@ nano $scripts_folder/run_gone.bash
 #SBATCH --ntasks=1
 #SBATCH --mem=10GB
 #SBATCH --time=6:00:00
-#SBATCH --account=dut374_c
+#SBATCH --account=open
 #SBATCH --job-name=run_gone
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
 #SBATCH --output=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out

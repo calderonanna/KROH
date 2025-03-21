@@ -16,7 +16,7 @@ rate to keep constant.
 ```bash
 #Set Variables 
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
-nano $scripts_folder/map_ped_R0.bash
+nano $scripts_folder/map_ped_R0_v2.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
@@ -49,44 +49,35 @@ awk 'BEGIN {OFS="\t"} {print "CHR"$1, $2, $3, $4, $1"_"$4}' R0.map > temp_R0 && 
 awk 'NR==FNR{a[$5]=$3; next} $5 in a {print $1, $2, a[$5], $4}' gone.map R0.map > temp_R0 && mv -f temp_R0 R0.map
 
 sed -i 's/ /\t/g' R0.map
-sed -i 's/\bCHR0\b/1/g' R0.map
-sed -i 's/\bCHR1\b/2/g' R0.map
-sed -i 's/\bCHR2\b/3/g' R0.map
-sed -i 's/\bCHR3\b/4/g' R0.map
-sed -i 's/\bCHR4\b/5/g' R0.map
-sed -i 's/\bCHR5\b/6/g' R0.map
-sed -i 's/\bCHR6\b/7/g' R0.map
-sed -i 's/\bCHR7\b/8/g' R0.map
-sed -i 's/\bCHR8\b/9/g' R0.map
-sed -i 's/\bCHR9\b/10/g' R0.map
-sed -i 's/\bCHR10\b/11/g' R0.map
-sed -i 's/\bCHR11\b/12/g' R0.map
-sed -i 's/\bCHR12\b/13/g' R0.map
-sed -i 's/\bCHR13\b/14/g' R0.map
-sed -i 's/\bCHR14\b/15/g' R0.map
-sed -i 's/\bCHR15\b/16/g' R0.map
-sed -i 's/\bCHR17\b/17/g' R0.map
-sed -i 's/\bCHR18\b/18/g' R0.map
-sed -i 's/\bCHR19\b/19/g' R0.map
-sed -i 's/\bCHR20\b/20/g' R0.map
-sed -i 's/\bCHR21\b/21/g' R0.map
-sed -i 's/\bCHR22\b/22/g' R0.map
-sed -i 's/\bCHR23\b/23/g' R0.map
-sed -i 's/\bCHR24\b/24/g' R0.map
-sed -i 's/\bCHR25\b/25/g' R0.map
-sed -i 's/\bCHR26\b/26/g' R0.map
-sed -i 's/\bCHR27\b/27/g' R0.map
-sed -i 's/\bCHR28\b/28/g' R0.map
-sed -i 's/\bCHR29\b/29/g' R0.map
+sed -i 's/\bCHR1\b/1/g' R0.map
+sed -i 's/\bCHR2\b/2/g' R0.map
+sed -i 's/\bCHR3\b/3/g' R0.map
+sed -i 's/\bCHR4\b/4/g' R0.map
+sed -i 's/\bCHR5\b/5/g' R0.map
+sed -i 's/\bCHR6\b/6/g' R0.map
+sed -i 's/\bCHR7\b/7/g' R0.map
+sed -i 's/\bCHR8\b/8/g' R0.map
+sed -i 's/\bCHR9\b/9/g' R0.map
+sed -i 's/\bCHR10\b/10/g' R0.map
+sed -i 's/\bCHR11\b/11/g' R0.map
+sed -i 's/\bCHR12\b/12/g' R0.map
+sed -i 's/\bCHR13\b/13/g' R0.map
+sed -i 's/\bCHR14\b/14/g' R0.map
+sed -i 's/\bCHR15\b/15/g' R0.map
+sed -i 's/\bCHR17\b/16/g' R0.map
+sed -i 's/\bCHR18\b/17/g' R0.map
+sed -i 's/\bCHR19\b/18/g' R0.map
+sed -i 's/\bCHR20\b/19/g' R0.map
+sed -i 's/\bCHR29\b/20/g' R0.map
 
 awk 'BEGIN {OFS="\t"} {print $1, $2="SNP"NR, $3, $4}' R0.map > temp_R0 && mv -f temp_R0 R0.map
 ```
 
 ## Replicate Script
 ```bash
-for i in $(seq 31 40); do
+for i in $(seq 41 50); do
     rm -rf $scripts_folder/map_ped_R${i}.bash
-    cp $scripts_folder/map_ped_R0.bash $scripts_folder/map_ped_R${i}.bash
+    cp $scripts_folder/map_ped_R0_v2.bash $scripts_folder/map_ped_R${i}.bash
     sed -i "s/\bR0\b/R${i}/g" $scripts_folder/map_ped_R${i}.bash
     sed -i "s/temp_R0/temp_R${i}/g" $scripts_folder/map_ped_R${i}.bash
     sed -i "s/#SBATCH --job-name=map_ped_R0/#SBATCH --job-name=map_ped_R${i}/g" $scripts_folder/map_ped_R${i}.bash

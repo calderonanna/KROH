@@ -18,7 +18,7 @@ nano $scripts_folder/run_gone.bash
 gone_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
 
 #Run GONE
-for i in $(seq 11 20); do
+for i in $(seq 41 50); do
     cd $gone_folder
     bash script_GONE.sh R${i}
     sed -i '1d' Output_Ne_R${i}
@@ -27,14 +27,4 @@ for i in $(seq 11 20); do
 done
 ```
 
-## For hc testing
-```bash
-for i in $(seq 0 2); do
-    cd $gone_folder/results/R${i}
-    mv R${i}.map R${i}.ped $gone_folder
-    rm -rf $gone_folder/results/R${i}; 
-done
-
-
-rm -rf *chrom* TEMPORARY_FILES/ out* param* seedfile timefile data.*
-``
+`rm -rf *chrom* TEMPORARY_FILES/ out* param* seedfile timefile data.*`

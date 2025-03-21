@@ -6,8 +6,8 @@ salloc --nodes 1 --ntasks 1 --mem=10G --time=9:00:00
 
 #Set Variables
 data="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
-vcf_h="KIWA_tags_bi_qual_dp_nmiss_exhet_auto.h.vcf.gz"
-vcf_c="KIWA_tags_bi_qual_dp_nmiss_exhet_auto.c.vcf.gz"
+vcf_h="KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto.h.vcf.gz"
+vcf_c="KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto.c.vcf.gz"
 
 plink --vcf $data/vcf/$vcf_c --recode transpose --double-id --chr-set 30 --allow-extra-chr --out $data/roh/garlic/cKIWA/c
 awk '$1="kirtlandii"' $data/roh/garlic/cKIWA/c.tfam > $data/roh/garlic/cKIWA/temp && mv -f $data/roh/garlic/cKIWA/temp $data/roh/garlic/cKIWA/c.tfam
@@ -21,8 +21,8 @@ awk '$1="kirtlandii"' $data/roh/garlic/hKIWA/h.tfam > $data/roh/garlic/hKIWA/tem
 ## Create .tgls
 ```bash
 data="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
-vcf_h="KIWA_tags_bi_qual_dp_nmiss_exhet_auto.h.vcf.gz"
-vcf_c="KIWA_tags_bi_qual_dp_nmiss_exhet_auto.c.vcf.gz"
+vcf_h="KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto.h.vcf.gz"
+vcf_c="KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto.c.vcf.gz"
 shared="/storage/home/abc6435/SzpiechLab/shared"
 
 $shared/create_tgls_from_vcf.py $data/vcf/$vcf_h > $data/roh/garlic/hKIWA/h.tgls
@@ -34,8 +34,8 @@ $shared/create_tgls_from_vcf.py $data/vcf/$vcf_c > $data/roh/garlic/cKIWA/c.tgls
 If you don't have a centromere file, then create a dummy one
 ```bash
 data="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
-vcf_h="KIWA_tags_bi_qual_dp_nmiss_exhet_auto.h.vcf.gz"
-vcf_c="KIWA_tags_bi_qual_dp_nmiss_exhet_auto.c.vcf.gz"
+vcf_h="KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto.h.vcf.gz"
+vcf_c="KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto.c.vcf.gz"
 shared="/storage/home/abc6435/SzpiechLab/shared"
 
 
@@ -57,4 +57,4 @@ centromere="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic/centro
 garlic --auto-winsize --auto-overlap-frac --winsize 100 --tped $work_dir/h.tped --tfam $work_dir/h.tfam --tgls $work_dir/h.tgls --gl-type GQ --resample 40 --centromere $centromere --size-bounds 1000000 2000000 3000000 4000000 5000000 --out $work_dir/hKIWA
 
 #Look at file
-grep -v ^track cKIWA.roh.bed 
+grep -v ^track hKIWA.roh.bed | cut -f4 | uniq

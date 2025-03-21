@@ -42,7 +42,7 @@ samtools depth -a \$data_folder/bam/${i}_marked.bam > \$data_folder/coverage/${i
 sed -i '/^scaffold/d; /^mito/d; /^chrz/d' \$data_folder/coverage/${i}_depth.txt
 
 #Calculate Average Depth
-awk '{sum+=\$3} END { print "sample_${i} = " sum/NR }' \$data_folder/coverage/${i}_depth.txt >> \$data_folder/coverage/autosomal_coverage.txt
+awk '{sum+=\$3} END { print "sample_${i} = " sum/NR }' \$data_folder/coverage/${i}_depth.txt >> \$data_folder/seq_stats/autosomal_coverage.txt
 EOT
 done
 

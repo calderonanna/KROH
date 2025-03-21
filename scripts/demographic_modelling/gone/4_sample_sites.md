@@ -26,14 +26,14 @@ bcftools view -h $work_dir/KIWA_gone_bi_qual_dp_nmiss_exhet_poly_renamed.vcf.gz 
 
 #Sample sites
 for i in "${chr_list[@]}"; do
-    bcftools view -H $work_dir/${i}.vcf.gz | shuf -n 7000 | sort -g --key=2,3 >> $work_dir/R0.vcf;
+    bcftools view -H $work_dir/${i}.vcf.gz | shuf -n 2500 | sort -g --key=2,3 >> $work_dir/R0.vcf;
 done
  
  ```
 
 ## Replicate Script
 ```bash
-for i in $(seq 41 50); do
+for i in $(seq 51 60); do
     rm -rf $scripts_folder/gone_sample_sites_R${i}.bash
     cp $scripts_folder/gone_sample_sites_R0.bash $scripts_folder/gone_sample_sites_R${i}.bash
     sed -i "s/R0/R${i}/g" $scripts_folder/gone_sample_sites_R${i}.bash

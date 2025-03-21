@@ -1,7 +1,0 @@
-### Manuscript Summary 
-To analyze recent demographic history using GONE, I aligned raw sequences to the House Sparrow reference genome (Elving et al. 2017; PRJNA255814) using BWA-mem, converted sam to bam and then sorted using samtools. I marked duplicates with Picardtools. I called variants using bcftools mpileup piping the output into bcftools call. 
-
-From the resulting vcf, we excluded multiallelic sites. Per author recommendations, we only considered variants with a base calling error rate of .001% or less by filtering out sites with QUAL > 50 (Santiago et al. 2020). Sites were also filtered for depth, excluding those with read depth less than 24 or greater than 149, which pertained to the 5th and 95th percentiles. We excluded any site with missing genotype information and removed sites with excess heterozygotes, which we defined as six or more heterozygotes (calderon et al. 2024, and other papers). To increase computation efficiency, we removed monomorphic sites, requiring sites to have at least one minor allele, given that monorphic sites do not contribute meaninfully to LD estimates. Last, we subsetted our data to only include the autosomes. 
-
-From this resulting vcf file, we sampled 10,000 snps per chromosome over X replicates. We used plink to generate .map and .ped files for each replicate and then used the house sparrow linkage map to linearly interpolate recombination rates in each of our .map files. 
-

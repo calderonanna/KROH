@@ -1,0 +1,117 @@
+---
+title: "garlic"
+author: "Anna Maria Calderon"
+date: "2025-03-24"
+output: html_document
+---
+
+# Download Data
+
+```{bash}
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic/KIWA_roh_sum.txt /Users/abc6435/Desktop/KROH/data/roh
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic/KIWA_roh_sum_2.txt /Users/abc6435/Desktop/KROH/data/roh
+```
+
+# Setup
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("/Users/abc6435/Desktop/KROH/data/roh")
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggpubr)
+```
+
+# Import / Modify Data
+
+```{r import_data, include=TRUE}
+data <- read.table("KIWA_roh_sum_2.txt", header=TRUE, sep = " ")
+data$sample <- rownames(data)
+rownames(data) <- NULL
+data[1:7,1] <- "contemporary"
+data[8:13,1] <- "historical"
+
+A <- data[,c(1, 16, 2:3)]
+colnames(A) <- c("pop", "sample", "nroh", "sroh")
+A$class <- "<1Mb"
+
+B <- data[,c(1, 16, 4:5)]
+colnames(B) <- c("pop", "sample", "nroh", "sroh")
+B$class <- "1-2Mb"
+
+C <- data[,c(1, 16, 6:7)]
+colnames(C) <- c("pop", "sample", "nroh", "sroh")
+C$class <- "2-3Mb"
+
+D <- data[,c(1, 16, 8:9)]
+colnames(D) <- c("pop", "sample", "nroh", "sroh")
+D$class <- "3-4Mb"
+
+E <- data[,c(1, 16, 10:11)]
+colnames(E) <- c("pop", "sample", "nroh", "sroh")
+E$class <- "4-5Mb"
+
+F <- data[,c(1, 16, 12:13)]
+colnames(F) <- c("pop", "sample", "nroh", "sroh")
+F$class <- ">5Mb"
+
+data_t <- rbind(A,B,C)
+
+T <- data[,c(1, 16, 14:15)]
+colnames(T) <- c("pop", "sample", "nroh", "sroh")
+```
+
+# Plot Data 
+
+```{r plot_data, include = FALSE}
+leg <- c("contemporary" = "#73DAFF","historical" = "#AF2C8B")
+
+nroh_sroh <- ggplot(T, aes(x=sroh/(1e6), y=nroh)) + 
+  geom_point(shape = 21, size = 3, 
+             colour = "black", stroke = 1, aes(fill=pop)) +
+  scale_fill_manual(values=alpha(leg, 0.6)) +
+  xlab("SROH(Mb)") + 
+  ylab("NROH") +
+  scale_y_continuous(breaks = seq(0, 90, 10), limits = c(0,90)) +
+  geom_abline(slope=1, intercept = 0) +
+  theme(
+    axis.text = element_text(size=10), 
+    panel.background = element_blank(), 
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.border = element_rect(color = "black", fill=NA), 
+    legend.key = element_blank(),
+    legend.title = element_blank(),
+    legend.position = "bottom",
+    legend.margin = margin(0,0,0,0),
+    legend.box.spacing = unit(0, "pt"))
+
+roh_class <- ggplot(data_t, aes(x=class, y=nroh)) + 
+  geom_boxplot(aes(fill=pop)) + 
+  geom_jitter(position = position_jitterdodge(jitter.width=0.2),
+              pch=21, size=1, stroke=0.5, alpha=0.6, aes(fill=pop)) +
+  scale_fill_manual(values=leg) +
+  xlab("ROH Size Class") + 
+  ylab("") +
+  scale_y_continuous(breaks = seq(0, 90, 10), limits = c(0,90)) +
+  theme(
+    axis.text = element_text(size=10), 
+    panel.background = element_blank(), 
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.border = element_rect(color = "black", fill=NA), 
+    legend.key = element_blank(),
+    legend.title = element_blank(),
+    legend.position = "bottom",
+    legend.margin = margin(0,0,0,0),
+    legend.box.spacing = unit(0, "pt"))
+```
+
+# Arrange and Save
+
+```{r arrange_save, include=FALSE}
+roh_figure <- ggarrange(nroh_sroh, roh_class, nrow=1, ncol=2)
+roh_figure
+```

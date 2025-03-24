@@ -43,12 +43,15 @@ sed -i '$d' $work_dir/chrs.txt
 chr_list=$(cat $work_dir/chrs.txt | tr "\n" "," | sed 's/,$//')
 bcftools index $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet.vcf.gz
 bcftools view -r $chr_list $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet.vcf.gz -Oz -o $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto.vcf.gz
+
+#Remove Monomorphic Sites 
+bcftools view $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto.vcf.gz -c 1:minor -Oz -o $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto_maf.vcf.gz
 ```
 
 ## Subset VCF by Population
 ```bash
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
-vcf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/vcf/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto"
+vcf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/vcf/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto_maf"
 
 bcftools view -S $scripts/cKIWA_IDS.txt $vcf.vcf.gz -Oz -o $vcf.c.vcf.gz 
 

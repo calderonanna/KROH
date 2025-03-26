@@ -87,7 +87,7 @@ colnames(lof) <- c('CHROM', 'POS', 'REF', 'ALT', 'MUTATION')
 lof <- lof[,c('CHROM', 'POS', 'MUTATION')]
 
 #Save File 
-write.table(lof, file="/Users/abc6435/Desktop/KROH/data/rxy/lof.txt", row.names = FALSE, col.names = TRUE, sep = "\t", quote = FALSE)
+write.table(lof, file="/Users/abc6435/Desktop/KROH/data/rxy/lossoffunction.txt", row.names = FALSE, col.names = TRUE, sep = "\t", quote = FALSE)
 
 ```
 

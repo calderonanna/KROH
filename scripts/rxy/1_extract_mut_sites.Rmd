@@ -37,8 +37,8 @@ noncode2 <- subset(d, (V5=="" | V5=="NA") & V7=="NONCODING")
 
 noncoding <- rbind(noncode1, noncode2)
 
-colnames(noncoding) <- c('CHROM', 'POS', 'REF', 'ALT', 'MUTATION_CONSEQUENCE')
-noncoding <- noncoding[,c('CHROM', 'POS')]
+colnames(noncoding) <- c('CHROM', 'POS', 'REF', 'ALT', 'MUTATION')
+noncoding <- noncoding[,c('CHROM', 'POS', 'MUTATION')]
 
 #Save File 
 write.table(noncoding, file="/Users/abc6435/Desktop/KROH/data/rxy/noncoding.txt", row.names = FALSE, col.names = TRUE, sep = "\t", quote = FALSE)
@@ -52,8 +52,8 @@ syn2 <- subset(d, ((V5=="" | V5=="NA" | V5=="NONCODING") & V7=="SYNONYMOUS"))
 
 synonymous <- rbind(syn1, syn2)
 
-colnames(synonymous) <- c('CHROM', 'POS', 'REF', 'ALT', 'MUTATION_CONSEQUENCE')
-synonymous <- synonymous[,c('CHROM', 'POS')]
+colnames(synonymous) <- c('CHROM', 'POS', 'REF', 'ALT', 'MUTATION')
+synonymous <- synonymous[,c('CHROM', 'POS', 'MUTATION')]
 
 #Save File 
 write.table(synonymous, file="/Users/abc6435/Desktop/KROH/data/rxy/synonymous.txt", row.names = FALSE, col.names = TRUE, sep = "\t", quote = FALSE)
@@ -67,8 +67,8 @@ nonsyn2 <- subset(d, ((V5=="" | V5=="NA" | V5=="NONCODING" | V5=="SYNONYMOUS") &
 
 nonsynonymous <- rbind(nonsyn1, nonsyn2)
 
-colnames(nonsynonymous) <- c('CHROM', 'POS', 'REF', 'ALT', 'MUTATION_CONSEQUENCE')
-nonsynonymous <- nonsynonymous[,c('CHROM', 'POS')]
+colnames(nonsynonymous) <- c('CHROM', 'POS', 'REF', 'ALT', 'MUTATION')
+nonsynonymous <- nonsynonymous[,c('CHROM', 'POS', 'MUTATION')]
 
 #Save File 
 write.table(nonsynonymous, file="/Users/abc6435/Desktop/KROH/data/rxy/nonsynonymous.txt", row.names = FALSE, col.names = TRUE, sep = "\t", quote = FALSE)
@@ -83,8 +83,8 @@ start_lost <- subset(d, V5=="START-LOST" | V7=="START-LOST")
 
 lof <- rbind(stop_gain, stop_loss, start_lost)
 
-colnames(lof) <- c('CHROM', 'POS', 'REF', 'ALT', 'MUTATION_CONSEQUENCE')
-lof <- lof[,c('CHROM', 'POS')]
+colnames(lof) <- c('CHROM', 'POS', 'REF', 'ALT', 'MUTATION')
+lof <- lof[,c('CHROM', 'POS', 'MUTATION')]
 
 #Save File 
 write.table(lof, file="/Users/abc6435/Desktop/KROH/data/rxy/lof.txt", row.names = FALSE, col.names = TRUE, sep = "\t", quote = FALSE)
@@ -98,8 +98,9 @@ write.table(lof, file="/Users/abc6435/Desktop/KROH/data/rxy/lof.txt", row.names 
 d2 <- rbind(nonsyn1, nonsyn2, syn1, syn2)
 tolerated <- subset(d2, V6=="TOLERATED" & (V8=="" | V8=="NA" | V8 == "TOLERATED"))
 
-colnames(tolerated) <- c('CHROM', 'POS', 'REF', 'ALT', 'MUTATION_CONSEQUENCE')
-tolerated <- tolerated[,c('CHROM', 'POS')]
+colnames(tolerated) <- c('CHROM', 'POS', 'REF', 'ALT', 'MUTATION')
+tolerated <- tolerated[,c('CHROM', 'POS', 'MUTATION')]
+tolerated$MUTATION <- "TOLERATED"
 
 #Save File 
 write.table(tolerated, file="/Users/abc6435/Desktop/KROH/data/rxy/tolerated.txt", row.names = FALSE, col.names = TRUE, sep = "\t", quote = FALSE)
@@ -110,8 +111,9 @@ write.table(tolerated, file="/Users/abc6435/Desktop/KROH/data/rxy/tolerated.txt"
 ```{r subset_tol, message=FALSE, warning=FALSE, include=FALSE}
 deleterious <- subset(d2, V6=="DELETERIOUS" | V8 == "DELETERIOUS")
 
-colnames(deleterious) <- c('CHROM', 'POS', 'REF', 'ALT', 'MUTATION_CONSEQUENCE')
-deleterious <- deleterious[,c('CHROM', 'POS')]
+colnames(deleterious) <- c('CHROM', 'POS', 'REF', 'ALT', 'MUTATION')
+deleterious <- deleterious[,c('CHROM', 'POS', 'MUTATION')]
+deleterious$MUTATION <- "DELETERIOUS"
 
 #Save File 
 write.table(deleterious, file="/Users/abc6435/Desktop/KROH/data/rxy/deleterious.txt", row.names = FALSE, col.names = TRUE, sep = "\t", quote = FALSE)

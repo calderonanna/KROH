@@ -52,29 +52,24 @@ awk '{print $1,$2,$3}' OFS="\t" $data/rxy/genic_sites_sorted.bed > $data/rxy/tem
 
 bcftools view -T ^$data/rxy/genic_sites_sorted.bed $data/rxy/nomissing_gt.vcf.gz -Oz -o $data/rxy/nomissing_gt_intergenic.vcf.gz
 
-#Randomly Sample 2 sets of 10K intergenic sites.
-bcftools view -H $data/rxy/nomissing_gt_intergenic.vcf.gz | shuf -n 10000 | cut -f1,2 > intergenic_v1.txt
+#Randomly Sample 2 sets of 100K intergenic sites.
+bcftools view -H $data/rxy/nomissing_gt_intergenic.vcf.gz | shuf -n 100000 | cut -f1,2 > intergenic_v1.txt
 for i in `cat $data/rxy/chr.txt`; do 
     grep -w "^${i}" $data/rxy/intergenic_v1.txt | sort -k2,2n  >> $data/rxy/intergenic_v1_sorted.txt;
 done
 rm -rf $data/rxy/intergenic_v1.txt
 
-bcftools view -H $data/rxy/nomissing_gt_intergenic.vcf.gz | shuf -n 10000 | cut -f1,2 > intergenic_v2.txt
+bcftools view -H $data/rxy/nomissing_gt_intergenic.vcf.gz | shuf -n 100000 | cut -f1,2 > intergenic_v2.txt
 for i in `cat $data/rxy/chr.txt`; do 
     grep -w "^${i}" $data/rxy/intergenic_v2.txt | sort -k2,2n  >> $data/rxy/intergenic_v2_sorted.txt;
 done
 rm -rf $data/rxy/intergenic_v2.txt
 
 #drop last column from mutation files
-awk '{print $1,$2}' OFS="\t" $data/rxy/deleterious.txt >> $data/rxy/del.txt
-
-awk '{print $1,$2}' OFS="\t" $data/rxy/tolerated.txt >> $data/rxy/tol.txt
-
-awk '{print $1,$2}' OFS="\t" $data/rxy/lossoffunction.txt >> $data/rxy/lof.txt
-
-awk '{print $1,$2}' OFS="\t" $data/rxy/nonsynonymous.txt >> $data/rxy/nonsyn.txt
-
-awk '{print $1,$2}' OFS="\t" $data/rxy/synonymous.txt >> $data/rxy/syn.txt
-
-awk '{print $1,$2}' OFS="\t" $data/rxy/noncoding.txt >> $data/rxy/noncode.txt
+awk '{print $1,$2}' OFS="\t" $data/rxy/deleterious.txt > $data/rxy/del.txt
+awk '{print $1,$2}' OFS="\t" $data/rxy/tolerated.txt > $data/rxy/tol.txt
+awk '{print $1,$2}' OFS="\t" $data/rxy/lossoffunction.txt > $data/rxy/lof.txt
+awk '{print $1,$2}' OFS="\t" $data/rxy/nonsynonymous.txt > $data/rxy/nonsyn.txt
+awk '{print $1,$2}' OFS="\t" $data/rxy/synonymous.txt > $data/rxy/syn.txt
+awk '{print $1,$2}' OFS="\t" $data/rxy/noncoding.txt > $data/rxy/noncode.txt
 ```

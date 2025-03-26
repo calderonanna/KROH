@@ -1,0 +1,67 @@
+---
+title: "rxy"
+author: "Anna Maria Calderon"
+date: "2025-03-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(ggpubr)
+library(tidyr)
+library(dplyr)
+```
+
+# Download Data
+
+```{bash}
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rxy/rxy_*.txt /Users/abc6435/Desktop/KROH/data/rxy
+
+```
+
+# Import Data
+
+```{r import_data, include=FALSE}
+setwd("/Users/abc6435/Desktop/KROH/data/rxy")
+rxy_v1 <- read.table("rxy_v1.txt", header = FALSE, sep = ' ')
+rxy_v1$V0 <- 1
+rxy_v1$V00 <- as.numeric(rownames(rxy_v1))
+rxy_v1 <- rxy_v1[,c(5,1:4,6)]
+colnames(rxy_v1) <- c("RXY_1", "RXY_2", "q025", "q975", "MUT", "MUT_NUM")
+
+rxy_v2 <- read.table("rxy_v2.txt", header = FALSE, sep = ' ')
+rxy_v2$V0 <- 1
+rxy_v2$V00 <- as.numeric(rownames(rxy_v2))
+rxy_v2 <- rxy_v2[,c(5,1:4,6)]
+colnames(rxy_v2) <- c("RXY_1", "RXY_2", "q025", "q975", "MUT", "MUT_NUM")
+
+```
+
+# Plot 
+
+```{r plot, include=FALSE}
+colors = c("#fe0fac","#e7a2ff","#ffe86b","#ff9e6b","#4DD0FF","#ccff6b")
+
+ggplot(rxy_v2, aes(y=MUT_NUM, fill=MUT)) +
+  geom_rect(aes(xmin=RXY_1, xmax=RXY_2, 
+                ymin=MUT_NUM-0.4, ymax=MUT_NUM+0.41), color="black") +
+  scale_fill_manual(values = colors) +
+  geom_errorbarh(aes(xmin = q025, xmax = q975, 
+                     y = MUT_NUM), height = 0.2) +
+  scale_x_continuous(limits=c(0,1.5), breaks=seq(0,1.5,0.2)) +
+  scale_y_continuous(
+    breaks = rxy_v1$MUT_NUM,
+    labels = c("NONCODING","NONSYNONYMOUS","SYNONYMOUS",
+               "LOF","DELETERIOUS","TOLERATED")) +
+  geom_vline(xintercept = 1.0, color="black") +
+  theme(
+    panel.background = element_blank(),
+    panel.grid.minor.x = element_line(linetype="dashed", color="black", size=0.05),
+    panel.border = element_rect(color="black", fill=NA), 
+    axis.title.y = element_blank()
+  ) +
+  xlab("Rxy") +
+  guides(fill = "none")
+
+```

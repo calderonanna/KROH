@@ -38,7 +38,7 @@ colnames(rxy_v2) <- c("RXY_1", "RXY_2", "q025", "q975", "MUT", "MUT_NUM")
 
 ```
 
-# Plot 
+# Plot
 
 ```{r plot, include=FALSE}
 colors = c("#fe0fac","#e7a2ff","#ffe86b","#ff9e6b","#4DD0FF","#ccff6b")

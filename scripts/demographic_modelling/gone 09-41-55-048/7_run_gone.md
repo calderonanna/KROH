@@ -27,4 +27,13 @@ for i in $(seq 1 10); do
 done
 ```
 
-`rm -rf *chrom* TEMPORARY_FILES/ out* param* seedfile timefile data.*`
+## Compile Results
+
+```bash
+gone="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
+mkdir $gone/Ne
+
+for i in $(seq 1 70); do
+    cp $gone/results_bugging/R${i}/Output_Ne_R${i} $gone/Ne; 
+done
+```

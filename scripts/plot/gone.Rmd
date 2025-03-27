@@ -7,6 +7,8 @@ output: html_document
 
 ```{r setup, include=FALSE}
 library(ggplot2)
+library(dplyr)
+library(tidyr)
 library(reshape2)
 library(knitr)
 ```
@@ -15,10 +17,7 @@ library(knitr)
 
 ```{bash}
 #Download Files to local
-results="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/results"
-for i in $(seq 1 1 10); do
-  rsync abc6435@submit.hpc.psu.edu:$results/R${i}/Output_Ne_R${i} /Users/annamariacalderon/Desktop/KROH/data/gone;
-done
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/Ne/* /Users/annamariacalderon/Desktop/KROH/data/gone
 ```
 
 ## Import Data
@@ -26,16 +25,11 @@ done
 ```{r import_data, include=FALSE}
 setwd("/Users/annamariacalderon/Desktop/KROH/data/gone")
 
-R1 <- read.table("Output_Ne_R1", header = TRUE)
-R2 <- read.table("Output_Ne_R2", header = TRUE)
-R3 <- read.table("Output_Ne_R3", header = TRUE)
-R4 <- read.table("Output_Ne_R4", header = TRUE)
-R5 <- read.table("Output_Ne_R5", header = TRUE)
-R6 <- read.table("Output_Ne_R6", header = TRUE)
-R7 <- read.table("Output_Ne_R7", header = TRUE)
-R8 <- read.table("Output_Ne_R8", header = TRUE)
-R9 <- read.table("Output_Ne_R9", header = TRUE)
-R10 <- read.table("Output_Ne_R10", header = TRUE)
+ne_files <- list.files(pattern="Output_Ne_*")
+ne_list <- list()
+for (i in 1:70) {
+  ne_list[[i]] <- read.table(ne_files[i], header=TRUE)
+}
 
 ```
 
@@ -43,17 +37,13 @@ R10 <- read.table("Output_Ne_R10", header = TRUE)
 
 ```{r modify_data}
 #Subset the frist 120 generations and bind datasets
-Ne <- as.data.frame(cbind(
-                         R1[1:120,1:2],
-                         R2[1:120,2],
-                         R3[1:120,2],
-                         R4[1:120,2],
-                         R5[1:120,2],
-                         R6[1:120,2],
-                         R7[1:120,2],
-                         R8[1:120,2],
-                         R9[1:120,2],
-                         R10[1:120,2]))
+for (i in 1:70) {
+  ne_list[[i]] <- ne_list[[i]][1:120, 2]
+}
+
+Ne <- do.call(cbind, ne_list)
+Ne <- as.data.frame(as.numeric(Ne))
+Ne$Generation <- nrow(Ne)
 
 #Renmae Columns
 colnames(Ne) <- c("Generation", "R1", "R2", "R3", "R4", "R5", "R6",

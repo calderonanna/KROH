@@ -23,11 +23,11 @@ rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/d
 ## Import Data
 
 ```{r import_data, include=FALSE}
-setwd("/Users/abc6435/Desktop/KROH/data/gone")
+setwd("/Users/annamariacalderon//Desktop/KROH/data/gone")
 
 ne_files <- list.files(pattern="Output_Ne_*")
 ne_list <- list()
-for (i in 1:60) {
+for (i in 1:59) {
   ne_list[[i]] <- read.table(ne_files[i], header=TRUE)
 }
 
@@ -37,7 +37,7 @@ for (i in 1:60) {
 
 ```{r modify_data}
 #Subset the frist 120 generations and bind datasets
-for (i in 1:60) {
+for (i in 1:59) {
   ne_list[[i]] <- ne_list[[i]][1:120,]
   colnames(ne_list[[i]]) <- c("gen",paste0("r",i))
 }
@@ -67,20 +67,19 @@ r41_50 <- subset(Ne_m, rep %in% c("r41", "r42", "r43", "r44", "r45",
                         "r46", "r47", "r48", "r49", "r50"))
 r41_50$sam <- "7K_snps/macrochr"
 
-r51_60 <- subset(Ne_m, rep %in% c("r51", "r52", "r53", "r54", "r55", 
+r51_59 <- subset(Ne_m, rep %in% c("r51", "r52", "r53", "r54", "r55", 
                         "r56", "r57", "r58", "r59", "r60"))
-r51_60$sam <- "2.5K_snps/macrochr"
+r51_59$sam <- "2.5K_snps/macrochr"
 
 
 NE_m <- rbind(r1_10, r11_20, r21_30, r31_40)
 
-NE_m_mac <- rbind(r41_50, r51_60)
+NE_m_mac <- rbind(r41_50, r51_59)
 ```
 
 # Ne Distributions by Generation
 
 ```{r}
-
 ggplot(subset(NE_m, gen %in% 5), aes(x = geom_mean_ne)) +
   geom_histogram(alpha = 0.5, position = "identity", fill="blue") +
   labs(x = "Ne Estimate", y = "Frequency", 
@@ -89,54 +88,42 @@ ggplot(subset(NE_m, gen %in% 5), aes(x = geom_mean_ne)) +
   theme_minimal()
 ```
 
-## Calculate Confidence Intervals
-
-```{r}
-#Calculate Mean Ne across reps
-n <- 10
-df <- n-1
-a <- 0.05
-mean <- rowMeans(Ne)
-se <- (apply(Ne[, -1], 1, sd))/sqrt(10)
-t_score <- print(qt(p=a/2, df=df, lower.tail=F))
-margin_err <- (t_score * se)
-lower <- (mean - margin_err)
-upper <- (mean + margin_err)
-
-Ne_CI <- cbind(mean, lower, upper)
-```
-
 ## Plot Ne Estimates
 
 ```{r plot, echo=FALSE}
-#Full Dataset
+# All chromosomes
 colors=c("#4cae00","#ae00a3","#5919c0","#0f5a58")
-
-ggplot(NE_m, aes(x=gen, y=geom_mean_ne, color=sam, alpha=rep)) + 
+ne_1 <- ggplot(NE_m, aes(x=gen, y=geom_mean_ne, color=sam, alpha=rep)) + 
   geom_line() +
   scale_alpha_discrete(range = c(0.4,0.4)) +
   scale_color_manual(values = colors) +
-  scale_x_continuous(breaks=seq(0, 120, 5))  +
+  scale_x_continuous(breaks=seq(0, 120, 10))  +
   xlab("Generation") +
   ylab("Geometric Mean Ne") +
   ggtitle("") +
   guides(alpha = "none") +
   theme(panel.background = element_blank(),
-        panel.border = element_rect(color = "black", fill = NA))
+        panel.border = element_rect(color = "black", fill = NA),
+        legend.position = "bottom")
 
+ggsave("ne_1.png", plot=ne_1, path ="/Users/annamariacalderon/Desktop",
+       width = 6, height = 6, units = "in", dpi = 300)
 
-
+#Macrochromosomes
 colors_mac=c("#ace54e","#4eabe5")
-
-ggplot(NE_m_mac, aes(x=gen, y=geom_mean_ne, color=sam, alpha=rep)) + 
+ne_2 <- ggplot(NE_m_mac, aes(x=gen, y=geom_mean_ne, color=sam, alpha=rep)) + 
   geom_line() +
   scale_alpha_discrete(range = c(0.4,0.4)) +
   scale_color_manual(values = colors_mac) +
-  scale_x_continuous(breaks=seq(0, 120, 5))  +
+  scale_x_continuous(breaks=seq(0, 120, 10))  +
   xlab("Generation") +
   ylab("Geometric Mean Ne") +
   ggtitle("") +
   guides(alpha = "none") +
   theme(panel.background = element_blank(),
-        panel.border = element_rect(color = "black", fill = NA))
+        panel.border = element_rect(color = "black", fill = NA),
+        legend.position = "bottom")
+
+ggsave("ne_2.png", plot=ne_2, path ="/Users/annamariacalderon/Desktop",
+       width = 6, height = 6, units = "in", dpi = 300)
 ```

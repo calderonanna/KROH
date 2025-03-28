@@ -1,0 +1,117 @@
+---
+title: "plink"
+author: "Anna Maria Calderon"
+date: "2025-03-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Download Data
+
+```{bash}
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/plink/het_1/plink_het1_ind.txt /Users/abc6435/Desktop/KROH/data/roh
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/plink/het_3/plink_het3_ind.txt /Users/abc6435/Desktop/KROH/data/roh
+```
+
+# Setup
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggpubr)
+```
+
+# Import / Modify Data
+
+```{r import_data, include=TRUE}
+setwd("/Users/abc6435/Desktop/KROH/data/roh")
+het1_roh <- read.delim("plink_het1_ind.txt", header=FALSE, sep = " ")
+het3_roh <- read.delim("plink_het3_ind.txt", header=FALSE, sep = " ")
+```
+
+```{r modify_data, include=TRUE}
+#Het1
+colnames(het1_roh) <- c("DROP", "DROP2", "ID", 
+                        "DROP3", "NROH", "SROH",
+                        "AVG", "DROP4")
+het1_roh <- het1_roh[-1,c(3,5:7)]
+rownames(het1_roh) <- NULL
+het1_roh$POP <- "NA"
+het1_roh[1:7,"POP"] <- "contemporary"
+het1_roh[8:13,"POP"] <- "historical"
+het1_roh[,2] <- as.numeric(het1_roh[,2])
+het1_roh[,3] <- as.numeric(het1_roh[,3])
+het1_roh[,4] <- as.numeric(het1_roh[,4])
+
+#Het3
+colnames(het3_roh) <- c("DROP", "DROP2", "ID", 
+                        "DROP3", "NROH", "SROH",
+                        "AVG", "DROP4")
+het3_roh <- het3_roh[-1,c(3,5:7)]
+rownames(het3_roh) <- NULL
+het3_roh$POP <- "NA"
+het3_roh[1:7,"POP"] <- "contemporary"
+het3_roh[8:13,"POP"] <- "historical"
+het3_roh[,2] <- as.numeric(het3_roh[,2])
+het3_roh[,3] <- as.numeric(het3_roh[,3])
+het3_roh[,4] <- as.numeric(het3_roh[,4])
+
+
+```
+
+# Plot 
+
+```{r}
+#Het1
+leg <- c("contemporary" = "gray","historical" = "black")
+ggplot(het1_roh, aes(x=SROH/(1000), y=NROH)) + 
+  geom_point(shape = 21, size = 3, 
+             colour = "black", stroke = 1, aes(fill=POP)) +
+  scale_fill_manual(values=alpha(leg, 1.0)) +
+  xlab("SROH(Mb)") + 
+  ylab("NROH") +
+  scale_y_continuous(breaks = seq(0, 130, 10), limits = c(0,130)) +
+  geom_abline(slope=1, intercept = 0) +
+  theme(
+    axis.text.x = element_text(size=8, color="black"),
+    axis.text.y = element_text(size=8, color="black"),
+    panel.background = element_blank(), 
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.border = element_rect(color = "black", fill=NA), 
+    legend.key = element_blank(),
+    legend.title = element_blank(),
+    legend.position = "bottom",
+    legend.margin = margin(0,0,0,0),
+    legend.box.spacing = unit(0, "pt"))
+
+#Het3
+leg <- c("contemporary" = "gray","historical" = "black")
+ggplot(het3_roh, aes(x=SROH/(1000), y=NROH)) + 
+  geom_point(shape = 21, size = 3, 
+             colour = "black", stroke = 1, aes(fill=POP)) +
+  scale_fill_manual(values=alpha(leg, 1.0)) +
+  xlab("SROH(Mb)") + 
+  ylab("NROH") +
+  scale_x_continuous(breaks = seq(0, 140, 20), limits = c(0,140)) +
+  scale_y_continuous(breaks = seq(0, 250, 20), limits = c(0,250)) +
+  geom_abline(slope=1, intercept = 0) +
+  theme(
+    axis.text.x = element_text(size=8, color="black"),
+    axis.text.y = element_text(size=8, color="black"),
+    panel.background = element_blank(), 
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.border = element_rect(color = "black", fill=NA), 
+    legend.key = element_blank(),
+    legend.title = element_blank(),
+    legend.position = "bottom",
+    legend.margin = margin(0,0,0,0),
+    legend.box.spacing = unit(0, "pt"))
+```

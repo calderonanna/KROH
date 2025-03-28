@@ -17,7 +17,6 @@ rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/d
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-setwd("/Users/abc6435/Desktop/KROH/data/roh")
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -27,6 +26,7 @@ library(ggpubr)
 # Import / Modify Data
 
 ```{r import_data, include=TRUE}
+setwd("/Users/abc6435/Desktop/KROH/data/roh")
 data <- read.table("KIWA_roh_sum_2.txt", header=TRUE, sep = " ")
 data$sample <- rownames(data)
 rownames(data) <- NULL
@@ -63,21 +63,22 @@ T <- data[,c(1, 16, 14:15)]
 colnames(T) <- c("pop", "sample", "nroh", "sroh")
 ```
 
-# Plot Data 
+# Plot Data
 
 ```{r plot_data, include = FALSE}
-leg <- c("contemporary" = "#73DAFF","historical" = "#AF2C8B")
+leg <- c("contemporary" = "gray","historical" = "black")
 
 nroh_sroh <- ggplot(T, aes(x=sroh/(1e6), y=nroh)) + 
   geom_point(shape = 21, size = 3, 
              colour = "black", stroke = 1, aes(fill=pop)) +
-  scale_fill_manual(values=alpha(leg, 0.6)) +
+  scale_fill_manual(values=alpha(leg, 1.0)) +
   xlab("SROH(Mb)") + 
   ylab("NROH") +
   scale_y_continuous(breaks = seq(0, 90, 10), limits = c(0,90)) +
   geom_abline(slope=1, intercept = 0) +
   theme(
-    axis.text = element_text(size=10), 
+    axis.text.x = element_text(size=8, color="black"),
+    axis.text.y = element_text(size=8, color="black"),
     panel.background = element_blank(), 
     panel.grid.major = element_blank(), 
     panel.grid.minor = element_blank(),
@@ -97,7 +98,8 @@ roh_class <- ggplot(data_t, aes(x=class, y=nroh)) +
   ylab("") +
   scale_y_continuous(breaks = seq(0, 90, 10), limits = c(0,90)) +
   theme(
-    axis.text = element_text(size=10), 
+    axis.text.x = element_text(size=8, color="black"),
+    axis.text.y = element_text(size=8, color="black"),
     panel.background = element_blank(), 
     panel.grid.major = element_blank(), 
     panel.grid.minor = element_blank(),
@@ -113,5 +115,6 @@ roh_class <- ggplot(data_t, aes(x=class, y=nroh)) +
 
 ```{r arrange_save, include=FALSE}
 roh_figure <- ggarrange(nroh_sroh, roh_class, nrow=1, ncol=2)
-roh_figure
+ggsave("roh.png", plot=roh_figure, path ="/Users/abc6435/Desktop",
+       width = 5, height = 2.5, units = "in", dpi = 300)
 ```

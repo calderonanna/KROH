@@ -17,17 +17,17 @@ library(knitr)
 
 ```{bash}
 #Download Files to local
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/Ne/* /Users/annamariacalderon/Desktop/KROH/data/gone
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone/results/Ne/* /Users/abc6435/Desktop/KROH/data/gone
 ```
 
 ## Import Data
 
 ```{r import_data, include=FALSE}
-setwd("/Users/annamariacalderon//Desktop/KROH/data/gone")
+setwd("/Users/abc6435/Desktop/KROH/data/gone")
 
 ne_files <- list.files(pattern="Output_Ne_*")
 ne_list <- list()
-for (i in 1:59) {
+for (i in 1:length(ne_files)) {
   ne_list[[i]] <- read.table(ne_files[i], header=TRUE)
 }
 
@@ -37,13 +37,87 @@ for (i in 1:59) {
 
 ```{r modify_data}
 #Subset the frist 120 generations and bind datasets
-for (i in 1:59) {
-  ne_list[[i]] <- ne_list[[i]][1:120,]
+for (i in 1:length(ne_files)) {
+  ne_list[[i]] <- ne_list[[i]][5:100,]
   colnames(ne_list[[i]]) <- c("gen",paste0("r",i))
 }
 Ne <- do.call(cbind, ne_list)
 Ne <- Ne[, !duplicated(colnames(Ne))]
 
+#Calculate 5-95%ile across repititions
+quant_1 <- apply(Ne[,-1], 1, quantile, probs=c(0.10))
+quant_2 <- apply(Ne[,-1], 1, quantile, probs=c(0.90))
+mean <- apply(Ne[,-1], 1, mean)
+median <- apply(Ne[,-1], 1, median)
+gen <- seq(min(Ne$gen),max(Ne$gen),1)
+ne_stats <- as.data.frame(cbind(gen,mean,median,quant_1,quant_2))
+
+
+#Melt df
+Ne_m <- melt(Ne, id.vars = "gen", value.name = "geom_mean_ne", variable.name = "rep")
+```
+
+## Plot Ne Estimates
+
+<https://www.tidyverse.org/blog/2024/02/ggplot2-3-5-0-legends/>
+
+```{r plot, echo=FALSE}
+gone <- ggplot(ne_stats, aes(x=gen)) + 
+  geom_ribbon(aes(ymin = quant_1, ymax = quant_2), 
+              fill="#6874ff", alpha=0.5) +
+  geom_line(aes(y=mean, color="Mean"), linewidth=1) +
+  geom_line(aes(y=median, color="Median"), linewidth=1) +
+  geom_line(data = Ne_m, 
+              aes(x = gen, y = geom_mean_ne, alpha=rep), 
+              color = "#0013fb", linewidth = 0.05) +
+  scale_alpha_discrete(range = c(0.4,0.4)) +
+  scale_x_continuous(breaks=seq(0, 120, 10),
+                     expand=c(0, 0), limits=c(min(Ne$gen), NA)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, NA)) +
+  scale_color_manual(values = c("#6874ff","#b20000" )) +
+  xlab("Generation") +
+  ylab("Geometric Mean Ne") +
+  ggtitle("") +
+  guides(alpha = "none") +
+  theme(panel.background = element_blank(),
+        legend.title = element_blank(),
+        legend.key = element_blank(),
+        legend.position = "right", 
+        legend.box.spacing = unit(1,"pt"),
+        axis.text.x = element_text(size=8, color="black"),
+        axis.text.y = element_text(size=8, color="black"),
+        panel.border = element_rect(color = "black", fill = NA))
+
+ggsave("gone.png", plot=gone, path ="/Users/abc6435/Desktop",
+       width = 5, height = 4, units = "in", dpi = 300)
+
+#Plot Median
+gone_med <- ggplot(ne_stats, aes(x=gen, y=median)) + 
+  geom_line(linewidth=1, color="#b20000") +
+  scale_x_continuous(breaks=seq(0, 120, 10),
+                     expand = c(0, 0), limits = c(0, NA)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, NA)) +
+  xlab("Generation") +
+  ylab("Geometric Mean Ne") +
+  ggtitle("") +
+  guides(alpha = "none") +
+  theme(panel.background = element_blank(),
+        legend.title = element_blank(),
+        legend.key = element_blank(),
+        legend.position = "right", 
+        legend.box.spacing = unit(1,"pt"),
+        axis.text.x = element_text(size=8, color="black"),
+        axis.text.y = element_text(size=8, color="black"),
+        panel.border = element_rect(color = "black", fill = NA))
+
+ggsave("gone_med.png", plot=gone_med, path ="/Users/abc6435/Desktop",
+       width = 4, height = 4, units = "in", dpi = 300)
+
+```
+
+## Sensitivity Training Old Code
+
+```{r}
 #Melt df
 Ne_m <- melt(Ne, id.vars = "gen", value.name = "geom_mean_ne", variable.name = "rep")
 
@@ -77,38 +151,7 @@ NE_m <- rbind(r1_10, r11_20, r21_30, r31_40)
 NE_m_mac <- rbind(r41_50, r51_59)
 ```
 
-# Ne Distributions by Generation
-
 ```{r}
-ggplot(subset(NE_m, gen %in% 5), aes(x = geom_mean_ne)) +
-  geom_histogram(alpha = 0.5, position = "identity", fill="blue") +
-  labs(x = "Ne Estimate", y = "Frequency", 
-       title = "Distribution of Ne Estimates 120",
-       fill = "Generation") +
-  theme_minimal()
-```
-
-## Plot Ne Estimates
-
-```{r plot, echo=FALSE}
-# All chromosomes
-colors=c("#4cae00","#ae00a3","#5919c0","#0f5a58")
-ne_1 <- ggplot(NE_m, aes(x=gen, y=geom_mean_ne, color=sam, alpha=rep)) + 
-  geom_line() +
-  scale_alpha_discrete(range = c(0.4,0.4)) +
-  scale_color_manual(values = colors) +
-  scale_x_continuous(breaks=seq(0, 120, 10))  +
-  xlab("Generation") +
-  ylab("Geometric Mean Ne") +
-  ggtitle("") +
-  guides(alpha = "none") +
-  theme(panel.background = element_blank(),
-        panel.border = element_rect(color = "black", fill = NA),
-        legend.position = "bottom")
-
-ggsave("ne_1.png", plot=ne_1, path ="/Users/annamariacalderon/Desktop",
-       width = 6, height = 6, units = "in", dpi = 300)
-
 #Macrochromosomes
 colors_mac=c("#ace54e","#4eabe5")
 ne_2 <- ggplot(NE_m_mac, aes(x=gen, y=geom_mean_ne, color=sam, alpha=rep)) + 

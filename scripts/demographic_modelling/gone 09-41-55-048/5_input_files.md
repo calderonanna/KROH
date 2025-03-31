@@ -84,7 +84,7 @@ awk 'BEGIN {OFS="\t"} {print $1, $2="SNP"NR, $3, $4}' R0.map > temp_R0 && mv -f 
 
 ## Replicate Script
 ```bash
-for i in $(seq 1 100); do
+for i in $(seq 101 300); do
     rm -rf $scripts_folder/map_ped_R${i}.bash
     cp $scripts_folder/map_ped_R0.bash $scripts_folder/map_ped_R${i}.bash
     sed -i "s/\bR0\b/R${i}/g" $scripts_folder/map_ped_R${i}.bash

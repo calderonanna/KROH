@@ -33,7 +33,7 @@ done
 
 ## Replicate Script
 ```bash
-for i in $(seq 1 100); do
+for i in $(seq 101 300); do
     rm -rf $scripts_folder/gone_sample_sites_R${i}.bash
     cp $scripts_folder/gone_sample_sites_R0.bash $scripts_folder/gone_sample_sites_R${i}.bash
     sed -i "s/R0/R${i}/g" $scripts_folder/gone_sample_sites_R${i}.bash

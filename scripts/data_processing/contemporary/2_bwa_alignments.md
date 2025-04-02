@@ -75,7 +75,7 @@ if [ ! -d "$data_folder/sam" ]; then
 fi
 
 #Create a script for each contemporary file
-for i in `cat $scripts_folder/cKIWA_IDS.txt`; do 
+for i in `cat $scripts_folder/HOWA_AMRE_cKIWA_IDS.txt`; do 
     cat <<EOT > $scripts_folder/bwa_alignments_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
@@ -103,8 +103,8 @@ EOT
 done
 
 #Submit Each Script
-for i in $scripts_folder/bwa_alignments*; do
-    sbatch ${i}
+for i in `cat $scripts_folder/HOWA_AMRE_cKIWA_IDS.txt`; do
+    sbatch $scripts_folder/bwa_alignments_${i}.bash;
 done
 
 #Check Job

@@ -31,9 +31,7 @@ done
 
 ```bash
 gone="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gone"
-mkdir $gone/results/Ne
-
-for i in $(seq 67 77); do
+for i in $(seq 78 300); do
     cp $gone/results/R${i}/Output_Ne_R${i} $gone/results/Ne; 
 done
 ```

@@ -23,6 +23,8 @@ for i in `cat ~/SzpiechLab/abc6435/KROH/scripts/cKIWA_IDS.txt`; do
     mv ~/SzpiechLab/abc6435/WarblerROH/${i}/fastq/${i}_* /storage/home/abc6435/SzpiechLab/abc6435/KROH/data/fastq
 done
 
+mv /storage/home/abc6435/SzpiechLab/abc6435/WROH/data/fastq/* /storage/home/abc6435/SzpiechLab/abc6435/KROH/data/fastq
+
 ```
 
 ## Create Scripts
@@ -38,7 +40,7 @@ if [ ! -d "$data_folder/trim" ]; then
 fi
 
 #Run loop
-for i in `cat $scripts_folder/KIWA_IDS.txt`; do 
+for i in `cat $scripts_folder/IDS.txt`; do 
     cat <<EOT > $scripts_folder/trim_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
@@ -59,13 +61,13 @@ EOT
 done
 
 #Submit Jobs
-for i in $scripts_folder/trim_*.bash; do
-    sbatch ${i}
+for i in `cat $scripts_folder/HOWA_AMRE_IDS.txt`; do 
+    sbatch $scripts_folder/trim_${i}.bash;
 done
 ```
 
 ## Error Output
 Just making sure jobs were not killed due to insufficient memory
 ```bash
-ls -lhat trim*err* | grep "Dec 11" | awk '{print $9}' | xargs grep "OOM"
+ls -lhat trim*err* | grep "Apr" | awk '{print $9}' | xargs grep "OOM"
 ```

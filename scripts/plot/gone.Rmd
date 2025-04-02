@@ -38,7 +38,7 @@ for (i in 1:length(ne_files)) {
 ```{r modify_data}
 #Subset the frist 120 generations and bind datasets
 for (i in 1:length(ne_files)) {
-  ne_list[[i]] <- ne_list[[i]][5:100,]
+  ne_list[[i]] <- ne_list[[i]][1:120,]
   colnames(ne_list[[i]]) <- c("gen",paste0("r",i))
 }
 Ne <- do.call(cbind, ne_list)

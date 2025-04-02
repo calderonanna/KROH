@@ -19,7 +19,7 @@ if [ ! -d "$data_folder/bam" ]; then
 fi
 
 #Run loop
-for i in `cat $scripts_folder/cKIWA_IDS.txt`; do 
+for i in `cat $scripts_folder/HOWA_AMRE_IDS.txt`; do 
     cat <<EOT > $scripts_folder/sam_to_bam_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1

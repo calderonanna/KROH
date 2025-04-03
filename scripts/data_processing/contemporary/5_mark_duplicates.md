@@ -1,7 +1,4 @@
 # Marking Duplicated Reads In Sorted BAM Files
-Unless you specify, MarkDuplicates does not remove the duplicates, but rather flags them. Removing duplicates would reduce coverage. By flagging them, downstream GATK tools can ignore the reads, and most GATK tools will ignore the duplicates by default. 
-
-## Create Scripts
 `java -Xmx[ng] -jar picard.jar MarkDuplicates I=input.bam O=marked_duplicates.bam M=marked_dup_metrics.txt MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000`
 
 - `-Xmx[ng]`: Memory where n is the number of gigabytes. Must match PBS/SLURM header and if you don't give it sufficient memory, it will kill your job. 
@@ -11,20 +8,20 @@ Unless you specify, MarkDuplicates does not remove the duplicates, but rather fl
 - `MAX_FILE_HANDLES_FOR_READ_ENDS_MAP=8000``: Maximum number of file handles to keep open when spilling read ends to disk. Set this number a little lower than the per-process maximum number of file that may be open. This number can be found by executing the 'ulimit -n' command on a Unix system. Default value: 8000. This option can be set to 'null' to clear the default value. 
 
 Note: When I ran this, it took about 25-40 minutes and a total memory of 16GB. 
-
+## Create Scripts
 ```bash
 #Set Variables
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
 
 #Run Loop
-for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
+for i in `cat $scripts_folder/HOWA_AMRE_IDS.txt`; do
     cat<<EOT > $scripts_folder/mark_duplicates_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --mem=20GB
-#SBATCH --time=24:00:00
+#SBATCH --time=5:00:00
 #SBATCH --account=zps5164_sc
 #SBATCH --job-name=mark_duplicates_${i}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
@@ -40,8 +37,8 @@ EOT
 done
 
 #Submit each job
-for i in $scripts_folder/mark_duplicates_*.bash; do
-    sbatch ${i}
+for i in `cat $scripts_folder/HOWA_AMRE_IDS.txt`; do
+    sbatch $scripts_folder/mark_duplicates_${i}.bash
 done
 
 #Check Job Status

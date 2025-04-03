@@ -1,19 +1,16 @@
-
 # Sorting BAM files
-When you align FASTQ files with all current sequence aligners, the alignments produced are in random order with respect to their position in the reference genome. In other words, the BAM file is in the order that the sequences occurred in the input FASTQ files. It must be sorted such that the alignments occur in “genome order”. That is, ordered positionally based upon their alignment coordinates on each chromosome.
-
-## Create Scripts
 `samtools sort sample.sam -T sample_temp.bam -o sample_sorted.bam`
 - `-T`: Write temporary files. 
 - `-o`: Write the final sorted output to the specified file. 
 
+## Create Scripts
 ```bash
 #Set Variables
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
 
 #Run Loop
-for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
+for i in `cat $scripts_folder/HOWA_AMRE_IDS.txt`; do 
     cat <<EOT > $scripts_folder/sort_bam_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
@@ -34,8 +31,8 @@ EOT
 done
 
 #Submit each job
-for i in $scripts_folder/sort_bam_*.bash; do
-    sbatch ${i}
+for i in `cat $scripts_folder/HOWA_AMRE_IDS.txt`; do
+    sbatch $scripts_folder/sort_bam_${i}.bash
 done
 
 #Check Job Status

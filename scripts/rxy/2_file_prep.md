@@ -13,6 +13,32 @@ git clone https://github.com/szpiech/Rxy-kin.git
 echo 'export PATH=$PATH:/storage/home/abc6435/SzpiechLab/bin/Rxy-kin/Rxy-kin.py' >> ~/.bashrc
 source ~/.bashrc
 ```
+
+## Obtain Private
+We defined private sites as those in which at least one sample in a single species had an alternate allele, while the rest contained reference alleles. 
+
+`./get_only_private_alt_alleles your.vcf.gz pop_ids.txt`
+-`vcf`: Must be zipped
+-`pop_ids`: a text file with species sample names on each row 
+```bash
+
+#filter out any missing sites
+bcftools view -i 'N_MISSING<1' $data/vcf/$vcf -Oz -o $data/rxy/nomissing.vcf.gz 
+bcftools annotate -x INFO,FORMAT $data/rxy/nomissing.vcf.gz -Oz -o $data/rxy/nomissing_gt.vcf.gz
+
+#Obtain private allele sites
+./get_only_private_alt.py ~/SzpiechLab/abc6435/WarblerROH/vcf/Setophaga/setophaga_filtered_isec_nomono.vcf.gz /storage/home/abc6435/SzpiechLab/abc6435/hWROH/scripts/cKIWA_IDS.txt
+
+#Excess Heterozygosity (>80%)
+bcftools view -e 'COUNT(GT="het")>=10' $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss.vcf.gz -Oz -o $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet.vcf.gz
+
+#Remove Monomorphic Sites (would t
+bcftools view $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto.vcf.gz -c 1:minor -Oz -o $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto_maf.vcf.gz
+
+
+nohup tabix kirtlandii_private.vcf.gz
+```
+
 ## Obtain Input Files
 ![alt text](../../diagrams/coordinate_systems.png)
 ```bash
@@ -25,10 +51,6 @@ scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 #ID Files 
 awk '{print $1, $2="A"}' OFS="\t" $scripts/cKIWA_IDS.txt > $data/pop_A.txt
 awk '{print $1, $2="B"}' OFS="\t" $scripts/hKIWA_IDS.txt > $data/pop_B.txt
-
-#VCF File
-bcftools view -i 'N_MISSING<1' $data/vcf/$vcf -Oz -o $data/rxy/nomissing.vcf.gz 
-bcftools annotate -x INFO,FORMAT $data/rxy/nomissing.vcf.gz -Oz -o $data/rxy/nomissing_gt.vcf.gz
 
 #Intergenic Sites
 sed '1d' $data/rxy/deleterious.txt >> $data/rxy/genic_sites.bed

@@ -20,8 +20,8 @@ We defined private sites as those in which at least one sample in a single speci
 `./get_only_private_alt_alleles your.vcf.gz pop_ids.txt`
 -`vcf`: Must be zipped
 -`pop_ids`: a text file with species sample names on each row 
-```bash
 
+```bash
 #filter out any missing sites
 bcftools view -i 'N_MISSING<1' $data/vcf/$vcf -Oz -o $data/rxy/nomissing.vcf.gz 
 bcftools annotate -x INFO,FORMAT $data/rxy/nomissing.vcf.gz -Oz -o $data/rxy/nomissing_gt.vcf.gz
@@ -32,7 +32,7 @@ bcftools annotate -x INFO,FORMAT $data/rxy/nomissing.vcf.gz -Oz -o $data/rxy/nom
 #Excess Heterozygosity (>80%)
 bcftools view -e 'COUNT(GT="het")>=10' $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss.vcf.gz -Oz -o $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet.vcf.gz
 
-#Remove Monomorphic Sites (would t
+#Remove Monomorphic Sites (skeptical)
 bcftools view $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto.vcf.gz -c 1:minor -Oz -o $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto_maf.vcf.gz
 
 

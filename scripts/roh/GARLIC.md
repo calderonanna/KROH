@@ -1,25 +1,43 @@
 # ROH Calling with GARLIC
+## Filter VCF
+```bash
+#Set Variables
+vcf_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/vcf"
+work_dir="storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic"
+
+#Exclude AMRE, HOWA, and hKIWA 759877 
+bcftools view -S $scripts/KIWA_IDS_e759877.txt $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi_qual_dp.vcf.gz -Oz -o $work_dir/chKIWA_tags_auto_bi_qual_dp.vcf.gz
+
+#Missing Sites
+bcftools view -i 'N_MISSING<2' $work_dir/chKIWA_tags_auto_bi_qual_dp.vcf.gz -Oz -o $work_dir/chKIWA_tags_auto_bi_qual_dp_nmiss.vcf.gz
+
+#Excess Heterozygosity (>80%)
+bcftools view -e 'COUNT(GT="het")>=10' $work_dir/chKIWA_tags_auto_bi_qual_dp_nmiss.vcf.gz -Oz -o $work_dir/chKIWA_tags_auto_bi_qual_dp_nmiss_exhet.vcf.gz
+```
 
 ## Input Files
 ```bash
 salloc --nodes 1 --ntasks 1 --mem=50G --time=9:00:00 
+
 #Set Variables
-data="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
-vcf="KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto_maf.vcf.gz"
+work_dir="storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic"
+vcf="chKIWA_tags_auto_bi_qual_dp_nmiss_exhet.vcf.gz"
 shared="/storage/home/abc6435/SzpiechLab/shared"
 
-#.tped and .tfam
-plink --vcf $data/vcf/$vcf --recode transpose --double-id --chr-set 30 --allow-extra-chr --out $data/roh/garlic/KIWA
+cd $work_dir
 
-awk '$1="kirtlandii"' $data/roh/garlic/KIWA.tfam > $data/roh/garlic/temp && mv -f $data/roh/garlic/temp $data/roh/garlic/KIWA.tfam
+#.tped and .tfam
+plink --vcf $vcf --recode transpose --double-id --chr-set 30 --allow-extra-chr --out KIWA
+
+awk '$1="kirtlandii"' KIWA.tfam > temp && mv -f temp KIWA.tfam
 
 #.tgls
-$shared/create_tgls_from_vcf.py $data/vcf/$vcf > $data/roh/garlic/KIWA.tgls
+$shared/create_tgls_from_vcf.py $vcf > KIWA.tgls
 
 #centromere.txt
-bcftools query -f '%CHROM\n' $data/vcf/$vcf_c | uniq > $data/roh/garlic/centromere.txt
+bcftools query -f '%CHROM\n' $vcf | uniq > centromere.txt
 
-awk '$1=$1" 0 1"' $data/roh/garlic/centromere.txt > $data/roh/garlic/temp && mv -f $data/roh/garlic/temp $data/roh/garlic/centromere.txt
+awk '$1=$1" 0 1"' centromere.txt > temp && mv -f temp $data/centromere.txt
 ```
 
 ## Run GARLIC

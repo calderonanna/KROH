@@ -20,14 +20,14 @@ if [ ! -d "$data_folder/seq_stats" ]; then
 fi
 
 #Run loop
-for i in `cat $scripts_folder/KIWA_IDS.txt`; do
+for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
     cat<<EOT > $scripts_folder/calculate_coverage_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --mem=100MB
+#SBATCH --mem=4GB
 #SBATCH --time=05:00:00
-#SBATCH --account=zps5164_sc
+#SBATCH --account=open
 #SBATCH --job-name=calculate_coverage_${i}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.err
 #SBATCH --output=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
@@ -36,10 +36,10 @@ for i in `cat $scripts_folder/KIWA_IDS.txt`; do
 data_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
 
 #Extract Depth
-samtools depth -a \$data_folder/bam/${i}_marked.bam > \$data_folder/seq_stats/${i}_depth.txt
+#samtools depth -a \$data_folder/bam/${i}_marked.bam > #\$data_folder/seq_stats/${i}_depth.txt
 
 #Remove mito, scafolds, and chrz
-sed -i '/^scaffold/d; /^mito/d; /^chrz/d' \$data_folder/seq_stats/${i}_depth.txt
+#sed -i '/^scaffold/d; /^mito/d; /^chrz/d' \$data_folder/#seq_stats/${i}_depth.txt
 
 #Calculate Average Depth
 awk '{sum+=\$3} END { print "${i} " sum/NR }' \$data_folder/seq_stats/${i}_depth.txt >> \$data_folder/seq_stats/autosomal_coverage.txt
@@ -47,7 +47,7 @@ EOT
 done
 
 #Submit Jobs
-for i in `cat $scripts_folder/KIWA_IDS.txt`; do
+for i in `cat $scripts_folder/cKIWA_IDS.txt`; do
     sbatch $scripts_folder/calculate_coverage_${i}.bash
 done
 

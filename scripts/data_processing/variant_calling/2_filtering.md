@@ -7,9 +7,9 @@ nano $scripts_folder/filter_variants.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --mem=20GB
-#SBATCH --time=80:00:00
-#SBATCH --account=zps5164_sc
+#SBATCH --mem=10GB
+#SBATCH --time=08:00:00
+#SBATCH --account=open
 #SBATCH --job-name=filter_variants_KIWA
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
 
@@ -36,6 +36,19 @@ bcftools view -m2 -M2 -v snps $vcf_dir/chKIWA_AMRE_HOWA_tags_auto.vcf.gz -Oz -o 
 
 #Quality and Depth
 bcftools filter -e 'QUAL<20 || INFO/DP<6' $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi.vcf.gz -Oz -o $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi_qual_dp.vcf.gz
+
+
+########## Delete this later
+#Set Variables
+vcf_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/vcf"
+work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic"
+scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+
+#Exclude AMRE, HOWA, and hKIWA 759877 
+bcftools view -S $scripts/KIWA_IDS_e759877.txt $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi_qual_dp.vcf.gz -Oz -o $work_dir/chKIWA_tags_auto_bi_qual_dp.vcf.gz
+
+#Missing Sites
+bcftools view -i 'N_MISSING<2' $work_dir/chKIWA_tags_auto_bi_qual_dp.vcf.gz -Oz -o $work_dir/chKIWA_tags_auto_bi_qual_dp_nmiss.vcf.gz
 ```
 
 

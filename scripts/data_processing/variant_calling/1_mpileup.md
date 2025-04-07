@@ -1,8 +1,7 @@
 # Call Variants samtools mpileup
 Lefouili and Nam 2022 shows the outerperformace of mpileup over GATK HaplotypeCallder after hard filtering. GATK VQSR however was show to outerperform Bcftools mpileup only when coverage is low. Given that I'm calling both contemporary and historical together, I'm going to use mpileup. I'm also using mpileup when calling variants used in GONE, so figure its best to not mix and match tools. 
  
-
-## Alignments
+## Create Script
 ```bash
 #Set Variables
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
@@ -13,7 +12,7 @@ nano $scripts_folder/call_variants.bash
 #SBATCH --mem=50GB
 #SBATCH --time=80:00:00
 #SBATCH --account=zps5164_sc
-#SBATCH --job-name=call_variants_KIWA
+#SBATCH --job-name=call_variants
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
 
 #Set Variables
@@ -25,5 +24,10 @@ cd /storage/home/abc6435/SzpiechLab/abc6435/KROH/data/bam
 realpath *marked.bam > $vcf_dir/bam_list.txt
 
 #Call Variants
-bcftools mpileup -f $ref -b $vcf_dir/bam_list.txt | bcftools call -f GQ -mv --ploidy 2 -Oz -o $vcf_dir/chKIWA_AMRE_HOWA.vcf.gz
+bcftools mpileup \
+    -f $ref \
+    -b $vcf_dir/bam_list.txt \
+    -a FORMAT/DP,FORMAT/AD,FORMAT/ADF,FORMAT/ADR | \
+    bcftools call -f GQ -mv --ploidy 2 -Oz -o $vcf_dir/chKIWA_AMRE_HOWA.vcf.gz
+
 ```

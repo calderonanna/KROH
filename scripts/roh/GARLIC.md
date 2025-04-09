@@ -3,22 +3,28 @@
 ```bash
 salloc --nodes=1 --ntasks=1 --mem=10GB --time=5:00:00
 
-#Set Variables
+###Set Variables
 vcf_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/vcf"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic"
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
-#Exclude AMRE, HOWA, and hKIWA 759877 
+#Exclude AMRE, HOWA
 bcftools view -S $scripts/KIWA_IDS_e759877.txt $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi_qual_dp.vcf.gz -Oz -o $work_dir/chKIWA_tags_auto_bi_qual_dp.vcf.gz
 
-#Missing Sites
-bcftools view -i 'N_MISSING<2' $work_dir/chKIWA_tags_auto_bi_qual_dp.vcf.gz -Oz -o $work_dir/chKIWA_tags_auto_bi_qual_dp_nmiss.vcf.gz
+#Genotype Read Depth (require a minimum of 10 supporting reads; Kardos and Waples 2024) and then set to missing iwht -S .
+bcftools query -f '%CHROM\t%POS\t[%GT\t]\n' $work_dir/chKIWA_tags_auto_bi_qual_dp_nmiss.vcf.gz | less -S
 
-#Genotype Read Depth (require a minimum of 10 supporting reads; Kardos and Waples 2024)
-bcftools query -f '%CHROM\t%POS\t[%GT\t]\n' $work_dir/chKIWA_tags_auto_bi_qual_dp_nmiss.vcf.gz | less -S 
+## Missing
+bcftools view -e 'N_MISSING>3' citrina_gtGQ.vcf.gz
 
-#Excess Heterozygosity (>80%)
-bcftools view -e 'COUNT(GT="het")>=10' $work_dir/chKIWA_tags_auto_bi_qual_dp_nmiss.vcf.gz -Oz -o $work_dir/chKIWA_tags_auto_bi_qual_dp_nmiss_exhet.vcf.gz
+#Excess Heterozygosity (75%)
+bcftools view -e 'COUNT(GT="het")>=10' ~/SzpiechLab/abc6435/WarblerROH/vcf/citrina.vcf.gz -Oz -o ~/SzpiechLab/abc6435/WarblerROH/vcf/citrina_ExHet.vcf.gz
+
+#Allele Balance
+bcftools filter -i 'FMT/AB > 0.25 && FMT/AB < 0.75' --set-GT 'miss' input.vcf -Oz -o filtered.vcf.gz
+
+## Missing
+bcftools view -e 'N_MISSING>3' citrina_gtGQ.vcf.gz
 ```
 
 ## Input Files

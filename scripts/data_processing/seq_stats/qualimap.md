@@ -11,14 +11,9 @@ module load all
 data="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
 samples="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts/KIWA_IDS.txt"
 
-#Subset mito 
-for i in `cat $samples`; do 
-    samtools view -b $data/bam/${i}_marked.bam mito > $data/bam/${i}_mito.bam;
-done 
-
 #Run qualimap
 for i in `cat $samples`; do
-    qualimap bamqc -bam $data/bam/${i}_mito.bam -outdir $data/seq_stats/${i}_qualimap;
+    qualimap bamqc -bam $data/bam/${i}_marked.bam -outdir $data/seq_stats/${i}_qualimap;
 done
 
 rsync abc6435@submit.hpc.psu.edu:~/SzpiechLab/abc6435/KROH/data/seq_stats/29779_qualimap/images_qualimapReport/* ~/Desktop

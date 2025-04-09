@@ -20,8 +20,6 @@ vcf_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/vcf"
 #Add All Tags
 bcftools +fill-tags $vcf_dir/chKIWA_AMRE_HOWA.vcf.gz -Oz -o $vcf_dir/chKIWA_AMRE_HOWA_tags.vcf.gz -- -t all
 
-#Remove historical sample 759877
-
 #Include only autosomes
 bcftools view -h $vcf_dir/chKIWA_AMRE_HOWA_tags.vcf.gz | grep '^##contig=<ID=chr' >> $vcf_dir/chrs.txt
 sed -i 's/##contig=<ID=//g' $vcf_dir/chrs.txt
@@ -40,7 +38,7 @@ bcftools view -m2 -M2 -v snps $vcf_dir/chKIWA_AMRE_HOWA_tags_auto.vcf.gz -Oz -o 
 bcftools filter -e 'QUAL<20 || INFO/DP<6' $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi.vcf.gz -Oz -o $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi_qual_dp.vcf.gz
 
 #ADR/ADF 
-bcftools filter -i 'FORMAT/ADF[1] >= 2 && FORMAT/ADR[1] >= 2' input.vcf -o filtered.vcf
+bcftools filter -i 'FORMAT/ADF[1] >= 2 && FORMAT/ADR[1] >= 2' $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi_qual_dp.vcf.gz -Oz -o $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi_qual_dp_adf_adr.vcf.gz
 ```
 
 

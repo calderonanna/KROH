@@ -8,7 +8,7 @@ vcf_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/vcf"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic"
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
-#Exclude AMRE, HOWA
+#Exclude AMRE, HOWA, and hKIWA-759877
 bcftools view -S $scripts/KIWA_IDS_e759877.txt $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi_qual_dp.vcf.gz -Oz -o $work_dir/chKIWA_tags_auto_bi_qual_dp.vcf.gz
 
 #Genotype Read Depth (require a minimum of 10 supporting reads; Kardos and Waples 2024) and then set to missing iwht -S .

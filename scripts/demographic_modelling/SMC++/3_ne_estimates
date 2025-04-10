@@ -1,0 +1,18 @@
+# Estimate Ne
+
+```bash
+#Set Variables 
+bin="/storage/home/abc6435/SzpiechLab/bin"
+work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/smc++"
+
+cd $work_dir
+singularity exec --bind $PWD:/mnt $bin/smcpp.sif \
+    smc++ estimate 1.4e-9 \
+    --polarization-error 0.5 \
+    $work_dir/chr1_cKIWA.smc.gz \
+    $work_dir/chr2_cKIWA.smc.gz \
+    $work_dir/chr3_cKIWA.smc.gz \
+    $work_dir/chr4_cKIWA.smc.gz \
+    -o $work_dir/results 
+
+

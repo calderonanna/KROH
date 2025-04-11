@@ -1,75 +1,30 @@
 # ROH Calling with GARLIC
-## Filter VCF
-```bash
-salloc --nodes=1 --ntasks=1 --mem=10GB --time=5:00:00
-
-###Set Variables
-vcf_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/vcf"
-work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic"
-scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
-
-#Exclude AMRE, HOWA, and hKIWA-759877
-bcftools view \
-    -S $scripts/KIWA_IDS_e759877.txt \
-    $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi_qual.vcf.gz \
-    -Oz -o $work_dir/chKIWA_tags_auto_bi_qual.vcf.gz
-
-#Genotype Read Depth
-bcftools filter \
-    -e 'FORMAT/DP < 7' \
-    --set-GTs . \
-    $work_dir/chKIWA_tags_auto_bi_qual.vcf.gz \
-    -Oz -o $work_dir/chKIWA_tags_auto_bi_qual_gtdp.vcf.gz
-
-# Missing
-bcftools view -e \
-    'N_MISSING>3' \
-    $work_dir/chKIWA_tags_auto_bi_qual_gtdp.vcf.gz \
-    -Oz -o $work_dir/chKIWA_tags_auto_bi_qual_gtdp_nmiss.vcf.gz
-
-#Excess Heterozygosity (75%)
-bcftools view -e \
-    'COUNT(GT="het")>=10' \
-    $work_dir/chKIWA_tags_auto_bi_qual_gtdp_nmiss.vcf.gz \
-    -Oz -o $work_dir/chKIWA_tags_auto_bi_qual_gtdp_nmiss_exhet.vcf.gz
-
-#🌯Allele Balance
-bcftools filter -i \
-    'FMT/AB > 0.25 && FMT/AB < 0.75' \
-    --set-GT . \
-    input.vcf \
-    -Oz -o filtered.vcf.gz
-
-# Missing
-bcftools view -e \
-    'N_MISSING>3' \
-    input \
-    -Oz -o output
-```
 
 ## Input Files
 ```bash
 salloc --nodes 1 --ntasks 1 --mem=50G --time=9:00:00 
 
 #Set Variables
-work_dir="storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic"
-vcf="chKIWA_tags_auto_bi_qual_dp_nmiss_exhet.vcf.gz"
+vcf_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/vcf"
+vcf="chKIWA_tags_auto_bi_qual_gtdp_nmiss_exhet.vcf.gz"
 shared="/storage/home/abc6435/SzpiechLab/shared"
 
 cd $work_dir
 
 #.tped and .tfam
-plink --vcf $vcf --recode transpose --double-id --chr-set 30 --allow-extra-chr --out KIWA
+plink --vcf $vcf_dir/$vcf --recode transpose --double-id --chr-set 30 --allow-extra-chr --out KIWA
 
 awk '$1="kirtlandii"' KIWA.tfam > temp && mv -f temp KIWA.tfam
 
 #.tgls
-$shared/create_tgls_from_vcf.py $vcf > KIWA.tgls
+$shared/create_tgls_from_vcf.py $vcf_dir/$vcf > KIWA.tgls
 
 #centromere.txt
-bcftools query -f '%CHROM\n' $vcf | uniq > centromere.txt
+bcftools query -f \
+    '%CHROM\n' $vcf_dir/$vcf \
+    | uniq > centromere.txt
 
-awk '$1=$1" 0 1"' centromere.txt > temp && mv -f temp $data/centromere.txt
+awk '$1=$1" 0 1"' centromere.txt > temp && mv -f temp centromere.txt
 ```
 
 ## Run GARLIC
@@ -79,7 +34,7 @@ work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic"
 centromere="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic/centromere.txt"
 
 #run 
-garlic --auto-winsize --auto-overlap-frac --winsize 100 --tped $work_dir/KIWA.tped --tfam $work_dir/KIWA.tfam --tgls $work_dir/KIWA.tgls --gl-type GQ --resample 40 --centromere $centromere --size-bounds 1000000 2000000 3000000 4000000 5000000 --out $work_dir/KIWA
+garlic --auto-winsize true --overlap-frac 0.05 --max-gap 1000000 --winsize 100 --tped $work_dir/KIWA.tped --tfam $work_dir/KIWA.tfam --tgls $work_dir/KIWA.tgls --gl-type GQ --resample 100 --centromere $centromere --size-bounds 1000000 2000000 3000000 4000000 5000000 --out $work_dir/KIWA
 
 #Remove any ROH < 0.5MB
 cat $work_dir/KIWA.roh.bed  | awk -F '\t' '$5>500000 || /track/ {print$0}' > $work_dir/KIWA_0.5MB.roh.bed

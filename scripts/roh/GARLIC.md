@@ -6,8 +6,9 @@ salloc --nodes 1 --ntasks 1 --mem=50G --time=9:00:00
 
 #Set Variables
 vcf_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/vcf"
-vcf="chKIWA_tags_auto_bi_qual_gtdp_nmiss_exhet.vcf.gz"
+vcf="chKIWA_tags_auto_bi_rd_gq_nmiss_exhet.vcf.gz"
 shared="/storage/home/abc6435/SzpiechLab/shared"
+work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic"
 
 cd $work_dir
 
@@ -34,7 +35,7 @@ work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic"
 centromere="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic/centromere.txt"
 
 #run 
-garlic --auto-winsize true --overlap-frac 0.05 --max-gap 1000000 --winsize 100 --tped $work_dir/KIWA.tped --tfam $work_dir/KIWA.tfam --tgls $work_dir/KIWA.tgls --gl-type GQ --resample 100 --centromere $centromere --size-bounds 1000000 2000000 3000000 4000000 5000000 --out $work_dir/KIWA
+garlic --auto-winsize --overlap-frac 0.05 --max-gap 1000000 --winsize 100 --tped $work_dir/KIWA.tped --tfam $work_dir/KIWA.tfam --tgls $work_dir/KIWA.tgls --gl-type GQ --resample 100 --centromere $centromere --size-bounds 1000000 2000000 3000000 4000000 5000000 --out $work_dir/KIWA
 
 #Remove any ROH < 0.5MB
 cat $work_dir/KIWA.roh.bed  | awk -F '\t' '$5>500000 || /track/ {print$0}' > $work_dir/KIWA_0.5MB.roh.bed

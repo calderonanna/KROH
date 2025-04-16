@@ -64,7 +64,7 @@ cd $work_dir
 tabix $work_dir/$vcf
 
 #Run vcf2smc
-for i in `cat $scripts/chrs.txt`; do
+for i in `cat $scripts/autochrs.txt`; do
     singularity exec --bind $PWD:/mnt $bin/smcpp.sif \
         smc++ vcf2smc \
         $work_dir/$vcf \

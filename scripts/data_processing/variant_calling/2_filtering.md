@@ -46,31 +46,6 @@ bcftools view \
     -m2 -M2 -v snps \
     $vcf_dir/chKIWA_AMRE_HOWA_tags_auto.vcf.gz \
     -Oz -o $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi.vcf.gz
-
-#Samples: Exclude AMRE, HOWA, and hKIWA-759877
-bcftools view \
-    -S $scripts/KIWA_IDS_e759877.txt \
-    $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi.vcf.gz \
-    -Oz -o $vcf_dir/chKIWA_tags_auto_bi.vcf.gz
-
-#Genotype: Read Depth and Genotype Quality
-bcftools filter \
-    -e 'FORMAT/DP < 3 || FORMAT/GQ < 15' \
-    --set-GTs . \
-    $vcf_dir/chKIWA_tags_auto_bi.vcf.gz \
-    -Oz -o $vcf_dir/chKIWA_tags_auto_bi_rd_gq.vcf.gz
-
-#Genotype: Missing
-bcftools view -e \
-    'N_MISSING>6' \
-    $vcf_dir/chKIWA_tags_auto_bi_rd_gq.vcf.gz \
-    -Oz -o $vcf_dir/chKIWA_tags_auto_bi_rd_gq_nmiss.vcf.gz
-
-#Genotype: Excess Heterozygosity (75%)
-bcftools view -e \
-    'COUNT(GT="het")>=10' \
-    $vcf_dir/chKIWA_tags_auto_bi_rd_gq_nmiss.vcf.gz \
-    -Oz -o $vcf_dir/chKIWA_tags_auto_bi_rd_gq_nmiss_exhet.vcf.gz
 ```
 
 

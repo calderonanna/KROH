@@ -1,11 +1,42 @@
 # ROH Calling with GARLIC
 
+## Filter VCF
+```bash
+#Set Variables
+vcf_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/vcf"
+work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic"
+
+#Samples: Exclude AMRE, HOWA, and hKIWA-759877
+bcftools view \
+    -S $scripts/KIWA_IDS_e759877.txt \
+    $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi.vcf.gz \
+    -Oz -o $work_dir/chKIWA_tags_auto_bi.vcf.gz
+
+#Genotype: Read Depth and Genotype Quality
+bcftools filter \
+    -e 'FORMAT/DP < 3 || FORMAT/GQ < 15' \
+    --set-GTs . \
+    $work_dir/chKIWA_tags_auto_bi.vcf.gz \
+    -Oz -o $work_dir/chKIWA_tags_auto_bi_rd_gq.vcf.gz
+
+#Genotype: Missing
+bcftools view -e \
+    'N_MISSING>6' \
+    $work_dir/chKIWA_tags_auto_bi_rd_gq.vcf.gz \
+    -Oz -o $work_dir/chKIWA_tags_auto_bi_rd_gq_nmiss.vcf.gz
+
+#Genotype: Excess Heterozygosity (75%)
+bcftools view -e \
+    'COUNT(GT="het")>=10' \
+    $vcf_dir/chKIWA_tags_auto_bi_rd_gq_nmiss.vcf.gz \
+    -Oz -o $vcf_dir/chKIWA_tags_auto_bi_rd_gq_nmiss_exhet.vcf.gz
+    ```
+
 ## Input Files
 ```bash
 salloc --nodes 1 --ntasks 1 --mem=50G --time=9:00:00 
 
 #Set Variables
-vcf_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/vcf"
 vcf="chKIWA_tags_auto_bi_rd_gq_nmiss_exhet.vcf.gz"
 shared="/storage/home/abc6435/SzpiechLab/shared"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic"
@@ -13,12 +44,12 @@ work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic"
 cd $work_dir
 
 #.tped and .tfam
-plink --vcf $vcf_dir/$vcf --recode transpose --double-id --chr-set 30 --allow-extra-chr --out KIWA
+plink --vcf $work_dir/$vcf --recode transpose --double-id --chr-set 30 --allow-extra-chr --out KIWA
 
 awk '$1="kirtlandii"' KIWA.tfam > temp && mv -f temp KIWA.tfam
 
 #.tgls
-$shared/create_tgls_from_vcf.py $vcf_dir/$vcf > KIWA.tgls
+$shared/create_tgls_from_vcf.py $work_dir/$vcf > KIWA.tgls
 
 #centromere.txt
 bcftools query -f \

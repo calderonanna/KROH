@@ -1,6 +1,17 @@
 # Estimate Ne
 
 ```bash
+scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+nano $scripts_folder/smc++_estimate.bash
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem=20GB
+#SBATCH --time=9:00:00
+#SBATCH --account=zps5164_sc
+#SBATCH --job-name=smc++_estimate
+#SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
+
 #Set Variables 
 bin="/storage/home/abc6435/SzpiechLab/bin"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/smc++"

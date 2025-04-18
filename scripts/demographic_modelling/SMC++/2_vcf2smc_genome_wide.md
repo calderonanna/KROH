@@ -57,7 +57,7 @@ nano $scripts_folder/vcf2smc.bash
 bin="/storage/home/abc6435/SzpiechLab/bin"
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/smc++"
-vcf="HOWA_AMRE_cKIWA_tags_auto_bi_gtdp_gtgq.vcf.gz"
+vcf="HOWA_AMRE_cKIWA_smc++.vcf.gz"
 
 #Index VCF
 cd $work_dir

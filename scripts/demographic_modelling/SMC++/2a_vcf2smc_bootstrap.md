@@ -1,41 +1,40 @@
 # vcf2SMC Bootstrapping 
 To simulate the bootstrapping feature from older smc++ version, I first split my vcf into 1M Non-overlapping Windows. Then, I sampled windows (with replacement) until the total length of the genome is roughly equal to the original genome length (autsomal size is 938,591,657 bases)
 
-## Split vcf in Windows
+## Split VCF 
 ```bash
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 nano $scripts_folder/split_vcf_smc++.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --mem=10GB
-#SBATCH --time=08:00:00
-#SBATCH --account=zps5164_sc
+#SBATCH --mem=20GB
+#SBATCH --time=05:00:00
+#SBATCH --account=open
 #SBATCH --job-name=split_vcf_smc++
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
 
 #Define Windows 
-work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/smc++"
-vcf="HOWA_AMRE_cKIWA_tags_auto_bi_gtdp_gtgq.vcf.gz"
+work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/smc++/bootstrap"
+vcf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/smc++/HOWA_AMRE_cKIWA_smc++.vcf.gz"
 
 bcftools view -h \
-    $work_dir/$vcf | \
+    $vcf | \
     grep =chr \
-    > $work_dir/bootstrap/chrlengths.txt
+    > $work_dir/chrlengths.txt
 
-sed -i 's/##contig=<ID=//g' $work_dir/bootstrap/chrlengths.txt
-sed -i 's/,length=/ /g' $work_dir/bootstrap/chrlengths.txt
-sed -i 's/>//g' $work_dir/bootstrap/chrlengths.txt
-sed -i '$d' $work_dir/bootstrap/chrlengths.txt
-sed -i 's/ /\t/g' $work_dir/bootstrap/chrlengths.txt
+sed -i 's/##contig=<ID=//g' $work_dir/chrlengths.txt
+sed -i 's/,length=/ /g' $work_dir/chrlengths.txt
+sed -i 's/>//g' $work_dir/chrlengths.txt
+sed -i '$d' $work_dir/chrlengths.txt
+sed -i 's/ /\t/g' $work_dir/chrlengths.txt
 
 bedtools makewindows -g \
-    $work_dir/bootstrap/chrlengths.txt \
+    $work_dir/chrlengths.txt \
     -w 1000000 \
-    > $work_dir/bootstrap/windows.bed
+    > $work_dir/windows.bed
 
 #Extract Windows
-vcf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/smc++/HOWA_AMRE_cKIWA_tags_auto_bi_gtdp_gtgq.vcf.gz"
 bed="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/smc++/bootstrap/windows.bed"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/smc++/bootstrap"
 
@@ -55,17 +54,24 @@ nano $scripts_folder/bootstrap_vcf_smc++.bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --mem=30GB
-#SBATCH --time=24:00:00
-#SBATCH --account=zps5164_sc
+#SBATCH --time=48:00:00
+#SBATCH --account=zps5164_cr_default
+#SBATCH --partition=himem
 #SBATCH --job-name=bootstrap_vcf_smc++
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
 
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/smc++/bootstrap"
+scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 n_win=938
 n_rep=100
 
 for rep in $(seq 1 $n_rep); do
     find $work_dir/*gz -type f | shuf -n $n_win > $work_dir/vcf_list_${rep}.txt
+    for chr in `cat $scripts/autochrs.txt`; do
+        grep "/${chr}_" $work_dir/vcf_list_${rep}.txt \
+        >> $work_dir/temp_${rep};
+    done
+    mv -f $work_dir/temp_${rep} $work_dir/vcf_list_${rep}.txt
     bcftools concat -f \
         $work_dir/vcf_list_${rep}.txt -Ou | \
         bcftools sort \

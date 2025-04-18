@@ -1,5 +1,6 @@
 # Estimate Ne
 
+## Run Estimate
 ```bash
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 nano $scripts_folder/smc++_estimate.bash
@@ -51,5 +52,27 @@ singularity exec --bind $PWD:/mnt $bin/smcpp.sif \
     $work_dir/chr28_cKIWA.smc.gz \
     $work_dir/chr29_cKIWA.smc.gz \
     -o $work_dir/results 
+```
 
+## Bootstrapping 
+```bash
+scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+nano $scripts_folder/smc++_bootstrap.bash
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem=32GB
+#SBATCH --cpus-per-task=8
+#SBATCH --time=48:00:00
+#SBATCH --account=zps5164_sc
+#SBATCH --job-name=smc++_bootstrap
+#SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
 
+#Set Variables 
+bin="/storage/home/abc6435/SzpiechLab/bin"
+work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/smc++"
+
+cd $work_dir
+singularity exec --bind $PWD:/mnt $bin/smcpp.sif \
+    smc++ bootstrap $work_dir/results_cKIWA/model.final.json \
+    --cores 8 --output $work_dir/results_cKIWA/bootsraps/

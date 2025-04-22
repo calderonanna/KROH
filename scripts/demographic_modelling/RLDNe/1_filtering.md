@@ -1,5 +1,7 @@
 
 ## Filter VCF
+Final SNP#: 19,961
+
 ```bash
 #Set Variables
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
@@ -31,9 +33,26 @@ bcftools filter \
     $work_dir/hKIWA_tags_auto_bi.vcf.gz \
     -Oz -o $work_dir/hKIWA_tags_auto_bi_gtdp_gtgq.vcf.gz
 
-#Genotype: Missing
-bcftools view -e \
-    'N_MISSING>2' \
+#Genotype: Missing (RLDNe can't handle missing data)
+bcftools view -i \
+    'N_MISSING=0' \
     $work_dir/hKIWA_tags_auto_bi_gtdp_gtgq.vcf.gz \
     -Oz -o $work_dir/hKIWA_tags_auto_bi_gtdp_gtgq_nmiss.vcf.gz
+```
+
+## Modify Data
+RLDe expects the data to be in a specific format. 
+![alt text](../../../diagrams/rldne_format.png)
+
+```bash
+#Set Variables
+scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+vcf_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/vcf"
+work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rldne"
+
+echo "CHROM  POS   29779 383194  383202  383205  507264  507265" >> $work_dir/hKIWA_rldne.vcf
+
+bcftools query -f '%CHROM\t%POS\t[%GT\t]' $work_dir/hKIWA_tags_auto_bi_gtdp_gtgq_nmiss.vcf.gz >> $work_dir/hKIWA_rldne.vcf
+
+awk '{print $0, $9=$1"_"$2}' OFS='\t' $work_dir/hKIWA_rldne.vcf  >> $work_dir/temp && mv -f $work_dir/temp $work_dir/hKIWA_rldne.vcf
 ```

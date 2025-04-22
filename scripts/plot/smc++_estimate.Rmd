@@ -17,13 +17,13 @@ setwd("/Users/annamariacalderon/Desktop/KROH/data/smc++/")
 # Import/Modify Data
 
 ```{r import_modify_data, include=FALSE}
-cKIWA_Ne_data <- read.csv("plot_cKIWA.csv")
+cKIWA_Ne_data <- read.csv("plot.csv")
 colnames(cKIWA_Ne_data) <- c("Pop", "GenerationsAgo", "Ne", "plot_type", "plot_num")
 cKIWA_Ne_data$YearsAgo <- cKIWA_Ne_data[,'GenerationsAgo']*2
 cKIWA_Ne <- cKIWA_Ne_data[,c('YearsAgo', "Ne")]
 ```
 
-# Plot 
+# Plot
 
 ```{r plot, include=FALSE}
 

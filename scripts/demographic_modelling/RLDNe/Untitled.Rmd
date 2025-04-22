@@ -1,0 +1,24 @@
+---
+title: "RLDNe"
+output: html_document
+date: "2025-04-22"
+---
+
+# Setup
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+#Install Packages (https://github.com/zakrobinson/RLDNe/blob/master/README.md)
+devtools::install_github(repo="zakrobinson/RLDNe")
+install.packages("vcfR")
+install.packages("tidyverse")
+
+#Load Packages
+library(RLDNe)
+library(vcfR)
+library(tidyverse)
+
+```
+
+## 

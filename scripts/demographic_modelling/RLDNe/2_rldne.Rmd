@@ -26,9 +26,15 @@ library(tidyverse)
 rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rldne/hKIWA_rldne.vcf /Users/annamariacalderon/Desktop/KROH/data/rldne
 ```
 
-# Import Data
+# Import/Modify Data
 
 ```{r}
 setwd("/Users/annamariacalderon/Desktop/KROH/data/rldne")
-vcf <- read.table("hKIWA_rldne.vcf", header = FALSE, sep = '\t')
+vcf <- read.table("hKIWA_rldne.vcf", header = TRUE)
+colnames(vcf) <- c("CHROM", "POS", "sam29779", 
+                   "sam383194", "sam383202", "sam383205", 
+                   "sam507264", "sam507265", "CHROM_POS")
+
+vcf <- vcf[,c(9,3:8)]
+
 ```

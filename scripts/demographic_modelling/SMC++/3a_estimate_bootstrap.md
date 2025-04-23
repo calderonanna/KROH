@@ -17,7 +17,7 @@ nano $scripts_folder/smc++_estimate_bootstraps.bash
 bin="/storage/home/abc6435/SzpiechLab/bin"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/smc++/bootstrap"
 
-for rep in $(seq 28 54); do 
+for rep in $(seq 54 80); do 
     cd $work_dir
     mkdir $work_dir/bootstrap_${rep}
     singularity exec --bind $PWD:/mnt $bin/smcpp.sif \

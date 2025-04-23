@@ -43,10 +43,10 @@ GENEPOP_WRITER_SNP_CODE_QUESTION=
 ```bash
 #Set Variables
 pgdspider="/storage/home/abc6435/SzpiechLab/bin/PGDSpider_3.0.0.0/PGDSpider3-cli.jar"
-vcf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rldne/hKIWA_tags_auto_bi_gtdp_gtgq_nmiss.vcf"
+vcf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rldne/hKIWA_tags_auto_bi_gtdp_gtgq_nmiss_poly.vcf"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rldne"
 
-#bgzip -d $vcf.gz
+bgzip -d $vcf.gz
 
 java -Xmx4G -jar $pgdspider \
   -inFile $vcf \

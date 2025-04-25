@@ -2,6 +2,7 @@
 ## Pop File
 ```bash
 #Set Variables
+scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rldne"
 
 nano $work_dir/pops.txt 
@@ -24,7 +25,7 @@ PARSER_FORMAT=VCF
 # Only output SNPs with a phred-scaled quality of at least:
 VCF_PARSER_QUAL_QUESTION=
 # Include a file with population definitions:
-VCF_PARSER_POP_FILE_QUESTION=/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rldne/pops.txt
+VCF_PARSER_POP_FILE_QUESTION=/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rldne/chKIWA_pops.txt
 # What is the ploidy of the data? (DIPLOID/HAPLOID)
 VCF_PARSER_PLOIDY_QUESTION=DIPLOID
 # Output genotypes as missing if the phred-scale genotype quality is below:
@@ -34,7 +35,7 @@ VCF_PARSER_INDEL_QUESTION=false
 # Do you want to include non-polymorphic SNPs? (TRUE/FALSE)
 VCF_PARSER_MONOMORPHIC_QUESTION=false
 # Only output following individuals (ind1, ind2, ind4, ...):
-VCF_PARSER_IND_QUESTION=383202,383194,383205,507265,507264,29779
+VCF_PARSER_IND_QUESTION=183195332,183194861,183195304,183194841,183195321,183195326,183195312,383202,383194,383205,507265,507264,29779
 # Only input following regions (refSeqName:start:end, multiple regions: whitespace separated):
 VCF_PARSER_REGION_QUESTION=
 # Output genotypes as missing if the read depth of a position for the sample is below:
@@ -56,13 +57,13 @@ This will generate the GENEPOP file
 ```bash
 #Set Variables
 pgdspider="/storage/home/abc6435/SzpiechLab/bin/PGDSpider_3.0.0.0/PGDSpider3-cli.jar"
-vcf="chKIWA_AMRE_HOWA_tags_auto_bi_gtdp_gtgq_nmiss_poly.vcf"
+vcf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic/chKIWA_tags_auto_bi_rd_gq_nmiss_exhet.vcf"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rldne"
 
-bgzip -d $work_dir/$vcf.gz
+bgzip -d $vcf.gz
 
 java -Xmx4G -jar $pgdspider \
-  -inFile $work_dir/$vcf \
+  -inFile $vcf \
   -inFormat VCF \
   -outFile $work_dir/data.gen \
   -outFormat GENEPOP \

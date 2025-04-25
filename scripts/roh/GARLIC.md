@@ -1,4 +1,4 @@
-# ROH Calling with GARLIC
+# GARLIC
 
 ## Filter VCF
 ```bash
@@ -28,9 +28,9 @@ bcftools view -e \
 #Genotype: Excess Heterozygosity (75%)
 bcftools view -e \
     'COUNT(GT="het")>=10' \
-    $vcf_dir/chKIWA_tags_auto_bi_rd_gq_nmiss.vcf.gz \
-    -Oz -o $vcf_dir/chKIWA_tags_auto_bi_rd_gq_nmiss_exhet.vcf.gz
-    ```
+    $work_dir/chKIWA_tags_auto_bi_rd_gq_nmiss.vcf.gz \
+    -Oz -o $work_dir/chKIWA_tags_auto_bi_rd_gq_nmiss_exhet.vcf.gz
+```
 
 ## Input Files
 ```bash
@@ -40,12 +40,10 @@ salloc --nodes 1 --ntasks 1 --mem=50G --time=9:00:00
 vcf="chKIWA_tags_auto_bi_rd_gq_nmiss_exhet.vcf.gz"
 shared="/storage/home/abc6435/SzpiechLab/shared"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic"
-
 cd $work_dir
 
 #.tped and .tfam
 plink --vcf $work_dir/$vcf --recode transpose --double-id --chr-set 30 --allow-extra-chr --out KIWA
-
 awk '$1="kirtlandii"' KIWA.tfam > temp && mv -f temp KIWA.tfam
 
 #.tgls
@@ -55,7 +53,6 @@ $shared/create_tgls_from_vcf.py $work_dir/$vcf > KIWA.tgls
 bcftools query -f \
     '%CHROM\n' $vcf_dir/$vcf \
     | uniq > centromere.txt
-
 awk '$1=$1" 0 1"' centromere.txt > temp && mv -f temp centromere.txt
 ```
 
@@ -83,5 +80,5 @@ sed 's/ /\t/g' $work_dir/KIWA.tfam | cut -f1,2 >> $work_dir/ids.txt
 awk '{print $2, $1}' $work_dir/ids.txt > $work_dir/temp && mv -f $work_dir/temp $work_dir/ids.txt
 
 #Calculate ROH Fractions
-$shared/calculate_ROH_fractions.pl $work_dir/KIWA.roh.bed 6 $work_dir/ids.txt > $work_dir/KIWA_roh_sum.txt
 $shared/calculate_ROH_fractions.pl $work_dir/KIWA_0.5MB.roh.bed 6 $work_dir/ids.txt > $work_dir/KIWA_roh_sum_0.5MB.txt
+```

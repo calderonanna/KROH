@@ -38,7 +38,7 @@ eigenvec[8:13,1] <- "historical"
 percent_var <- (eigenval$V1 / sum(eigenval$V1)) * 100
 ```
 
-# Plot 
+# Plot
 
 ```{r}
 leg <- c("contemporary" = "gray","historical" = "black")
@@ -62,6 +62,7 @@ pca <- ggplot(eigenvec, aes(x = V3, y = V4)) +
     legend.margin = margin(0,0,0,0),
     legend.box.spacing = unit(0, "pt"))
 
-ggsave("pca.png", plot=pca, path ="/Users/abc6435/Desktop/KROH/figures/",
+ggsave("pca.png", plot=pca, 
+       path ="/Users/abc6435/Desktop/KROH/figures/",
        width = 3, height = 3, units = "in", dpi = 300)
 ```

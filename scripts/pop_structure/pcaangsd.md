@@ -45,20 +45,18 @@ nano $scripts/pcangsd.bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=10
 #SBATCH --mem=50GB
-#SBATCH --time=1:00:00
-#SBATCH --account=zps5164_sc
-#SBATCH --partition=burst  
-#SBATCH --qos=burst4x
+#SBATCH --time=2:00:00
+#SBATCH --account=open
 #SBATCH --job-name=pcangsd
-#SBATCH --output=/storage/home/abc6435/SzpiechLab/abc6435/hWROH/job_err_output/%x.%j.out
+#SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
 
 
 #Set variables
 pcangsd_py="/storage/home/abc6435/ToewsLab/bin/pcangsd/pcangsd.py"
-data="/storage/home/abc6435/SzpiechLab/abc6435/hWROH/data"
+work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/pop_structure/pca"
 
 #Run pcangsd
-python $pcangsd_py -beagle $data/pca/KIWA_genolike.beagle.gz -out $data/pca/output -threads 10
+python $pcangsd_py -beagle $work_dir/KIWA_genolike.beagle.gz -out  $work_dir/output -threads 10
 ```
 ## Plot PCA in R
 ```bash

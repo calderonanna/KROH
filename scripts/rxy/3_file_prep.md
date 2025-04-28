@@ -1,44 +1,37 @@
 # File Preperation
 
-## Install Rxy-kin
+## Filter VCF
 ```bash
+nano $scripts/filter_vcf_rxy.bash
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem=20GB
+#SBATCH --time=12:00:00
+#SBATCH --account=dut374_c
+#SBATCH --job-name=filter_vcf_rxy
+#SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
+
 #Set Variables
+vcf_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/vcf" 
+work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rxy"
 bin="/storage/home/abc6435/SzpiechLab/bin"
+scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
-#Git Clone
-cd $bin
-git clone https://github.com/szpiech/Rxy-kin.git
-
-#Add it to PATH
-echo 'export PATH=$PATH:/storage/home/abc6435/SzpiechLab/bin/Rxy-kin/Rxy-kin.py' >> ~/.bashrc
-source ~/.bashrc
-```
-
-## Obtain Private
-We defined private sites as those in which at least one sample in a single species had an alternate allele, while the rest contained reference alleles. 
-
-`./get_only_private_alt_alleles your.vcf.gz pop_ids.txt`
--`vcf`: Must be zipped
--`pop_ids`: a text file with species sample names on each row 
-
-```bash
 #filter out any missing sites
-bcftools view -i 'N_MISSING<1' $data/vcf/$vcf -Oz -o $data/rxy/nomissing.vcf.gz 
-bcftools annotate -x INFO,FORMAT $data/rxy/nomissing.vcf.gz -Oz -o $data/rxy/nomissing_gt.vcf.gz
+bcftools view -i 'N_MISSING<1' $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi.vcf.gz -Oz -o $work_dir/chKIWA_AMRE_HOWA_tags_auto_bi_nmiss.vcf.gz 
+
+bcftools annotate -x INFO,FORMAT $work_dir/chKIWA_AMRE_HOWA_tags_auto_bi_nmiss.vcf.gz -Oz -o $work_dir/chKIWA_AMRE_HOWA_tags_auto_bi_nmiss_gt.vcf.gz
 
 #Obtain private allele sites
-./get_only_private_alt.py ~/SzpiechLab/abc6435/WarblerROH/vcf/Setophaga/setophaga_filtered_isec_nomono.vcf.gz /storage/home/abc6435/SzpiechLab/abc6435/hWROH/scripts/cKIWA_IDS.txt
-
-#Excess Heterozygosity (>80%)
-bcftools view -e 'COUNT(GT="het")>=10' $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss.vcf.gz -Oz -o $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet.vcf.gz
-
-#Remove Monomorphic Sites (skeptical)
-bcftools view $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto.vcf.gz -c 1:minor -Oz -o $work_dir/KIWA_tags_e759877_bi_qual_dp_nmiss_exhet_auto_maf.vcf.gz
+cd $work_dir
+$bin/get_only_private_alt.py $work_dir/chKIWA_AMRE_HOWA_tags_auto_bi_nmiss_gt.vcf.gz $scripts/KIWA_IDS_e759877.txt
 
 
+bgzip
 nohup tabix kirtlandii_private.vcf.gz
 ```
-
+🌺
 ## Obtain Input Files
 ![alt text](../../diagrams/coordinate_systems.png)
 ```bash

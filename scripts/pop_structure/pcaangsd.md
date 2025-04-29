@@ -50,15 +50,14 @@ nano $scripts/pcangsd.bash
 #SBATCH --job-name=pcangsd
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
 
-
 #Set variables
 pcangsd_py="/storage/home/abc6435/ToewsLab/bin/pcangsd/pcangsd.py"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/pop_structure/pca"
 
 #Run pcangsd
-python $pcangsd_py -beagle $work_dir/KIWA_genolike.beagle.gz -out  $work_dir/output -threads 10
+python $pcangsd_py -beagle $work_dir/KIWA_genolike.beagle.gz -out $work_dir/output -threads 10
 ```
 ## Plot PCA in R
 ```bash
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/hWROH/data/pca/output.cov /Users/abc6435/Desktop/hWROH/data
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/pop_structure/pca/output.cov /Users/abc6435/Desktop/KROH/data/pop_structure/
 ```

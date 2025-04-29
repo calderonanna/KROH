@@ -113,6 +113,11 @@ roh_class <- ggplot(data_t, aes(x=class, y=nroh)) +
 
 ```{r arrange_save, include=FALSE}
 roh_figure <- ggarrange(nroh_sroh, roh_class, nrow=1, ncol=2)
-ggsave("roh.png", plot=roh_figure, path ="/Users/abc6435/Desktop",
-       width = 5, height = 2.5, units = "in", dpi = 300)
+ggsave("roh.png", 
+       plot=roh_figure, 
+       path ="/Users/abc6435/Desktop/KROH/figures/",
+       width = 5,
+       height = 2.5, 
+       units = "in", 
+       dpi = 300)
 ```

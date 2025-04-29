@@ -15,12 +15,13 @@ library(stats)
 library(FactoMineR)
 library(ade4)
 library(ggplot2)
+library(tidyverse)
 ```
 
 # Import Data
 
 ```{r import_data}
-setwd("/Users/abc6435/Desktop/hWROH/data")
+setwd("/Users/abc6435/Desktop/KROH/data/pop_structure/")
 C <- as.matrix(read.table("output.cov"))
 ```
 
@@ -38,23 +39,12 @@ pop <- c("cKIWA", "cKIWA", "cKIWA", "cKIWA", "cKIWA", "cKIWA", "cKIWA",
 #rows are in same order as input bam.filelist -b 
 sample <- c("183194841", "183194861", "183195304", 
             "183195312", "183195321", "183195326","183195332", 
-            "29779", "383194", "383202", 
-            "383205", "507264", "507265")
-
-cov <- c("3.02006", "2.99842", "2.9577" ,"3.08131" ,"2.88418" ,"2.98133", "3.04897",
-         "2.15895", "3.00758", "2.91015", "2.89528", "2.97345", "2.99665")
-
-sample_year <- c("2006", "2006", "2006", 
-            "2006", "2006", "2006","2006", 
-            "1884", "1914", "1915", 
-            "1905", "1902", "1904")
-
-
-
+            "383194", "383202","383205", 
+            "507264", "507265", "29779")
 
 mme.pca <- eigen(C)
 eigenvectors = mme.pca$vectors
-pca.vectors = as_tibble(cbind(pop, sample, cov, sample_year, data.frame(eigenvectors)))
+pca.vectors = as_tibble(cbind(pop, sample, data.frame(eigenvectors)))
 
 
 ```
@@ -73,18 +63,25 @@ varPC4 <- (mme.pca$values[4]/pca.eigenval.sum)*100 #Variance explained by PC4
 # Plot PCA
 
 ```{r plot_pca}
-pca <- ggplot(pca.vectors, aes(x=X1, y=X2, color = pop)) +
-  geom_point(size=3, alpha=0.9) + geom_label(label=cov) +
-  scale_color_manual(values = c("#979797","black")) +
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(),
-        panel.background = element_blank(),
-        legend.position = c(0.9, 0.9),
+pca <- ggplot(pca.vectors, aes(x=X1, y=X2)) +
+  geom_point(shape = 21, size = 3,
+             colour = "black", stroke = 1,
+             aes(fill=pop, alpha=pop)) +
+  scale_fill_manual(values = c("#979797","black")) +
+  scale_alpha_manual(values = c(0.7, 1.0)) +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(fill=NA, color="black"),
+        legend.position = "right",
         legend.background = element_blank(),
         legend.key = element_blank(), 
-        legend.title = element_blank(), 
-        axis.line = element_line(color="black")) +
+        legend.title = element_blank()) +
   xlab("PC1 (23.86%)") + ylab("PC2 (10.43%)") 
 
-pca
+ggsave("pca.png",
+       pca, 
+       path = "/Users/abc6435/Desktop/KROH/figures/",
+       width = 4,
+       height = 3,
+       units = "in",
+       dpi = 300,)
 ```

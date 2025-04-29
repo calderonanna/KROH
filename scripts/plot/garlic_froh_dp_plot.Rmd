@@ -1,0 +1,79 @@
+---
+title: "garlic"
+author: "Anna Maria Calderon"
+date: "2025-03-24"
+output: html_document
+---
+
+# Download Data
+
+```{bash}
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/garlic/KIWA_roh_sum*.txt /Users/abc6435/Desktop/KROH/data/roh
+```
+
+# Setup
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(ggpubr)
+```
+
+# Import / Modify Data
+
+```{r import_data, include=TRUE}
+setwd("/Users/abc6435/Desktop/KROH/data/roh")
+data <- read.table("KIWA_roh_sum_0.5MB.txt", header=TRUE, sep = " ")
+data$sample <- rownames(data)
+rownames(data) <- NULL
+data[1:7,1] <- "contemporary"
+data[8:13,1] <- "historical"
+
+T <- data[,c(1, 16, 14:15)]
+colnames(T) <- c("pop", "sample", "nroh", "sroh")
+
+
+T$froh <- T$sroh/(938591657)
+
+T$cov <- c(15.1971,23.0325,23.9627,
+              14.0057,14.949, 17.3588,
+              20.4465,3.22439,8.17364,
+              3.2343,4.24936,14.1492,5.4758)
+```
+
+# Linear Regression
+
+```{r}
+model <- lm(froh ~ cov, data = T)
+summary(model)
+
+model_log <- lm(froh ~ log(cov), data = T)
+summary(model_log)
+```
+
+# Plot Data
+
+```{r plot_data, include = FALSE}
+leg <- c("contemporary" = "gray","historical" = "black")
+
+ggplot(T, aes(x = cov, y = froh, color = pop)) +
+  geom_point() +
+  geom_smooth(method = "gam", formula = y ~ s(x), 
+              color = "red", fill = "lightblue", level = 0.95) +
+  theme_bw()
+```
+
+# Arrange and Save
+
+```{r arrange_save, include=FALSE}
+roh_figure <- ggarrange(nroh_sroh, roh_class, nrow=1, ncol=2)
+ggsave("roh.png", 
+       plot=roh_figure, 
+       path ="/Users/abc6435/Desktop/KROH/figures/",
+       width = 5,
+       height = 2.5, 
+       units = "in", 
+       dpi = 300)
+```

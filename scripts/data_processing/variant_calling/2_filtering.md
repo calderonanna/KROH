@@ -46,6 +46,14 @@ bcftools view \
     -m2 -M2 -v snps \
     $vcf_dir/chKIWA_AMRE_HOWA_tags_auto.vcf.gz \
     -Oz -o $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi.vcf.gz
+
+#Samples: Exclude hKIWA-759877
+cat $scripts/KIWA_IDS_e759877.txt $scripts/HOWA_AMRE_IDS.txt > $scripts/chKIWA_AMRE_HOWA_IDS.txt
+
+bcftools view \
+    -S $scripts/chKIWA_AMRE_HOWA_IDS.txt \
+    $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi.vcf.gz \
+    -Oz -o $vcf_dir/chKIWA_AMRE_HOWA_tags_auto_bi_e759877.vcf.gz
 ```
 
 

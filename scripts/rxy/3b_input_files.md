@@ -70,7 +70,7 @@ scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
 #Extract Set 1 and Sort
 bcftools view -H $work_dir/$vcf \
-    | shuf -n 100000 \
+    | shuf -n 10000 \
     | cut -f1,2 > $work_dir/intergenic1.txt
 
 for i in `cat $work_dir/chr.txt`; do 
@@ -84,7 +84,7 @@ mv -f $work_dir/temp1.txt $work_dir/inter1.txt
 
 #Extract Set 2 and Sort
 bcftools view -H $work_dir/$vcf \
-    | shuf -n 100000 \
+    | shuf -n 10000 \
     | cut -f1,2 > $work_dir/intergenic2.txt
 
 for i in `cat $work_dir/chr.txt`; do 
@@ -112,12 +112,4 @@ awk '{print $1,$2}' OFS="\t" $work_dir/lossoffunction.txt > $work_dir/lof.txt
 awk '{print $1,$2}' OFS="\t" $work_dir/nonsynonymous.txt > $work_dir/nonsyn.txt
 awk '{print $1,$2}' OFS="\t" $work_dir/synonymous.txt > $work_dir/syn.txt
 awk '{print $1,$2}' OFS="\t" $work_dir/noncoding.txt > $work_dir/noncode.txt
-
-#Remove unnecessary files
-rm -rf $work_dir/deleterious.txt
-rm -rf $work_dir/tolerated.txt
-rm -rf $work_dir/lossoffunction.txt
-rm -rf $work_dir/nonsynonymous.txt
-rm -rf $work_dir/synonymous.txt
-rm -rf $work_dir/noncoding.txt
 ```

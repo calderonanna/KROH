@@ -11,10 +11,11 @@
 #Set Variables
 rxy="/storage/home/abc6435/SzpiechLab/bin/Rxy-kin"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rxy"
-vcf="chKIWA_tags_auto_bi_nmiss_polarized.vcf.gz"
+vcf="KIWA_private.vcf.gz"
+vcf2="chKIWA_AMRE_HOWA_tags_auto_bi_e759877_nmiss.vcf.gz"
 
 $rxy/Rxy-kin.py \
-    -v $work_dir/$vcf \
+    -v $work_dir/$vcf2 \
     -1 $work_dir/del.txt \
     -2 $work_dir/inter1.txt \
     -A $work_dir/pop_A.txt \

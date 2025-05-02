@@ -28,7 +28,7 @@ for i in `cat $scripts/hKIWA_IDS.txt`; do
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --mem=5GB
-#SBATCH --time=5:00:00
+#SBATCH --time=2:00:00
 #SBATCH --account=open
 #SBATCH --job-name=bam2prof_${i}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
@@ -52,7 +52,7 @@ module load gsl
     -5p \$work_dir/${i}_5p.prof \\
     -3p \$work_dir/${i}_3p.prof \\
     -o \$work_dir \\
-    \$data/${i}_marked.bam 
+    \$data/${i}.bam 
 EOT
 done
 

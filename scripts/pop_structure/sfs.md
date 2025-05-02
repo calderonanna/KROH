@@ -17,15 +17,16 @@ realpath 507264_marked.bam >> $work_dir/KIWA_bam.filelist
 realpath 507265_marked.bam >> $work_dir/KIWA_bam.filelist
 ```
 
-## Generate SAF Contemporary
+## Generate SAF 
 ```bash
+#Contemporary 
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
-nano $scripts/csaf.bash
+nano $scripts/saf.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=8
 #SBATCH --mem=20GB
-#SBATCH --time=5:00:00
+#SBATCH --time=10:00:00
 #SBATCH --account=zps5164_cr_default
 #SBATCH --partition=himem
 #SBATCH --job-name=csaf
@@ -48,26 +49,6 @@ $angsd_tool -b $work_dir/cKIWA_bam.filelist \
   -minMapQ 30 \
   -minQ 20 \
   -nThreads 8
-  ```
-## Generate SAF Historical
-```bash
-scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
-nano $scripts/hsaf.bash
-#!/bin/bash
-#SBATCH --nodes=1
-#SBATCH --ntasks=8
-#SBATCH --mem=8GB
-#SBATCH --time=5:00:00
-#SBATCH --account=zps5164_cr_default
-#SBATCH --partition=standard
-#SBATCH --job-name=hsaf
-#SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
-
-#Set variables
-work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/pop_structure/sfs"
-data="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
-mywa_genome="/storage/home/abc6435/ToewsLab/mywa_genome_2/final_assembly/mywagenomev2.1.fa"
-angsd_tool="/storage/home/abc6435/ToewsLab/bin/angsd/angsd"
 
 $angsd_tool -b $work_dir/hKIWA_bam.filelist \
   -ref $mywa_genome \
@@ -86,22 +67,55 @@ $angsd_tool -b $work_dir/hKIWA_bam.filelist \
 ```bash 
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 nano $scripts/2dsfs.bash
-
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=32GB
+#SBATCH --mem=100GB
 #SBATCH --time=12:00:00
-#SBATCH --account=dut374_sc_default
+#SBATCH --account=open
 #SBATCH --job-name=2dsfs
 #SBATCH --output=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.log
-
-#Load Module
-module load angsd 
 
 #Set Variables
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/pop_structure/sfs"
 realSFS="/storage/home/abc6435/ToewsLab/bin/angsd/misc/realSFS"
 
-$realSFS $work_dir/hKIWA.saf.idx $work_dir/cKIWA.saf.idx -P 8 -nSites 1000000 > $work_dir/chKIWA.sfs
+$realSFS $work_dir/hKIWA.saf.idx $work_dir/cKIWA.saf.idx -P 8 > $work_dir/chKIWA.sfs
 ```
+## Comput Fst
+```bash
+scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+nano $scripts/fst.bash
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=32GB
+#SBATCH --time=12:00:00
+#SBATCH --account=open
+#SBATCH --job-name=fst
+#SBATCH --output=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.log
+
+# Set Variables
+work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/pop_structure/sfs"
+realSFS="/storage/home/abc6435/ToewsLab/bin/angsd/misc/realSFS"
+
+# Step 1: FST index
+$realSFS fst index \
+  $work_dir/hKIWA.saf.idx \
+  $work_dir/cKIWA.saf.idx \
+  -sfs $work_dir/chKIWA.sfs \
+  -fstout $work_dir/chKIWA
+
+# Step 2: Global Fst
+$realSFS fst stats \
+  $work_dir/chKIWA.fst.idx \
+  > $work_dir/chKIWA_global_fst.txt
+
+# Step 3: Windowed Fst
+$realSFS fst stats2 \
+  $work_dir/chKIWA.fst.idx \
+  -win 50000 \
+  -step 10000 \
+  -P 8
+  > $work_dir/chKIWA_fst.window

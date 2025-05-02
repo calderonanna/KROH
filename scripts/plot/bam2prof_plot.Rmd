@@ -15,7 +15,7 @@ library(dplyr)
 library(reshape2)
 library(ggpubr)
 
-setwd("/Users/annamariacalderon//Desktop/KROH/data/dna_damage/")
+setwd("/Users/abc6435/Desktop/KROH/data/dna_damage/")
 five_prime <- read.table("5p_results.txt", header = TRUE)
 three_prime <- read.table("3p_results.txt", header = TRUE)
 ```
@@ -53,7 +53,7 @@ five_prime_m$SAMPLE <- as.character(five_prime_m$SAMPLE)
 
 ```
 
-# Plot 
+# Plot
 
 ```{r plot, include=FALSE}
 #Color Leg
@@ -117,7 +117,7 @@ deam_GA_CT <- ggarrange(G_A_3p_plot,
 
 ggsave(filename = "deam_GA_CT.png",
        plot = deam_GA_CT, 
-       path = "/Users/annamariacalderon/Desktop/KROH/figures/",
+       path = "/Users/abc6435/Desktop/KROH/figures/",
        width = 8,
        height = 4,
        units = "in",

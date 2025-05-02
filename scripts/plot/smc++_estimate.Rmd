@@ -31,7 +31,7 @@ bootstrap_df <- as.data.frame(read.delim("bootstrap_results.txt",
 cKIWA_Ne_data <- read.csv("plot.csv")
 ```
 
-# Modify Data 
+# Modify Data
 
 ```{r import_modify_data, include=FALSE}
 #Average Generations Across Reps
@@ -98,24 +98,24 @@ smcpp_plot <- ggplot(smooth_boots_df, aes(x = YearsAgo/1000)) +
   geom_line(data = smooth_ne_df,
               aes(x = YearsAgo/1000, y = Ne_smooth/1000), 
               color = "red", 
-              size = 1.2) + 
+              linewidth = 1.2) + 
   geom_ribbon(aes(ymin = fifth_smooth/1000, ymax = ninety_fifth_smooth/1000),
               fill = "blue", 
               alpha = 0.3) +
   scale_x_continuous(limits = c(0,180),
-                     breaks = seq(0,180, by=20),
+                     breaks = seq(0,160, by=20),
                      expand = c(0,0)) +
   scale_y_continuous(limits = c(0,350),
                      breaks = seq(0,350, by=50)) +
-  geom_point(data = bootstrap_quant, 
-             aes(x = YearsAgo/1000, y = fifth/1000), 
-             color = "blue", alpha = 0.5, size=0.35) +
-  geom_point(data = bootstrap_quant, 
-             aes(x = YearsAgo/1000, y = ninety_fifth/1000), 
-             color = "blue", alpha = 0.5, size=0.35) +
-  geom_point(data = cKIWA_Ne, 
-             aes(x = YearsAgo/1000, y = Ne/1000), 
-             color = "red", alpha = 0.5, size=0.35) +
+  #geom_point(data = bootstrap_quant, 
+             #aes(x = YearsAgo/1000, y = fifth/1000), 
+             #color = "blue", alpha = 0.5, size=0.35) +
+  #geom_point(data = bootstrap_quant, 
+             #aes(x = YearsAgo/1000, y = ninety_fifth/1000), 
+             #color = "blue", alpha = 0.5, size=0.35) +
+  #geom_point(data = cKIWA_Ne, 
+             #aes(x = YearsAgo/1000, y = Ne/1000), 
+            # color = "red", alpha = 0.5, size=0.35) +
   theme(panel.background = element_blank(),
         panel.border = element_rect(fill=NA, color="black")) +
   labs(x = "Years Ago (Kya)", 

@@ -1,4 +1,5 @@
 # ROHan
+https://github.com/grenaud/ROHan
 
 ## Installation
 ```bash
@@ -41,6 +42,10 @@ work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/rohan"
 #load GSL
 module load gsl
 
+#Index bam
+cd \$data
+samtools index \$data/${i}_sorted.bam \$data/${i}_sorted.bai
+
 #Run bam2prof
 \$rohan/bam2prof/bam2prof \\
     -minq 30 \\
@@ -52,7 +57,7 @@ module load gsl
     -5p \$work_dir/${i}_5p.prof \\
     -3p \$work_dir/${i}_3p.prof \\
     -o \$work_dir \\
-    \$data/${i}.bam 
+    \$data/${i}_sorted.bam 
 EOT
 done
 
@@ -70,9 +75,9 @@ data="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/bam"
 work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/roh/rohan"
 
 for i in `cat $scripts/hKIWA_IDS.txt`; do 
-    awk -v tag="FIVE_PRIME" -v sample=${i} '{print tag, sample, $0}' OFS='\t' ${i}_marked_classic_*_5p.prof >> 5p_results.txt;
+    awk -v tag="FIVE_PRIME" -v sample=${i} '{print tag, sample, $0}' OFS='\t' ${i}_sorted_classic_*_5p.prof >> 5p_results.txt;
 done
 
 for i in `cat $scripts/hKIWA_IDS.txt`; do 
-    awk -v tag="THREE_PRIME" -v sample=${i} '{print tag, sample, $0}' OFS='\t' ${i}_marked_classic_*_3p.prof >> 3p_results.txt;
+    awk -v tag="THREE_PRIME" -v sample=${i} '{print tag, sample, $0}' OFS='\t' ${i}_sorted_classic_*_3p.prof >> 3p_results.txt;
 done

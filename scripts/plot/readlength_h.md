@@ -143,8 +143,10 @@ nano $scripts_folder/plot_readlengths_h.bash
 #SBATCH --nodes=1 
 #SBATCH --ntasks=1 
 #SBATCH --mem=50GB 
-#SBATCH --time=3:00:00 
+#SBATCH --time=10:00:00 
 #SBATCH --account=open 
+#SBATCH --job-name=plot_readlengths_h
+#SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
 
 #Set Variables
 scripts_folder="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"

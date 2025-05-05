@@ -35,5 +35,8 @@ for i in `cat $scripts_folder/hKIWA_IDS.txt`; do
     | awk '{print length($10)}' \
     >> $data_folder/seq_stats/${i}_readlength.txt;
 done 
+
+
+samtools view $data_folder/bam/759877_marked.bam | awk '{print length($10)}' >> $data_folder/seq_stats/759877_readlength.txt
 ```
 

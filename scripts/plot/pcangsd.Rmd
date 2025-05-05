@@ -71,7 +71,7 @@ pca <- ggplot(pca.vectors, aes(x=X1, y=X2)) +
   scale_alpha_manual(values = c(0.7, 1.0)) +
   theme(panel.background = element_blank(),
         panel.border = element_rect(fill=NA, color="black"),
-        legend.position = "right",
+        legend.position = "top",
         legend.background = element_blank(),
         legend.key = element_blank(), 
         legend.title = element_blank()) +
@@ -80,7 +80,7 @@ pca <- ggplot(pca.vectors, aes(x=X1, y=X2)) +
 ggsave("pca.png",
        pca, 
        path = "/Users/abc6435/Desktop/KROH/figures/",
-       width = 4,
+       width = 2.75,
        height = 3,
        units = "in",
        dpi = 300,)

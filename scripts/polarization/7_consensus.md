@@ -27,19 +27,19 @@ ref="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_ref/mywa_reference/
 work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/polar"
 bam="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/bam"
 
-bcftools mpileup -Ou -f \$ref \$bam/1940_marked.bam | \\
-  bcftools call -Ou -mv | \\
-  bcftools norm -Ou -f \$ref | \\
-  bcftools view -Oz -o \$work/${i}.unfiltered.vcf.gz
+# bcftools mpileup -Ou -f \$ref \$bam/${i}_marked.bam | \\
+#   bcftools call -Ou -mv | \\
+#   bcftools norm -Ou -f \$ref | \\
+#   bcftools view -Oz -o \$work/${i}.unfiltered.vcf.gz
 
-bcftools filter -s LowQual -e '%QUAL<20 || %DP<10' \\
-    \$work/${i}.unfiltered.vcf.gz \\
-    -Oz -o \$work/${i}.vcf.gz 
+# bcftools filter -e 'QUAL<20 || DP<10' \\
+#     \$work/${i}.unfiltered.vcf.gz \\
+#     -Oz -o \$work/${i}.vcf.gz
 
-bcftools consensus \\
-    -f \$ref \\
-    \$work/${i}.vcf.gz \\
-    > \$work/${i}.fa
+cd \$work
+bcftools index \$work/${i}.vcf.gz
+
+cat \$ref | bcftools consensus \$work/${i}.vcf.gz > \$work/${i}.fa
 EOT
 done
 

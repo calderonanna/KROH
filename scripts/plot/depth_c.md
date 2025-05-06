@@ -6,7 +6,7 @@ https://3billion.io/blog/sequencing-depth-vs-coverage
 module use /storage/icds/RISE/sw8/modules/r 
 module load r/4.2.1-gcc-8.5.0
 
-Rscript -e "options(repos = c(CRAN = 'https://cloud.r-project.org')); install.packages('ggplot2', lib='/storage/group/zps5164/default/bin/.R')"
+Rscript -e "options(repos = c(CRAN = 'https://cloud.r-project.org')); install.packages('gam', lib='/storage/group/zps5164/default/bin/.R')"
 
 Rscript -e "options(repos = c(CRAN = 'https://cloud.r-project.org')); install.packages('tidyverse', lib='/storage/group/zps5164/default/bin/.R')"
 

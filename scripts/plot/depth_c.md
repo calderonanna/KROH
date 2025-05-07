@@ -52,6 +52,7 @@ chr_order <- c("chr1","chr1a","chr2","chr3","chr4","chr4a","chr5","chr6","chr7",
 avg_depth_183194841$CHR <- factor(avg_depth_183194841$CHR, levels = chr_order)
 DP_183194841 <-  ggplot(avg_depth_183194841, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
+  scale_y_continuous(limits = c(0,30)) +
   labs(x = "",
        y = "Average Depth") +
   ggtitle(paste("Sample 183194841")) + 
@@ -68,6 +69,7 @@ theme(
 avg_depth_183195332$CHR <- factor(avg_depth_183195332$CHR, levels = chr_order)
 DP_183195332 <-  ggplot(avg_depth_183195332, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
+  scale_y_continuous(limits = c(0,30)) +
   labs(x = "",
        y = "Average Depth") +
   ggtitle(paste("Sample 183195332")) + 
@@ -84,6 +86,7 @@ theme(
 avg_depth_183194861$CHR <- factor(avg_depth_183194861$CHR, levels = chr_order)
 DP_183194861 <-  ggplot(avg_depth_183194861, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
+  scale_y_continuous(limits = c(0,30)) +
   labs(x = "",
        y = "Average Depth") +
   ggtitle(paste("Sample 183194861")) + 
@@ -100,6 +103,7 @@ theme(
 avg_depth_183195321$CHR <- factor(avg_depth_183195321$CHR, levels = chr_order)
 DP_183195321 <-  ggplot(avg_depth_183195321, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
+  scale_y_continuous(limits = c(0,30)) +
   labs(x = "",
        y = "Average Depth") +
   ggtitle(paste("Sample 183195321")) + 
@@ -116,6 +120,7 @@ theme(
 avg_depth_183195304$CHR <- factor(avg_depth_183195304$CHR, levels = chr_order)
 DP_183195304 <-  ggplot(avg_depth_183195304, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
+  scale_y_continuous(limits = c(0,30)) +
   labs(x = "",
        y = "Average Depth") +
   ggtitle(paste("Sample 183195304")) + 
@@ -132,6 +137,7 @@ theme(
 avg_depth_183195326$CHR <- factor(avg_depth_183195326$CHR, levels = chr_order)
 DP_183195326 <-  ggplot(avg_depth_183195326, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
+  scale_y_continuous(limits = c(0,30)) +
   labs(x = "",
        y = "Average Depth") +
   ggtitle(paste("Sample 183195326")) + 
@@ -148,6 +154,7 @@ theme(
 avg_depth_183195312$CHR <- factor(avg_depth_183195312$CHR, levels = chr_order)
 DP_183195312 <-  ggplot(avg_depth_183195312, aes(x = CHR, y = DEPTH)) +
   geom_bar(stat = "identity", fill = "gray") +
+  scale_y_continuous(limits = c(0,30)) +
   labs(x = "",
        y = "Average Depth") +
   ggtitle(paste("Sample 183195312")) + 

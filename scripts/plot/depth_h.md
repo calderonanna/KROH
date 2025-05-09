@@ -182,7 +182,7 @@ DP <- ggarrange(
         nrow=4,
         ncol=3)
 
-ggsave("/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/hKIWA_.png", DP, width = 15, height = 8, dpi=300)
+ggsave("/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/hKIWA_depth.png", DP, width = 15, height = 8, dpi=300)
 ```
 
 ## Run R Script as Job
@@ -209,5 +209,5 @@ R --file=$scripts_folder/plots/plot_depth_h.R
 
 ## Download
 ```bash
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/depth_grid_h.png /Users/abc6435/Desktop/KROH/figures
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/plots/*depth*.png /Users/abc6435/Desktop/KROH/figures
 ```

@@ -1,0 +1,101 @@
+---
+title: "mapdamage_misincorporation"
+author: "Anna Maria Calderon"
+date: "2025-05-08"
+output: html_document
+---
+
+# Setup
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(readr)
+library(tidyr)
+library(dplyr)
+library(reshape2)
+library(ggpubr)
+setwd("/Users/abc6435/Desktop/KROH/data/mapdamage/")
+
+misincorp_c <- read_tsv("misincorp_results_c.txt", comment = "#")
+misincorp_h <- read_tsv("misincorp_results_h.txt", comment = "#")
+```
+
+# Modify Data
+
+```{r modify_data, include=FALSE}
+#Contemporary
+mis_data_c <- misincorp_c[,c(
+  "Sample...1", "End","Pos","C>T", 
+  "G>A", "A>G", "T>C", "G>-","C>-")]
+
+colnames(mis_data_c) <- c("Sample", "End","Pos","C>T", 
+  "G>A", "A>G", "T>C", "G>-","C>-")
+
+mis_data_c_m <- melt(mis_data_c,
+                   id.vars=c("Sample","End","Pos"),
+                   variable.name="Mutation",
+                   value.name="Freq")
+
+#Historical
+mis_data_h <- misincorp_h[,c(
+  "Sample...1", "End","Pos","C>T", 
+  "G>A", "A>G", "T>C", "G>-","C>-")]
+
+colnames(mis_data_h) <- c("Sample","End","Pos","C>T", 
+  "G>A", "A>G", "T>C", "G>-","C>-")
+
+mis_data_h_m <- melt(mis_data_h,
+                   id.vars=c("Sample","End","Pos"),
+                   variable.name="Mutation",
+                   value.name="Freq")
+```
+
+# Plot
+
+```{r plot, include=FALSE}
+
+misincorp_h_plot <- ggplot(mis_data_h_m, aes(x = Pos, y = Freq, color = Mutation)) +
+  geom_line(linewidth = 1) +
+  facet_grid(rows=vars(Sample), cols=vars(End), scales="free_y") +
+  scale_color_manual(values=
+                       c("#FFBF00","#FF7F50",
+                         "#40E0D0","#6495ED",
+                         "#DE3163","#CCCCFF")) +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(fill=NA, color="black"),
+        strip.background = element_rect(fill="black", color="black"),
+        strip.text=element_text(color="white", face="bold")) +
+  xlab("Position From Fragment End") +
+  ylab("Frequency")
+
+misincorp_c_plot <- ggplot(mis_data_c_m, aes(x = Pos, y = Freq, color = Mutation)) +
+  geom_line(linewidth = 1) +
+  facet_grid(rows=vars(Sample), cols=vars(End), scales="free_y") +
+  scale_color_manual(values=
+                       c("#FFBF00","#FF7F50",
+                         "#40E0D0","#6495ED",
+                         "#DE3163","#CCCCFF")) +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(fill=NA, color="black"),
+        strip.background = element_rect(fill="gray", color="gray"),
+        strip.text=element_text(color="black", face="bold")) +
+  xlab("Position From Fragment End") +
+  ylab("Frequency")
+
+
+misincorporation_figure <- ggarrange(misincorp_h_plot,
+                                     misincorp_c_plot,
+                                     labels = c("A","B"),
+                                     common.legend = TRUE,
+                                     ncol=2,
+                                     nrow=1)
+
+ggsave("misincorporation.png", 
+       plot=misincorporation_figure,
+       path = "/Users/abc6435/Desktop/KROH/figures",
+       width = 6,
+       height = 6,
+       units = "in",
+       dpi = 300)
+```

@@ -22,8 +22,8 @@ git clone https://github.com/ginolhac/mapDamage.git
 cd mapDamage
 python3 setup.py install --user
 
-
-
+```
+## Run Mapdamage
 ```bash
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 for i in `cat $scripts/KIWA_IDS.txt`; do
@@ -73,3 +73,91 @@ done
 for i in `cat $scripts/KIWA_IDS.txt`; do
     sbatch $scripts/mapdamage_${i}.bash;
 done
+```
+
+## Compile Misincorporation Results
+```bash
+scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mapdamage"
+
+#Historical
+awk -v sample="Sample" '{print sample, $0}' OFS='\t' $work/29779/misincorporation.txt | head -1 > $work/misincorp_results_h.txt
+
+for i in `cat $scripts/hKIWA_IDS.txt`; do
+    awk -v sample="${i}" '{print sample, $0}' OFS='\t' $work/${i}/misincorporation.txt \
+        | sed '1d' \
+        >> $work/misincorp_results_h.txt;
+done
+
+#Contemporary 
+awk -v sample="Sample" '{print sample, $0}' OFS='\t' $work/29779/misincorporation.txt | head -1 > $work/misincorp_results_c.txt
+
+for i in `cat $scripts/cKIWA_IDS.txt`; do
+    awk -v sample="${i}" '{print sample, $0}' OFS='\t' $work/${i}/misincorporation.txt \
+        | sed '1d' \
+        >> $work/misincorp_results_c.txt;
+done
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mapdamage/misincorp_results_*.txt /Users/abc6435/Desktop/KROH/data/mapdamage
+```
+
+## Compile DNA Composition Results
+```bash
+scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mapdamage"
+
+#Historical
+awk -v sample="Sample" '{print sample, $0}' OFS='\t' $work/29779/dnacomp.txt | head -1 > $work/dnacomp_results_h.txt
+
+for i in `cat $scripts/hKIWA_IDS.txt`; do
+    awk -v sample="${i}" '{print sample, $0}' OFS='\t' $work/${i}/dnacomp.txt \
+        | sed '1d' \
+        >> $work/dnacomp_results_h.txt;
+done
+
+#Contemporary
+awk -v sample="Sample" '{print sample, $0}' OFS='\t' $work/29779/dnacomp.txt | head -1 > $work/dnacomp_results_c.txt
+
+for i in `cat $scripts/cKIWA_IDS.txt`; do
+    awk -v sample="${i}" '{print sample, $0}' OFS='\t' $work/${i}/dnacomp.txt \
+        | sed '1d' \
+        >> $work/dnacomp_results_c.txt;
+done
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mapdamage/dnacomp_results_*.txt /Users/abc6435/Desktop/KROH/data/mapdamage
+```
+## Compile MCMC Stats
+```bash
+scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mapdamage"
+
+#Historical
+for i in `cat $scripts/hKIWA_IDS.txt`; do
+    cat $work/${i}/Stats_out_MCMC_iter_summ_stat.csv \
+    | tr "," "\t" > $work/${i}/Stats_out_MCMC_iter_summ_stat.tsv;
+done
+
+awk -v sample="Sample" '{print $0, sample}' OFS='\t' $work/29779/Stats_out_MCMC_iter_summ_stat.tsv | head -1 > $work/stats_out_mcmc_iter_summ_results_h.tsv
+
+for i in `cat $scripts/hKIWA_IDS.txt`; do
+    awk -v sample="${i}" '{print $0, sample}' OFS='\t' $work/${i}/Stats_out_MCMC_iter_summ_stat.tsv \
+        | sed '1d' \
+        >> $work/stats_out_mcmc_iter_summ_results_h.tsv;
+done
+
+
+#Contemporary
+for i in `cat $scripts/cKIWA_IDS.txt`; do
+    cat $work/${i}/Stats_out_MCMC_iter_summ_stat.csv \
+    | tr "," "\t" > $work/${i}/Stats_out_MCMC_iter_summ_stat.tsv;
+done
+
+awk -v sample="Sample" '{print $0, sample}' OFS='\t' $work/29779/Stats_out_MCMC_iter_summ_stat.tsv | head -1 > $work/stats_out_mcmc_iter_summ_results_c.tsv
+
+for i in `cat $scripts/cKIWA_IDS.txt`; do
+    awk -v sample="${i}" '{print $0, sample}' OFS='\t' $work/${i}/Stats_out_MCMC_iter_summ_stat.tsv \
+        | sed '1d' \
+        >> $work/stats_out_mcmc_iter_summ_results_c.tsv;
+done
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mapdamage/stats_out_mcmc_iter_summ_results_*.tsv /Users/abc6435/Desktop/KROH/data/mapdamage

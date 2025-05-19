@@ -10,6 +10,188 @@ knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
-setwd("/Users/abc6435/Desktop/KROH/data/mapdamage/")
-read.table("stats_out_mcmc_iter_summ_results_c.tsv", header = TRUE)
+library(ggpubr)
+setwd("/Users/annamariacalderon//Desktop/KROH/data/mapdamage/")
+mcmc_h <- read.table("Stats_out_MCMC_iter_results_h.tsv", header = TRUE)
+mcmc_c <- read.table("Stats_out_MCMC_iter_results_c.tsv", header = TRUE)
+
+```
+
+# Modify Data
+
+```{r modify_data, include=FALSE}
+mcmc_h$Sample <- as.character(mcmc_h$Sample)
+mcmc_c$Sample <- as.character(mcmc_c$Sample)
+```
+
+# Plot Historical
+
+```{r plot_historical, include=FALSE}
+h_col <- c("#000000",
+           "#000000",
+           "#000000",
+           "#000000",
+           "#000000",
+           "#000000",
+           "#000000")
+
+theta_h <- ggplot(mcmc_h, aes(x=Theta, fill=Sample)) +
+  geom_density(color="black", alpha=0.7, linewidth=0.5) + 
+  scale_fill_manual(values=h_col) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  xlab(expression(theta)) +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA),
+        legend.position = "none")
+
+deltad_h <- ggplot(mcmc_h, aes(x=DeltaD, fill=Sample)) +
+  geom_density(color="black", alpha=0.7, linewidth=0.5) + 
+  scale_fill_manual(values=h_col) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  xlab(expression(delta[d])) +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA),
+        legend.position = "none")
+
+deltas_h <- ggplot(mcmc_h, aes(x=DeltaS, fill=Sample)) +
+  geom_density(color="black", alpha=0.5, linewidth=0.5) + 
+  scale_fill_manual(values=h_col) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  xlab(expression(delta[s])) +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA),
+        legend.position = "none")
+
+lambda_h <- ggplot(mcmc_h, aes(x=Lambda, fill=Sample)) +
+  geom_density(color="black", alpha=0.7, linewidth=0.5) + 
+  scale_fill_manual(values=h_col) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  xlab(expression(lambda)) +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA),
+        legend.position = "none")
+
+rho_h <- ggplot(mcmc_h, aes(x=Rho, fill=Sample)) +
+  geom_density(color="black", alpha=0.7, linewidth=0.5) + 
+  scale_fill_manual(values=h_col) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  xlab(expression(rho)) +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA),
+        legend.position = "none")
+
+loglik_h <- ggplot(mcmc_h, aes(x=LogLik, fill=Sample)) +
+  geom_density(color="black", alpha=0.7, linewidth=0.5) + 
+  scale_fill_manual(values=h_col) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  xlab("LogLik") +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA),
+        legend.position = "none")
+```
+
+# Plot Contemporary
+
+```{r plot_historical, include=FALSE}
+c_col <- c("gray",
+           "gray",
+           "gray",
+           "gray",
+           "gray",
+           "gray",
+           "gray")
+
+theta_c <- ggplot(mcmc_c, aes(x=Theta, fill=Sample)) +
+  geom_density(color="black", alpha=0.7, linewidth=0.5) + 
+  scale_fill_manual(values=c_col) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  xlab(expression(theta)) +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA),
+        legend.position = "none")
+
+deltad_c <- ggplot(mcmc_c, aes(x=DeltaD, fill=Sample)) +
+  geom_density(color="black", alpha=0.7, linewidth=0.5) + 
+  scale_fill_manual(values=c_col) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  xlab(expression(delta[d])) +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA),
+        legend.position = "none")
+
+deltas_c <- ggplot(mcmc_c, aes(x=DeltaS, fill=Sample)) +
+  geom_density(color="black", alpha=0.5, linewidth=0.5) + 
+  scale_fill_manual(values=c_col) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  xlab(expression(delta[s])) +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA),
+        legend.position = "none")
+
+lambda_c <- ggplot(mcmc_c, aes(x=Lambda, fill=Sample)) +
+  geom_density(color="black", alpha=0.7, linewidth=0.5) + 
+  scale_fill_manual(values=c_col) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  xlab(expression(lambda)) +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA),
+        legend.position = "none")
+
+rho_c <- ggplot(mcmc_c, aes(x=Rho, fill=Sample)) +
+  geom_density(color="black", alpha=0.7, linewidth=0.5) + 
+  scale_fill_manual(values=c_col) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  xlab(expression(rho)) +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA),
+        legend.position = "none")
+
+loglik_c <- ggplot(mcmc_c, aes(x=LogLik, fill=Sample)) +
+  geom_density(color="black", alpha=0.7, linewidth=0.5) + 
+  scale_fill_manual(values=c_col) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  xlab("LogLik") +
+  theme(panel.background = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA),
+        legend.position = "none")
+```
+
+# Arrange and Save
+
+```{r arrange_save, include=FALSE}
+
+theta_plot <- ggarrange(theta_h, theta_c, nrow=1, ncol=2, labels = "A")
+deltad_plot <- ggarrange(deltad_h, deltad_c, nrow=1, ncol=2, labels = "B")
+deltas_plot <- ggarrange(deltas_h, deltas_c, nrow=1, ncol=2, labels = "C")
+lambda_plot <- ggarrange(lambda_h, lambda_c, nrow=1, ncol=2, labels = "D")
+rho_plot <- ggarrange(rho_h, rho_c, nrow=1, ncol=2, labels = "E")
+loglik_plot <- ggarrange(loglik_h, loglik_c, nrow=1, ncol=2, labels = "F")
+
+mcmc_par <- ggarrange(theta_plot,
+                      deltad_plot,
+                      deltas_plot,
+                      lambda_plot,
+                      rho_plot,
+                      loglik_plot,
+                      nrow=6)
+
+ggsave(filename="mcmc_param.png", 
+       plot = mcmc_par, 
+       path = "/Users/annamariacalderon/Desktop/KROH/figures/", 
+       width = 6, 
+       height = 8, 
+       units = "in", 
+       dpi=300)
 ```

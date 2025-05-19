@@ -126,6 +126,12 @@ done
 
 rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mapdamage/dnacomp_results_*.txt /Users/abc6435/Desktop/KROH/data/mapdamage
 ```
+
+
+
+
+
+
 ## Compile MCMC Stats
 ```bash
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
@@ -133,31 +139,30 @@ work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mapdamage"
 
 #Historical
 for i in `cat $scripts/hKIWA_IDS.txt`; do
-    cat $work/${i}/Stats_out_MCMC_iter_summ_stat.csv \
-    | tr "," "\t" > $work/${i}/Stats_out_MCMC_iter_summ_stat.tsv;
+    cat $work/${i}/Stats_out_MCMC_iter.csv \
+    | tr "," "\t" > $work/${i}/Stats_out_MCMC_iter.tsv;
 done
 
-awk -v sample="Sample" '{print $0, sample}' OFS='\t' $work/29779/Stats_out_MCMC_iter_summ_stat.tsv | head -1 > $work/stats_out_mcmc_iter_summ_results_h.tsv
+awk -v sample="Sample" '{print $0, sample}' OFS='\t' $work/29779/Stats_out_MCMC_iter.tsv | head -1 > $work/Stats_out_MCMC_iter_results_h.tsv
 
 for i in `cat $scripts/hKIWA_IDS.txt`; do
-    awk -v sample="${i}" '{print $0, sample}' OFS='\t' $work/${i}/Stats_out_MCMC_iter_summ_stat.tsv \
-        | sed '1d' \
-        >> $work/stats_out_mcmc_iter_summ_results_h.tsv;
+    awk -v sample="${i}" '{print $0, sample}' OFS='\t' $work/${i}/Stats_out_MCMC_iter.tsv \
+    | sed '1d' \
+    >> $work/Stats_out_MCMC_iter_results_h.tsv;
 done
-
 
 #Contemporary
 for i in `cat $scripts/cKIWA_IDS.txt`; do
-    cat $work/${i}/Stats_out_MCMC_iter_summ_stat.csv \
-    | tr "," "\t" > $work/${i}/Stats_out_MCMC_iter_summ_stat.tsv;
+    cat $work/${i}/Stats_out_MCMC_iter.csv \
+    | tr "," "\t" > $work/${i}/Stats_out_MCMC_iter.tsv;
 done
 
-awk -v sample="Sample" '{print $0, sample}' OFS='\t' $work/29779/Stats_out_MCMC_iter_summ_stat.tsv | head -1 > $work/stats_out_mcmc_iter_summ_results_c.tsv
+awk -v sample="Sample" '{print $0, sample}' OFS='\t' $work/29779/Stats_out_MCMC_iter.tsv | head -1 > $work/Stats_out_MCMC_iter_results_c.tsv
 
 for i in `cat $scripts/cKIWA_IDS.txt`; do
-    awk -v sample="${i}" '{print $0, sample}' OFS='\t' $work/${i}/Stats_out_MCMC_iter_summ_stat.tsv \
-        | sed '1d' \
-        >> $work/stats_out_mcmc_iter_summ_results_c.tsv;
+    awk -v sample="${i}" '{print $0, sample}' OFS='\t' $work/${i}/Stats_out_MCMC_iter.tsv \
+    | sed '1d' \
+    >> $work/Stats_out_MCMC_iter_results_c.tsv;
 done
 
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mapdamage/stats_out_mcmc_iter_summ_results_*.tsv /Users/abc6435/Desktop/KROH/data/mapdamage
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mapdamage/*results*.tsv /Users/annamariacalderon/Desktop/KROH/data/mapdamage

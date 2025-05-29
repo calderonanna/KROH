@@ -10,8 +10,8 @@ work_dir="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rxy"
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
 #ID Files 
-awk '{print $1, $2="A"}' OFS="\t" $scripts/cKIWA_IDS.txt > $work_dir/pop_A.txt
-awk '{print $1, $2="B"}' OFS="\t" $scripts/hKIWA_IDS.txt > $work_dir/pop_B.txt
+awk '{print $1, $2="A"}' OFS="\t" $scripts/hKIWA_e759877_IDS.txt > $work_dir/pop_A.txt
+awk '{print $1, $2="B"}' OFS="\t" $scripts/cKIWA_IDS.txt > $work_dir/pop_B.txt
 ```
 
 ## Intergenic Sites
@@ -60,7 +60,7 @@ bcftools view -T ^$work_dir/genic_sites.bed \
     -Oz -o $work_dir/intergenic.vcf.gz
 ```
 
-## Sample 2 Sets of 100K intergenic Sites
+## Sample 2 Sets of 10K intergenic Sites
 ```bash
 #Set Variables
 vcf="intergenic.vcf.gz"

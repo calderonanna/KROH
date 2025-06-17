@@ -15,8 +15,8 @@ vcf="KIWA_tags_auto_bi_private_nmiss.vcf.gz"
 
 $rxy/Rxy-kin.py \
     -v $work_dir/$vcf \
-    -1 $work_dir/tol.txt \
-    -2 $work_dir/inter2.txt \
+    -1 $work_dir/del.txt \
+    -2 $work_dir/inter1.txt \
     -A $work_dir/pop_A.txt \
     -B $work_dir/pop_B.txt
 
@@ -50,16 +50,12 @@ echo "0.34605229773512836 0.337091348893974 0.3533261510547629 TOL INTER2" >> rx
 ## Rxy Results (Downsampled)
 ```bash
 #DEL
-echo "0.29333532125238676 0.28272460807519206 0.3020125271410163 DEL INTER1" >>
-rxy_results_downsampled.txt
-echo "0.3217177260940577 0.3101050575575494 0.33178197625509204 DEL INTER2" >>
-rxy_results_downsampled.txt
+echo "0.29333532125238676 0.28272460807519206 0.3020125271410163 DEL INTER1" >> rxy_results_downsampled.txt
+echo "0.3217177260940577 0.3101050575575494 0.33178197625509204 DEL INTER2" >> rxy_results_downsampled.txt
 
 #LOF
-echo "0.34943138375662713 0.3156015324295383 0.3799243625554586 LOF INTER1" >>
-rxy_results_downsampled.txt
-echo "0.38324150575565036 0.3385249079925874 0.4220402612891551 LOF INTER2" >>
-rxy_results_downsampled.txt
+echo "0.34943138375662713 0.3156015324295383 0.3799243625554586 LOF INTER1" >> rxy_results_downsampled.txt
+echo "0.38324150575565036 0.3385249079925874 0.4220402612891551 LOF INTER2" >> rxy_results_downsampled.txt
 
 #NONCODE
 echo "0.30245389677706536 0.29613916656117667 0.3092600366536683 NONCODE INTER1" >> rxy_results_downsampled.txt

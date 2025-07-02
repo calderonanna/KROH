@@ -36,9 +36,9 @@ cd $basedir/mywa_reference/
 samtools faidx mywagenomev2.1.fa
 
 #Run ANGSD
-# $angsd -b $basedir/rxy/cKIWA_bamlist.txt -ref $ref -out $basedir/rxy/cKIWA -GL 1 -doMajorMinor 1 -doMaf 1 -doCounts 1 -minMapQ 30 -minQ 20 -remove_bads 1 -only_proper_pairs 1 -uniqueOnly 1 -C 50 -baq 1 -nThreads 8
+$angsd -b $basedir/rxy/cKIWA_bamlist.txt -ref $ref -out $basedir/rxy/cKIWA -GL 1 -doMajorMinor 1 -doMaf 1 -doCounts 1 -minMapQ 30 -minQ 20 -remove_bads 1 -only_proper_pairs 1 -uniqueOnly 1 -C 50 -baq 1 -nThreads 8
 
-# $angsd -b $basedir/rxy/hKIWA_bamlist.txt -ref $ref -out $basedir/rxy/hKIWA -GL 1  -doMajorMinor 1 -doMaf 1 -doCounts 1 -minMapQ 30 -minQ 20 -remove_bads 1 -only_proper_pairs 1 -uniqueOnly 1 -C 50 -baq 1 -nThreads 8
+$angsd -b $basedir/rxy/hKIWA_bamlist.txt -ref $ref -out $basedir/rxy/hKIWA -GL 1  -doMajorMinor 1 -doMaf 1 -doCounts 1 -minMapQ 30 -minQ 20 -remove_bads 1 -only_proper_pairs 1 -uniqueOnly 1 -C 50 -baq 1 -nThreads 8
 
 $angsd -b $basedir/rxy/HOWA_AMRE_bamlist.txt -ref $ref -out $basedir/rxy/HOWA_AMRE -GL 1  -doMajorMinor 1 -doMaf 1 -doCounts 1 -minMapQ 30 -minQ 20 -remove_bads 1 -only_proper_pairs 1 -uniqueOnly 1 -C 50 -baq 1 -nThreads 8
 ```

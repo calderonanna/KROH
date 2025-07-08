@@ -47,6 +47,6 @@ for i in `cat $scripts/autochrs.txt`; do
 done
 
 for i in `cat $scripts/autochrs.txt`; do
-    cat $basedir/priv/cKIWA_private_${i}.bed >> $basedir/private_sites/chKIWA_private.bed;
+    cat $basedir/private_sites/chKIWA_private_${i}.bed >> $basedir/private_sites/chKIWA_private.bed;
 done
 ```

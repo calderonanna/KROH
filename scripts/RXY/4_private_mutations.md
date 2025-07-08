@@ -5,7 +5,7 @@
 scp /Users/annamariacalderon/Desktop/KROH/data/rxy/* abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rxy/private_mutations
 ```
 
-## Intersect Private Sites
+## Intersect Private Sites with Mutations
 ```bash
 nano $scripts/intersect_mutations.bash
 #!/bin/bash
@@ -31,6 +31,3 @@ for i in $(echo $mutations); do
     bedtools intersect -a $basedir/private_mutations/${i}.bed -b $basedir/private_sites/chKIWA_private.bed > $basedir/private_mutations/chKIWA_${i}.bed;
 done
 ```
-
-## Subset MAFs
-using the chKIWA_mutation.bed, subset both cKIWA.mafs.gz and hKIWA.mafs.gz. So there should be a total of 12 files c/hKIWA_mutation.mafs.gz

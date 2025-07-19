@@ -34,13 +34,21 @@ mutations="deleterious tolerated lossoffunction noncoding nonsynonymous synonymo
 
 for i in `cat $scripts/autochrs.txt`; do
     for j in $(echo $mutations); do
-        awk 'NR==FNR{a[$8]=$0; next} $1 in a {print a[$1]}' $basedir/cKIWA_${i}_mafs.keyvalue $basedir/private_mutations/chKIWA_${j}.key >> $basedir/cKIWA_${j}.maf;
+        awk 'NR==FNR{a[$8]=$0; next} $1 in a {print a[$1]}' $basedir/cKIWA_${i}_mafs.keyvalue $basedir/private_mutations/chKIWA_${j}.key >> $basedir/cKIWA_${j}_temp.maf;
     done;
 done
 
 for i in `cat $scripts/autochrs.txt`; do
     for j in $(echo $mutations); do
-        awk 'NR==FNR{a[$8]=$0; next} $1 in a {print a[$1]}' $basedir/hKIWA_${i}_mafs.keyvalue $basedir/private_mutations/chKIWA_${j}.key >> $basedir/hKIWA_${j}.maf;
+        awk 'NR==FNR{a[$8]=$0; next} $1 in a {print a[$1]}' $basedir/hKIWA_${i}_mafs.keyvalue $basedir/private_mutations/chKIWA_${j}.key >> $basedir/hKIWA_${j}_temp.maf;
     done;
 done
+
+#Modify Files
+for i in $(echo $mutations); do
+    cut -f 1-7 $basedir/hKIWA_${i}_temp.maf >> $basedir/hKIWA_${i}.maf
+    cut -f 1-7 $basedir/cKIWA_${i}_temp.maf >> $basedir/cKIWA_${i}.maf;
+done
+
+mv $basedir/*.keyvalue $basedir/keyvalues
 ```

@@ -1,52 +1,37 @@
-# Polarize mafs
-To polarize I am subsetting the outgroup.maf.gz (HOWA/AMRE), to fixed sites. I will subset the ingroup.maf.gz (cKIWA) to segregating sites. I will then merge these fixed and segregating sites and consider the intersected sites as private to cKIWA. Then I will find the intersection between cKIWA and hKIWA and this will subset all private sites for all KIWA samples. 
+## Filter Ancestral Allele
+Defined as sites in the outgroup (HOWA_AMRE), where the major allele is the same as reference allele AND is also fixed
 
 ```bash
-nano $scripts/chKIWA_private_sites.bash
+nano $scripts/polarize.bash
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --mem=60GB
-#SBATCH --time=200:00:00
-#SBATCH --account=dut374_sc_default
-#SBATCH --job-name=chKIWA_private_sites
+#SBATCH --mem=100GB
+#SBATCH --time=9:00:00
+#SBATCH --account=open
+#SBATCH --job-name=polarize
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/job_err_output/%x.%j.out
 
-#Set Variables
+# Set Variables
 basedir='/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rxy'
 scripts='/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts'
 
-#Create BED 
-awk '{print $1,$2-1,$2}' OFS="\t" $basedir/priv/cKIWA_auto_nind_segregating.mafs > $basedir/priv/cKIWA_auto_nind_segregating.bed
+# # Maj = Ref && Maj > 0.99 (Min < 0.01)
+# awk '$3 == $5 && $6 < 0.01' $basedir/mafs/HOWA_AMRE_auto_nind.mafs >> $basedir/polar/HOWA_AMRE_auto_nind_maj_ref_fixed.mafs
 
-awk '{print $1,$2-1,$2}' OFS="\t" $basedir/priv/HOWA_AMRE_auto_nind_fixed.mafs > $basedir/priv/HOWA_AMRE_auto_nind_fixed.bed
-
-#Split By Chr
-for i in `cat $scripts/autochrs.txt`; do 
-    grep -E "^${i}\b" $basedir/priv/cKIWA_auto_nind_segregating.bed >> $basedir/priv/cKIWA_auto_nind_segregating_${i}.bed;
-done
-
-for i in `cat $scripts/autochrs.txt`; do 
-    grep -E "^${i}\b" $basedir/priv/HOWA_AMRE_auto_nind_fixed.bed >> $basedir/priv/HOWA_AMRE_auto_nind_fixed_${i}.bed;
-done
-
-#Intersect 
-for i in `cat $scripts/autochrs.txt`; do
-    bedtools intersect -a $basedir/priv/cKIWA_auto_nind_segregating_${i}.bed -b $basedir/priv/HOWA_AMRE_auto_nind_fixed_${i}.bed -u >> $basedir/priv/cKIWA_private_${i}.bed;
-done
-
-# Intersect cKIWA and hKIWA
-zcat $basedir/hKIWA.mafs.gz | awk '{print $1,$2-1,$2}' OFS="\t" > $basedir/priv/hKIWA_mafs.bed
-sed -i 1d $basedir/priv/hKIWA_mafs.bed
-
-for i in `cat $scripts/autochrs.txt`; do 
-    grep -E "^${i}\b" $basedir/priv/hKIWA_mafs.bed > $basedir/priv/hKIWA_mafs_${i}.bed;
-done
+# Create Keys
+# for i in `cat $scripts/autochrs.txt`; do
+#     grep -E "^${i}\b" $basedir/polar/HOWA_AMRE_auto_nind_maj_ref_fixed.mafs | awk '{print $1"_"$2}' >> $basedir/polar/HOWA_AMRE_maj_ref_fixed_${i}.key; 
+# done
 
 for i in `cat $scripts/autochrs.txt`; do
-    bedtools intersect -a $basedir/priv/cKIWA_private_${i}.bed -b $basedir/priv/hKIWA_mafs_${i}.bed -u >> $basedir/private_sites/chKIWA_private_${i}.bed;
+    grep -E "^${i}\b" $basedir/mafs/chKIWA_auto_nind.mafs | awk '{print $0,$1"_"$2}' OFS="\t" >> $basedir/polar/chKIWA_${i}.keyvalues;
 done
 
+# Extract
 for i in `cat $scripts/autochrs.txt`; do
-    cat $basedir/private_sites/chKIWA_private_${i}.bed >> $basedir/private_sites/chKIWA_private.bed;
+    awk 'NR==FNR{a[$8]=$0; next} $1 in a {print a[$1]}' $basedir/polar/chKIWA_${i}.keyvalues $basedir/polar/HOWA_AMRE_maj_ref_fixed_${i}.key >> $basedir/polar/chKIWA_anc_der.mafs;
 done
+
+# Subset segreating MAF
+cut -f 1-7 $basedir/polar/chKIWA_anc_der.mafs | awk '$6>0.01' >> $basedir/polar/chKIWA_der.mafs
 ```

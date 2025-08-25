@@ -5,8 +5,8 @@ nano $scripts/rhino_concat.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --mem=8GB
-#SBATCH --time=10:00:00
-#SBATCH --account=open
+#SBATCH --time=30:00:00
+#SBATCH --account=zps5164_sc_default
 #SBATCH --job-name=rhino_concat
 #SBATCH --error=/storage/group/zps5164/default/shared/rhinos/err/%x.%j.out
 

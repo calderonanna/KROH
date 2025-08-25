@@ -1,0 +1,144 @@
+---
+title: "allele_frequencies"
+output: html_document
+date: "2025-08-15"
+---
+
+# Set Up
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+library(ggpubr)
+setwd("/Users/annamariacalderon/Desktop/")
+```
+
+# Import Data
+
+```{r import_data, include=FALSE}
+AF <- read.table("AF_p.tsv", sep = '\t', header=TRUE)
+AF
+```
+
+# Modify Data
+
+```{r modify_data, include=FALSE}
+
+#Subset Downsampled Data
+AF_down <- subset(AF, AF$DATA=='DOWNSAMPLED')
+
+AF_down_m <- melt(AF_down,
+                  id.vars = c("BIN","POP"), 
+                  measure.vars = c("LOF", "DEL",
+                                   "TOL", "SYN",
+                                   "NONSYN", "NONCODE",
+                                   "INTER"),
+                  variable.name = "MUTATION",
+                  value.name = "PROPORTION")
+AF_down_m
+```
+
+# Plot
+
+```{r plot, include=FALSE}
+lof_plot <- ggplot(subset(AF_down_m, AF_down_m$MUTATION == 'LOF'), 
+                   aes(x = BIN, y = PROPORTION, alpha = POP)) +
+  geom_bar(stat = "identity", position = "dodge", color="black", fill="#FF4073") +
+  scale_alpha_manual(values=c(0.5,1.0)) +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(x = "Allele Frequency", 
+       y = "PROPORTION",
+       title = "Loss of Function") + 
+  theme(legend.title = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(color = "black", fill=NA, linewidth = 1.5))
+
+del_plot <- ggplot(subset(AF_down_m, AF_down_m$MUTATION == 'DEL'), 
+                   aes(x = BIN, y = PROPORTION, alpha = POP)) +
+  geom_bar(stat = "identity", position = "dodge", color="black", fill="#FF6B40") +
+  scale_alpha_manual(values=c(0.5,1.0)) +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(x = "Allele Frequency", 
+       y = "PROPORTION",
+       title = "Deleterious") + 
+  theme(legend.title = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(color = "black", fill=NA, linewidth = 1.5))
+
+nonsyn_plot <- ggplot(subset(AF_down_m, AF_down_m$MUTATION == 'NONSYN'), 
+       aes(x = BIN, y = PROPORTION, alpha = POP)) +
+  geom_bar(stat = "identity", position = "dodge", color="black", fill="#FFCC40") +
+  scale_alpha_manual(values=c(0.5,1.0)) +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(x = "Allele Frequency", 
+       y = "PROPORTION",
+       title = "Nonsynonymous") + 
+  theme(legend.title = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(color = "black", fill=NA, linewidth = 1.5))
+
+syn_plot <- ggplot(subset(AF_down_m, AF_down_m$MUTATION == 'SYN'), 
+       aes(x = BIN, y = PROPORTION, alpha = POP)) +
+  geom_bar(stat = "identity", position = "dodge", color="black", fill="#80FF40") +
+  scale_alpha_manual(values=c(0.5,1.0)) +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(x = "Allele Frequency", 
+       y = "PROPORTION",
+       title = "Synonymous") + 
+  theme(legend.title = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(color = "black", fill=NA, linewidth = 1.5))
+
+tol_plot <- ggplot(subset(AF_down_m, AF_down_m$MUTATION == 'TOL'), 
+       aes(x = BIN, y = PROPORTION, alpha = POP)) +
+  geom_bar(stat = "identity", position = "dodge", color="black", fill="#40E6FF") +
+  scale_alpha_manual(values=c(0.5,1.0)) +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(x = "Allele Frequency", 
+       y = "PROPORTION",
+       title = "Tolerated") + 
+  theme(legend.title = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(color = "black", fill=NA, linewidth = 1.5))
+
+noncode_plot <- ggplot(subset(AF_down_m, AF_down_m$MUTATION == 'NONCODE'), 
+       aes(x = BIN, y = PROPORTION, alpha = POP)) +
+  geom_bar(stat = "identity", position = "dodge", color="black", fill="#006EFF") +
+  scale_alpha_manual(values=c(0.5,1.0)) +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(x = "Allele Frequency", 
+       y = "PROPORTION",
+       title = "Noncoding") + 
+  theme(legend.title = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(color = "black", fill=NA, linewidth = 1.5))
+
+inter_plot <- ggplot(subset(AF_down_m, AF_down_m$MUTATION == 'INTER'), 
+       aes(x = BIN, y = PROPORTION, alpha = POP)) +
+  geom_bar(stat = "identity", position = "dodge", color="black", fill="#303030") +
+  scale_alpha_manual(values=c(0.5,1.0)) +
+  scale_x_discrete(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) + 
+  labs(x = "Allele Frequency ", 
+       y = "PROPORTION",
+       title = "Intergenic") + 
+  theme(legend.title = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(color = "black", fill=NA, linewidth = 1.5))
+
+ggarrange(inter_plot,
+          del_plot, tol_plot,
+          nonsyn_plot, syn_plot,
+          lof_plot, noncode_plot,
+          nrow=4,
+          ncol=2,
+          common.legend = TRUE)
+```

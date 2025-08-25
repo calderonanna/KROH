@@ -1,0 +1,50 @@
+---
+title: "allele_frequencies"
+output: html_document
+date: "2025-08-15"
+---
+
+# Set Up
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(reshape2)
+library(ggpubr)
+library(scales)
+setwd("/Users/annamariacalderon/Desktop/")
+```
+
+# Import Data
+
+```{r import_data, include=FALSE}
+AF_delta <- read.table("AF_per_change.tsv", sep = '\t', header=TRUE)
+AF_delta
+```
+
+# Modify Data
+
+```{r modify_data, include=FALSE}
+
+AF_delta_m <- melt(AF_delta,
+                  id.vars = c("BIN"), 
+                  measure.vars = c("LOF", "DEL",
+                                   "TOL", "SYN",
+                                   "NONSYN", "NONCODE",
+                                   "INTER"),
+                  variable.name = "MUTATION",
+                  value.name = "DELTA")
+AF_delta_m
+```
+
+# Plot
+
+```{r plot, include=TRUE}
+
+ggplot(AF_delta_m, aes(x=BIN, y=DELTA, fill=MUTATION)) +
+  geom_bar(stat = "identity") + # Use stat="identity" since percentages are pre-calculated
+  facet_wrap(~ MUTATION, scales = "free_y", ncol=1) +
+  theme(legend.position = "none")
+  
+```

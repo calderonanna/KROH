@@ -16,6 +16,7 @@ source ~/.bashrc
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/degen"
 mywa="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_reference"
+data="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data"
 
 #extract Exons, sort, convert
 gunzip -u $mywa/mywagenomev2.1.all.noseq.gff.gz
@@ -44,34 +45,46 @@ awk 'NR % 2 == 0 {
      {print}' $work/exons.fa \
 | awk 'BEGIN{n=1} 
        /^>/ {print; n=1; next} 
-       {print $0"_"n*3; n++}' >> exons_counts.txt
+       {print $0"@"n*3; n++}' >> $work/exons_counts.txt
 
 #Export degenerate codons 
     #[GC][GCT].
 awk '/^>/ {print; next}
-    /^[GC][GCT]./ {print}' exons_counts.txt \
+    /^[GC][GCT]./ {print}' $work/exons_counts.txt \
 | awk '/^>/ {header=$0; next} 
-     {print header, $0}' > GC_GCT_AGCT.temp
+     {print header, $0}' > $work/GC_GCT_AGCT.temp
 
     #[AT]C.
 awk '/^>/ {print; next}
-    /^[AT]C./ {print}' exons_counts.txt \
+    /^[AT]C./ {print}' $work/exons_counts.txt \
 | awk '/^>/ {header=$0; next} 
-     {print header, $0}' > AT_C_AGCT.temp
+     {print header, $0}' > $work/AT_C_AGCT.temp
 
-#Format
-sed -i 's/>//g' GC_GCT_AGCT.temp
-sed -i 's/[:-]/\t/g' GC_GCT_AGCT.temp
-sed -i 's/(/\t(/g' GC_GCT_AGCT.temp
-sed -i 's/\s/\t/g' GC_GCT_AGCT.temp
-sed -i 's/_/\t/g' GC_GCT_AGCT.temp
+#Format and filter
+sed -i 's/>//g' $work/GC_GCT_AGCT.temp
+sed -i 's/:/\t/g' $work/GC_GCT_AGCT.temp
+sed -i 's/(/\t(/g' $work/GC_GCT_AGCT.temp
+sed -i 's/\s/\t/g' $work/GC_GCT_AGCT.temp
+sed -i 's/@/\t/g' $work/GC_GCT_AGCT.temp
+sed -i 's/\([0-9]\)-\([0-9]\)/\1\t\2/g' $work/GC_GCT_AGCT.temp
+sed -i 's/>//g' $work/AT_C_AGCT.temp
+sed -i 's/:/\t/g' $work/AT_C_AGCT.temp
+sed -i 's/(/\t(/g' $work/AT_C_AGCT.temp
+sed -i 's/\s/\t/g' $work/AT_C_AGCT.temp
+sed -i 's/@/\t/g' $work/AT_C_AGCT.temp
+sed -i 's/\([0-9]\)-\([0-9]\)/\1\t\2/g' $work/AT_C_AGCT.temp
+
+awk '{print $1, $2+$6, $4, $5}' OFS="\t" $work/GC_GCT_AGCT.temp >> $work/4fold.temp
+awk '{print $1, $2+$6, $4, $5}' OFS="\t" OFS="\t" $work/AT_C_AGCT.temp >> $work/4fold.temp
+
+awk 'length($4) == 3 && $4 !~ /[a-zN]/' $work/4fold.temp >> $work/4fold.temp2
+
+for i in `cat $scripts/autochrs.txt`; do 
+    grep -E "${i}\b" $work/4fold.temp2 | sort -k2,2n >> $work/4fold.txt;
+done
+
+cat $work/4fold.txt | cut -f 1,2 >> $data/rxy_downsampled/muts/4fold_synonymous.txt
 
 
-sed -i 's/>//g' AT_C_AGCT.temp
-sed -i 's/[:-]/\t/g' AT_C_AGCT.temp
-sed -i 's/(/\t(/g' AT_C_AGCT.temp
-sed -i 's/\s/\t/g' AT_C_AGCT.temp
-sed -i 's/_/\t/g' AT_C_AGCT.temp
-
-awk '{print $1, $2+$6, $4, $5}' OFS="\t" GC_GCT_AGCT.temp >> 4fold.temp
-awk '{print $1, $2+$6, $4, $5}' OFS="\t" OFS="\t" AT_C_AGCT.temp >> 4fold.temp
+cat deleterious.txt | head -1 >> 4fold.txt
+grep -v -f synonymous.txt 4fold_synonymous.txt >> 4fold.txt

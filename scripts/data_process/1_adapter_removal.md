@@ -15,13 +15,13 @@ nano $scripts/rhino_trim.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --mem=8GB
-#SBATCH --time=10:00:00
-#SBATCH --account=open
+#SBATCH --time=40:00:00
+#SBATCH --account=zps5164_sc_default
 #SBATCH --job-name=rhino_trim
 #SBATCH --error=/storage/group/zps5164/default/shared/rhinos/err/%x.%j.out
 
 #Set Variables
-scripts="/storage/group/zps5164/default/shared/rhinos"
+scripts="/storage/group/zps5164/default/shared/rhinos/scripts"
 ref="/storage/group/zps5164/default/shared/reference_genomes/black_rhino"
 fastq="/storage/group/zps5164/default/shared/rhinos/fastq"
 adapter_removal="/storage/home/abc6435/ToewsLab/bin/adapterremoval-2.1.7/build/AdapterRemoval"

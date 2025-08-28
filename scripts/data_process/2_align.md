@@ -33,7 +33,7 @@ For example in -X 20, if the gap between R1 and R2 exceeds 20, those alignments 
 This alignment would be invalid because the gap is at 30 and exceeds -X 20.
 
 ```bash
-nano $scripts/rhino_trim.bash
+nano $scripts/rhino_align.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=4

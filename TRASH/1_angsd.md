@@ -36,6 +36,9 @@ scripts='/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts'
 cd $basedir/mywa_reference/
 samtools faidx mywagenomev2.1.fa
 
+#Create bamlist
+realpath /storage/home/abc6435/SzpiechLab/abc6435/KROH/data/bam/*marked_downsampled.bam
+
 #chKIWA
 $angsd -b $workdir/maf/chKIWA.bamlist -ref $ref -out $workdir/maf/chKIWA -GL 1  -doMajorMinor 1 -doMaf 1 -doCounts 1 -minMapQ 30 -minQ 20 -remove_bads 1 -only_proper_pairs 1 -uniqueOnly 1 -C 50 -baq 1 -nThreads 8
 

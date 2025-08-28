@@ -52,6 +52,12 @@ sam="/storage/group/zps5164/default/shared/rhinos/sam"
 err="/storage/home/abc6435/SzpiechLab/abc6435/KROH/err"
 bowtie="/storage/home/abc6435/ToewsLab/bin/bowtie2-2.3.5.1"
 
+
+#Index Ref
+mywagenomev2.1.fa
+$bowtie/bowtie2-build $ref/Diceros_bicornis_HiC.fasta.gz $ref/Diceros_bicornis_HiC
+
+
 \$bowtie/bowtie2 -p 4 \\
      --very-sensitive-local --local -N 0 --phred33 \\
      -x \$ref \\

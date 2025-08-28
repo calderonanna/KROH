@@ -38,8 +38,9 @@ nano $scripts/rhino_align.bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=4
 #SBATCH --mem=200GB
-#SBATCH --time=10:00:00
-#SBATCH --account=open
+#SBATCH --time=100:00:00
+#SBATCH --account=zps5164_cr_default
+#SBATCH --partition=himem
 #SBATCH --job-name=rhino_align
 #SBATCH --error=/storage/group/zps5164/default/shared/rhinos/err/%x.%j.out
 
@@ -51,7 +52,11 @@ bowtie="/storage/home/abc6435/ToewsLab/bin/bowtie2-2.3.5.1"
 sam="/storage/group/zps5164/default/shared/rhinos/sam"
 err="/storage/group/zps5164/default/shared/rhinos/err"
 
-$bowtie/bowtie2 -p 4 \
+#Index Ref
+gunzip -c $ref/Diceros_bicornis_HiC.fasta.gz > $ref/Diceros_bicornis_HiC.fasta
+$bowtie/bowtie2-build $ref/Diceros_bicornis_HiC.fasta $ref/Diceros_bicornis_HiC
+
+/usr/bin/time $bowtie/bowtie2 -p 4 \
 	 --very-sensitive-local --local -N 0 --phred33 \
 	 -x $ref \
 	 --rg-id BR18 \

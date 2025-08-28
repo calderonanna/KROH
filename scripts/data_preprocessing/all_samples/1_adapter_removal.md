@@ -16,7 +16,7 @@ for i in `cat $scripts/SETO_IDS.txt`; do
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --mem=8GB
-#SBATCH --time=300:00:00
+#SBATCH --time=6:00:00
 #SBATCH --account=dut374_sc_default
 #SBATCH --job-name=trim_${i}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.out

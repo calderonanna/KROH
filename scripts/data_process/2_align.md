@@ -38,14 +38,14 @@ nano $scripts/rhino_align.bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=4
 #SBATCH --mem=200GB
-#SBATCH --time=100:00:00
+#SBATCH --time=10:00:00
 #SBATCH --account=zps5164_cr_default
 #SBATCH --partition=himem
 #SBATCH --job-name=rhino_align
 #SBATCH --error=/storage/group/zps5164/default/shared/rhinos/err/%x.%j.out
 
 #Set Variables
-scripts="/storage/group/zps5164/default/shared/rhinos"
+scripts="/storage/group/zps5164/default/shared/rhinos/scripts"
 ref="/storage/group/zps5164/default/shared/reference_genomes/black_rhino"
 fastq="/storage/group/zps5164/default/shared/rhinos/fastq"
 bowtie="/storage/home/abc6435/ToewsLab/bin/bowtie2-2.3.5.1"
@@ -53,19 +53,17 @@ sam="/storage/group/zps5164/default/shared/rhinos/sam"
 err="/storage/group/zps5164/default/shared/rhinos/err"
 
 #Index Ref
-gunzip -c $ref/Diceros_bicornis_HiC.fasta.gz > $ref/Diceros_bicornis_HiC.fasta
-$bowtie/bowtie2-build $ref/Diceros_bicornis_HiC.fasta $ref/Diceros_bicornis_HiC
+# cd $ref
+# gunzip -c Diceros_bicornis_HiC.fasta.gz > Diceros_bicornis_HiC.fasta
+# $bowtie/bowtie2-build Diceros_bicornis_HiC.fasta Diceros_bicornis_HiC
 
-/usr/bin/time $bowtie/bowtie2 -p 4 \
-	 --very-sensitive-local --local -N 0 --phred33 \
-	 -x $ref \
-	 --rg-id BR18 \
-	 --rg SM:BR18 \
-	 -1 $fastq/BR18_trimmed.pair1.truncated.gz \
-	 -2 $fastq/BR18_trimmed.pair2.truncated.gz \
-	 -U $fastq/BR18_trimmed.collapsed.gz \
-	 -X 700 \
-	 -S $sam/BR18.sam 
-	 \>& $err/BR18_bowtie.log
+$bowtie/bowtie2 -p 4 --very-sensitive-local --local -N 0 --phred33 \
+    -x $ref/Diceros_bicornis_HiC \
+    --rg-id BR18 --rg SM:BR18 -X 700 \
+    -1 $fastq/BR18_trim.pair1.truncated.gz \
+    -2 $fastq/BR18_trim.pair2.truncated.gz \
+    -U $fastq/BR18_trim.collapsed.gz \
+    -S $sam/BR18.sam \
+    >& $err/BR18_bowtie.log
 ```
 

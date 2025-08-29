@@ -41,34 +41,26 @@ for i in `cat $scripts/SETO_IDS.txt`; do
 #SBATCH --mem=200GB
 #SBATCH --time=10:00:00
 #SBATCH --account=dut374_sc_default
-#SBATCH --job-name=align
+#SBATCH --job-name=align_${i}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.out
 
 #Set Variables
-scripts="/storage/group/zps5164/default/shared/rhinos/scripts"
-ref="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_reference"
+scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+ref="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_reference/mywagenomev2.1"
 fastq="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/fastq"
-sam="/storage/group/zps5164/default/shared/rhinos/sam"
+sam="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/sam"
 err="/storage/home/abc6435/SzpiechLab/abc6435/KROH/err"
 bowtie="/storage/home/abc6435/ToewsLab/bin/bowtie2-2.3.5.1"
 
 
-#Index Ref
-mywagenomev2.1.fa
-$bowtie/bowtie2-build $ref/Diceros_bicornis_HiC.fasta.gz $ref/Diceros_bicornis_HiC
-
-
-\$bowtie/bowtie2 -p 4 \\
-     --very-sensitive-local --local -N 0 --phred33 \\
-     -x \$ref \\
-     --rg-id ${i} \\
-     --rg SM:${i} \\
-     -1 \$fastq/${i}_trimmed.pair1.truncated.gz \\
-     -2 \$fastq/${i}_trimmed.pair2.truncated.gz \\
-     -U \$fastq/${i}_trimmed.collapsed.gz \\
-     -X 700 \\
-     -S \$sam/${i}.sam 
-     \>& \$err/${i}_bowtie.log
+\$bowtie/bowtie2 -p 4 --very-sensitive-local --local -N 0 --phred33 \\
+    -x \$ref \\
+    --rg-id ${i} --rg SM:${i} -X 700 \\
+    -1 \$fastq/${i}_trimmed.pair1.truncated.gz \\
+    -2 \$fastq/${i}_trimmed.pair2.truncated.gz \\
+    -U \$fastq/${i}_trimmed.collapsed.gz \\
+    -S \$sam/${i}.sam \\
+    >& \$err/${i}_bowtie.log
 EOT
 done
 ```

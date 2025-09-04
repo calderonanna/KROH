@@ -38,8 +38,8 @@ for i in `cat $scripts/SETO_IDS.txt`; do
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=4
-#SBATCH --mem=200GB
-#SBATCH --time=10:00:00
+#SBATCH --mem=8GB
+#SBATCH --time=36:00:00
 #SBATCH --account=dut374_sc_default
 #SBATCH --job-name=align_${i}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.out
@@ -63,5 +63,14 @@ bowtie="/storage/home/abc6435/ToewsLab/bin/bowtie2-2.3.5.1"
     >& \$err/${i}_bowtie.log
 EOT
 done
+```
+
+## Report Alignment Rates
+```bash
+cd /storage/home/abc6435/SzpiechLab/abc6435/KROH/data/seqstats
+for i in `cat $scripts/SETO_IDS.txt`; do
+    echo ${i}
+    cat $err/${i}_bowtie.log | grep "overall"; 
+done >> alignment_rates.txt
 ```
 

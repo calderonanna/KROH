@@ -37,8 +37,8 @@ nano $scripts/rhino_align.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=4
-#SBATCH --mem=200GB
-#SBATCH --time=10:00:00
+#SBATCH --mem=50GB
+#SBATCH --time=300:00:00
 #SBATCH --account=zps5164_cr_default
 #SBATCH --partition=himem
 #SBATCH --job-name=rhino_align

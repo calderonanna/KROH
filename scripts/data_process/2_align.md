@@ -36,8 +36,8 @@ This alignment would be invalid because the gap is at 30 and exceeds -X 20.
 nano $scripts/rhino_align.bash
 #!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks=4
-#SBATCH --mem=50GB
+#SBATCH --ntasks=7
+#SBATCH --mem=100GB
 #SBATCH --time=300:00:00
 #SBATCH --account=zps5164_cr_default
 #SBATCH --partition=himem
@@ -57,7 +57,7 @@ err="/storage/group/zps5164/default/shared/rhinos/err"
 # gunzip -c Diceros_bicornis_HiC.fasta.gz > Diceros_bicornis_HiC.fasta
 # $bowtie/bowtie2-build Diceros_bicornis_HiC.fasta Diceros_bicornis_HiC
 
-$bowtie/bowtie2 -p 4 --very-sensitive-local --local -N 0 --phred33 \
+/usr/bin/time -v $bowtie/bowtie2 -p 7 --very-sensitive-local --local -N 0 --phred33 \
     -x $ref/Diceros_bicornis_HiC \
     --rg-id BR18 --rg SM:BR18 -X 700 \
     -1 $fastq/BR18_trim.pair1.truncated.gz \

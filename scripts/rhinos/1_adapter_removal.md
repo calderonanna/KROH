@@ -11,37 +11,31 @@ https://adapterremoval.readthedocs.io/en/stable/manpage.html
 **--basename**: specify location and name to store trimmed reads 
 
 ```bash
-for i in `cat $scripts/SETO_IDS.txt`; do 
-    cat <<EOT > $scripts/trim_${i}.bash
+nano $scripts/rhino_trim.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --mem=8GB
-#SBATCH --time=6:00:00
-#SBATCH --account=dut374_sc_default
-#SBATCH --job-name=trim_${i}
-#SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.out
+#SBATCH --time=40:00:00
+#SBATCH --account=zps5164_sc_default
+#SBATCH --job-name=rhino_trim
+#SBATCH --error=/storage/group/zps5164/default/shared/rhinos/err/%x.%j.out
 
 #Set Variables
 scripts="/storage/group/zps5164/default/shared/rhinos/scripts"
-ref="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_reference"
-fastq="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/fastq"
+ref="/storage/group/zps5164/default/shared/reference_genomes/black_rhino"
+fastq="/storage/group/zps5164/default/shared/rhinos/fastq"
 adapter_removal="/storage/home/abc6435/ToewsLab/bin/adapterremoval-2.1.7/build/AdapterRemoval"
 
 set -ue
-\$adapter_removal \\
-    --file1 \$fastq/${i}_R1.fastq.gz \\
-    --file2 \$fastq/${i}_R2.fastq.gz \\
-    --collapse \\
-    --trimns \\
-    --minlength 20 \\
-    --qualitybase 33 \\
-    --gzip \\
-    --basename \$fastq/${i}_trimmed
-EOT
-done
 
-for i in `cat $scripts/SETO_IDS.txt`; do
-    sbatch $scripts/trim_${i}.bash;
-done
+$adapter_removal \
+    --file1 $fastq/BR18_R1.fastq.gz \
+    --file2 $fastq/BR18_R2.fastq.gz \
+    --collapse \
+     --trimns \
+    --minlength 20 \
+    --qualitybase 33 \
+    --gzip \
+    --basename $fastq/BR18_trim
 ```
 

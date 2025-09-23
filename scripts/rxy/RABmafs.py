@@ -7,118 +7,103 @@ import sys
 import argparse
 
 #Define readmafs()
-def readmafs(popA_derived, popB_derived, intergenic_sites, mutation_sites, seed):
+def readmafs(fileA, fileB, fileN, fileM):
     #Checks file extensions (files must end in .maf)
-    f1 = popA_derived.split(".")
+    f1 = fileA.split(".")
     if f1[-1] == "gz":
         sys.exit("ERR: MAF file should be unzipped")
-    f2 = popB_derived.split(".")
+    f2 = fileB.split(".")
     if f2[-1] == "gz":
         sys.exit("ERR: MAF file should be unzipped")
 
     #Imports Data
-    popA_der = pd.read_csv(popA_derived, sep='\t', header=(0))
-    popB_der = pd.read_csv(popB_derived, sep='\t', header=(0))
-    inter = pd.read_csv(intergenic_sites, sep='\t', header=(0))
-    mut = pd.read_csv(mutation_sites, sep='\t', header=(0))
+    popA = pd.read_csv(fileA, sep='\t', header=(0))
+    popB = pd.read_csv(fileB, sep='\t', header=(0))
+    neutral = pd.read_csv(fileN, sep='\t', header=(0))
+    mutation = pd.read_csv(fileM, sep='\t', header=(0))
 
     #Check Headers
-    if not {'chromo', 'position', 'knownEM'}.issubset(popA_der.columns):
+    if not {'chromo', 'position', 'knownEM'}.issubset(popA.columns):
         sys.exit("ERR: Check file headers")
-    if not {'chromo', 'position', 'knownEM'}.issubset(popB_der.columns):
+    if not {'chromo', 'position', 'knownEM'}.issubset(popB.columns):
         sys.exit("ERR: Check file headers")
-    if not {'chromo', 'position'}.issubset(inter.columns):
+    if not {'chromo', 'position'}.issubset(neutral.columns):
         sys.exit("ERR: Check file headers.")
-    if not {'chromo', 'position'}.issubset(mut.columns):
+    if not {'chromo', 'position'}.issubset(mutation.columns):
         sys.exit("ERR: Check file headers")
 
-    #Join popA and popB Derived Sites
-    derived = pd.merge(popA_der,
-                       popB_der,
-                       on=['chromo','position','major','minor','ref'],
-                       how='inner')
-    
-    #Extract 10K Derived Intergenic Sites
-    int_der = pd.merge(derived,
-                   inter,
-                   on=['chromo','position'],
-                   how='inner')
-    
-    np.random.seed(seed)
-    indices_int = np.random.permutation(len(int_der))[:10000]
-    int_der_10K = int_der.iloc[indices_int]
-    
-    #Extract Derived Mutations
-    mut_der = pd.merge(derived,
-                   mut,
-                   on=['chromo','position'],
-                   how='inner')
-    return int_der_10K, mut_der
-
-#Define parsemafs()
-def parsemafs(int_der_10K, mut_der):
-    #Parse Data
-    f_AD = mut_der['knownEM_x']
-    f_BD = mut_der['knownEM_y']
-    f_AN = int_der_10K['knownEM_x']
-    f_BN = int_der_10K['knownEM_y']
-    return f_AD, f_BD, f_AN, f_BN
+    #Join popA and popB 
+    der = pd.merge(popA, popB, on=['chromo','position','major','minor','ref'],how='inner')
+    neu_der = pd.merge(der, neutral, on=['chromo','position'],how='inner', indicator=True)
+    mut_der = pd.merge(der, mutation, on=['chromo','position'],how='inner', indicator=True)
+    neu_der = neu_der[neu_der['_merge']=='both'].drop(columns=['_merge'])
+    mut_der = mut_der[mut_der['_merge']=='both'].drop(columns=['_merge'])
+    return neu_der, mut_der
 
 #Define calcRAB()
-def calcRAB(f_AD, f_BD, f_AN, f_BN):
+def calcRAB(neu_der, mut_der, seed):
+    np.random.seed(seed)
+    index1=np.random.permutation(len(neu_der))[:10000]
+    neu1=neu_der.iloc[index1]
+    f_AD = mut_der['knownEM_x']
+    f_BD = mut_der['knownEM_y']
+    f_AN = neu1['knownEM_x']
+    f_BN = neu1['knownEM_y']
     LAB = sum(f_AD*(1-f_BD))/sum(f_AN*(1-f_BN))
-    LBA = sum(f_BD*(1-f_AD))/sum(f_BN*(1-f_BN))
+    LBA = sum(f_BD*(1-f_AD))/sum(f_BN*(1-f_AN))
     RAB = LAB/LBA
     return RAB
 
+#Define calcRAB_neu()
+def calcRAB_neu(neu_der, seed):
+    np.random.seed(seed)
+    index1=np.random.permutation(len(neu_der))[:10000]
+    neu1=neu_der.iloc[index1]
+    index2=np.random.permutation(len(neu_der))[:10000]
+    neu2=neu_der.iloc[index2]
+    f_AD = neu1['knownEM_x']
+    f_BD = neu1['knownEM_y']
+    f_AN = neu2['knownEM_x']
+    f_BN = neu2['knownEM_y']
+    LAB = sum(f_AD*(1-f_BD))/sum(f_AN*(1-f_BN))
+    LBA = sum(f_BD*(1-f_AD))/sum(f_BN*(1-f_AN))
+    RAB_neu = LAB/LBA
+    return RAB_neu
+
 #Define samplesites()
-def samplesites(sites, Psites):
-    #Subsample Sites
-    Nsites = int(round(len(sites) * Psites))
-    indices = np.random.permutation(len(sites))[:Nsites]
-    sites_subsamp = sites.iloc[indices]
-    return sites_subsamp
+def samplesites(sites, psites):
+    nsites = int(round(len(sites) * psites))
+    indices = np.random.permutation(len(sites))[:nsites]
+    subsamp = sites.iloc[indices]
+    return subsamp
 
 #Define jackknife()
-def jackknife(int_der, mut_der, Psites, iter):
+def jackknife(neu_der, mut_der, psites, iter, seed):
     jx = []
     for i in range(iter):
-        int_subsamp = samplesites(int_der, Psites)
-        mut_subsamp = samplesites(mut_der, Psites)
-        f_sub_AD, f_sub_BD, f_sub_AN, f_sub_BN = parsemafs(int_subsamp, mut_subsamp)
-        jx.append(calcRAB(f_sub_AD, f_sub_BD, f_sub_AN, f_sub_BN))
+        neu_sub = samplesites(neu_der, psites)
+        mut_sub = samplesites(mut_der, psites)
+        jx.append(calcRAB(neu_sub, mut_sub, seed))
     return np.array(jx)
 
 #Argparse
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Compute RAB from .maf site files.")
-    parser.add_argument("--popA_derived", required=True, help="Pop A derived mutation sites (.maf)")
-    parser.add_argument("--popB_derived", required=True, help="Pop B derived mutation sites (.maf)")
-    parser.add_argument("--intergenic_sites", required=True, help="tab separated list of intergenic sites. Column 1 should be labelled chromo and column 2 should be labelled 'position'")
-    parser.add_argument("--mutation_sites", required=True, help="tab separated list of mutation sites (e.g, lof). Column 1 should be labelled chromo and column 2 should be labelled 'position'")
+    parser.add_argument("--fileA", required=True, help="popA.maf; a list of derived sites in pop A")
+    parser.add_argument("--fileB", required=True, help="popB.maf; a list of derived sites in pop B")
+    parser.add_argument("--fileN", required=True, help="tab separated list of neutral sites. Column 1 should be labelled 'chromo' and column 2 should be labelled 'position'")
+    parser.add_argument("--fileM", required=True, help="tab separated list of mutation sites (e.g, lof). Column 1 should be labelled 'chromo' and column 2 should be labelled 'position'")
     parser.add_argument("--seed", required=True, type=int, help="Set seed for subsampling 10000 intergenic sites.")
-    parser.add_argument("--Psites", required=True, type=float, help="Proportion of sites to retain for jackknife (e.g: 0.90 for 90%)")
+    parser.add_argument("--psites", required=True, type=float, help="Proportion of sites to retain for jackknife (e.g: 0.90 for 90%)")
     parser.add_argument("--iter", required=True, type=int, help="Number of iterations for jackknife.")
     args = parser.parse_args()
 
-#CALCULATE RAB
-inter, muts = readmafs(args.popA_derived,
-                       args.popB_derived,
-                       args.intergenic_sites,
-                       args.mutation_sites,
-                       int(args.seed))
-
-f_AD, f_BD, f_AN, f_BN = parsemafs(inter, muts)
-
-print("RAB =", calcRAB(f_AD, f_BD, f_AN, f_BN))
-
-#SUBSAMPLE AND JACKKNIFE
-jx_array = jackknife(inter,
-                     muts,
-                     float(args.Psites),
-                     int(args.iter))
-
+#RUN
+neu_der, mut_der = readmafs(args.fileA, args.fileB, args.fileN, args.fileM)
+jx_array = jackknife(neu_der, mut_der, float(args.psites), int(args.iter), args.seed)
 q025, q975 = np.percentile(jx_array, [2.5, 97.5])
+avg = np.mean(jx_array)
 
-print("2.5% =", q025)
-print("97.5% =", q975)
+print("RAB =", calcRAB(neu_der, mut_der, args.seed))
+print("avg[2.5%,97.5%] = ", avg,"[",q025,",",q975,"]")
+print("RAB_neutral = ", calcRAB_neu(neu_der, args.seed))

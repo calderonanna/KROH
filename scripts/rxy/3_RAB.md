@@ -34,3 +34,9 @@ for mut in $muts; do
     python3 $scripts/RABmafs.py --fileA $maf/hKIWA_derived.maf --fileB $maf/cKIWA_derived.maf --fileN $rxy/4fold_synonymous.txt --fileM $rxy/${mut}.txt --seed 100 --psites 0.30 --iter 20 >> $rxy/results_4fold.txt
     echo '' >> $rxy/results_4fold.txt;
 done
+
+for mut in $muts; do
+    echo $mut >> $rxy/results_inter.txt
+    python3 $scripts/RABmafs.py --fileA $maf/hKIWA_derived.maf --fileB $maf/cKIWA_derived.maf --fileN $rxy/intergenic.txt --fileM $rxy/${mut}.txt --seed 100 --psites 0.30 --iter 20 >> $rxy/results_inter.txt
+    echo '' >> $rxy/results_inter.txt;
+done

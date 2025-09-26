@@ -1,20 +1,26 @@
 ```bash
-nano $scripts/reads.bash
+samtools view -F 0x904 L_atlanticus_BBIP_2_S1_marked.bam | awk '{ contig = $3; read_len = length($10); sum[contig] += read_len } END { for (c in sum) print c, sum[c] }' | sort >> mapped_bases.txt 
+#OZ118746.1 3354101612
+
+samtools view -F 0xd04 L_atlanticus_BBIP_2_S1_marked.bam | \
+awk '{ contig = $3; read_len = length($10); sum[contig] += read_len } END { for (c in sum) print c, sum[c] }' | \
+sort >> mapped_bases_deduplicated.txt
+
+qualimap bamqc -bam L_atlanticus_BBIP_2_S1_marked.bam --skip-duplicates --min-mapping-quality 0 --min-base-quality 0 -outdir qualimap_BBIP_2_filtered
+
+nano qualimapBBIP_2_filtered.sh
 #!/bin/bash
+#SBATCH --account=dut374_sc_default
 #SBATCH --nodes=1
-#SBATCH --mem=8GB
-#SBATCH --time=12:00:00
-#SBATCH --account=open
-#SBATCH --job-name=reads
-#SBATCH --error=/storage/home/abc6435/ToewsLab/helaina/job_err_out/%x.%j.out
+#SBATCH --ntasks-per-node=10
+#SBATCH --time=1:00:00
+#SBATCH --mem=10GB
+#SBATCH --output=output_file_%j.txt
+#SBATCH --job-name=quali
 
-#Set Variables
-fastq='/storage/group/dut374/default/helaina/data/fastq'
-scripts='/storage/home/abc6435/ToewsLab/helaina/scripts'
-seq_stats='/storage/home/abc6435/ToewsLab/helaina/data/seq_stats'
+module use /storage/group/dut374/default/sw/modules
+module load all
 
-for i in $(cat $scripts/ids.txt); do
-    echo -e "${i}\t$(wc -l < $fastq/${i}_R1_001.fastq.gz)" \
-        >> $seq_stats/reads.temp;
-done
-awk '{print $1, $2/4}' OFS="\t" $seq_stats/reads.temp >> $seq_stats/reads.txt
+cd /storage/home/abc6435/ToewsLab/helaina/data/bam
+
+qualimap bamqc -bam L_atlanticus_BBIP_2_S1_marked.bam --skip-duplicates --min-mapping-quality 0 --min-base-quality 0 -outdir qualimap_BBIP_2_filtered

@@ -24,3 +24,25 @@ module load all
 cd /storage/home/abc6435/ToewsLab/helaina/data/bam
 
 qualimap bamqc -bam L_atlanticus_BBIP_2_S1_marked.bam --skip-duplicates --min-mapping-quality 0 --min-base-quality 0 -outdir qualimap_BBIP_2_filtered
+
+
+scripts="/storage/home/abc6435/ToewsLab/helaina/scripts"
+bam="/storage/group/dut374/default/helaina/data/bam"
+for i in `cat $scripts/ids.txt`; do 
+    cat <<EOT > $scripts/qualimap_${i}.bash
+#!/bin/bash
+#SBATCH --account=dut374_sc_default
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=10
+#SBATCH --time=1:00:00
+#SBATCH --mem=10GB
+#SBATCH --output=output_file_%j.txt
+#SBATCH --job-name=qualimap_${i}
+
+module use /storage/group/dut374/default/sw/modules
+module load all
+
+qualimap bamqc -bam /storage/group/dut374/default/helaina/data/bam/${i}_marked.bam -outdir $bam/qualimap_${i}
+
+EOT
+done

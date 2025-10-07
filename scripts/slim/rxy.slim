@@ -9,14 +9,15 @@ initialize() {
 	
 	
 	// MUTATION TYPES
+	// neutral (syn)
+	initializeMutationType("m1", 0.5, "f", 0);
+	// mild deleterious (nonsyn)
+	initializeMutationType("m2", 00/10, "g", -0.03, 0.2);
 	
-	// deleterious
-	initializeMutationType("m2", 0.2, "g", -0.03, 0.2);
 	
-	
-	// GENOMIC ELEMENT TYPES (only exons)
-	// exons ((snyonymous/nonsynonymous)
-	initializeGenomicElementType("g3", c(m1,m3), c(10,1));
+	// GENOMIC ELEMENT TYPES
+	// exons ((syn:nonsyn)
+	initializeGenomicElementType("g1", c(m1,m2), c(1,1.62));
 	
 	
 	// GENOMIC STRUCTURE
@@ -25,21 +26,31 @@ initialize() {
 	for (line in lines)
 	{
 		components = strsplit(line, "\t");
-		initializeGenomicElement(g3, asInteger(components[0])-1, asInteger(components[1])-1);
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
 	}
 }
 
 
 // SIMULATE POPULATION
-1 early() {
-	sim.addSubpop("p1", 500);
-}
+1 early() {sim.addSubpop("p1", 4000);} // N=4000 for 40Kya from 1940
+20000 early() {p1.setSubpopulationSize(400);} //Nbot=400 at 1940
+200025 early() {p1.setSubpopulationSize(4000);} //Nexp=4000 at 1990-present
+//End
+19950 late() {sim.outputFixedMutations();} // sample before bottleneck
+20000 late() {sim.outputFixedMutations();} // sample at bottleneck - 1940
+20003 late() {sim.outputFixedMutations();} // sample during bottleneck - 1946
+20006 late() {sim.outputFixedMutations();} // sample during bottleneck - 1952
+20009 late() {sim.outputFixedMutations();} // sample during bottleneck - 1958
+20012 late() {sim.outputFixedMutations();} // sample during bottleneck - 1964
+20015 late() {sim.outputFixedMutations();} // sample during bottleneck - 1970
+20018 late() {sim.outputFixedMutations();} // sample during bottleneck - 1976
+20021 late() {sim.outputFixedMutations();} // sample during bottleneck - 1982
+20024 late() {sim.outputFixedMutations();} // sample during bottleneck - 1988
+20027 late() {sim.outputFixedMutations();} // sample after bottleneck - 1994
+20030 late() {sim.outputFixedMutations();} // sample after bottleneck - 2000
+20033 late() {sim.outputFixedMutations();} // sample after bottleneck - 2006
+20036 late() {sim.outputFixedMutations();} // sample after bottleneck - 2012
+20039 late() {sim.outputFixedMutations();} // sample after bottleneck - 2018
+20041 late() {sim.outputFixedMutations();} // sample after bottleneck - 2024
 
-// output samples of 10 haplosomes periodically, all fixed mutations at end
-//10*popsize = # generations
 
-1000 late() { p1.outputSample(10); }
-2000 late() { p1.outputSample(10); }
-200000 late() { sim.outputFixedMutations(); }
-
-// schedule a committe meeting (next semester)

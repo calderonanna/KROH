@@ -5,9 +5,13 @@
 #Install sdk
 curl -s "https://get.sdkman.io" | bash
 echo 'source "$HOME/.sdkman/bin/sdkman-init.sh"' >> ~/.bashrc
+
+#Choose Java Version 17
+cd /storage/home/abc6435/.sdkman/candidates/java
 sdk list java
-sdk install java 8.0.372-tem
-echo 'export JAVA_HOME="$HOME/.sdkman/candidates/java/8.0.372-tem"' >> ~/.bashrc
+sdk install java 17.0.16-tem
+
+echo 'export JAVA_HOME="$HOME/.sdkman/candidates/java/17.0.16-tem"' >> ~/.bashrc
 echo 'export PATH="$JAVA_HOME/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 
@@ -16,7 +20,7 @@ cd /storage/home/abc6435/SzpiechLab/bin
 wget https://github.com/broadinstitute/gatk/releases/download/4.6.2.0/gatk-4.6.2.0.zip
 unzip gatk-4.6.2.0.zip
 rm -rf gatk-4.6.2.0.zip
-echo 'export PATH=/storage/home/abc6435/SzpiechLab/bin/gatk-4.6.2.0/gatk:$PATH'
+echo 'export PATH=/storage/home/abc6435/SzpiechLab/bin/gatk-4.6.2.0:$PATH' >> ~/.bashrc
 source ~/.bashrc
 ```
 
@@ -45,7 +49,7 @@ cd \$bam
 samtools index \$bam/${i}_sorted_marked.rescaled.bam
 
 #Run HaplotypeCaller
-/usr/bin/time -v gatk HaplotypeCaller \\
+gatk HaplotypeCaller \\
     -R \$ref \\
     -I \$bam/${i}_sorted_marked.rescaled.bam\\
     -ERC GVCF \\
@@ -67,12 +71,19 @@ done
 #SBATCH --job-name=derive
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.out
 
+#Set Variables
+gatk="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gatk"
+bam="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/bam"
+ref="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_reference/mywagenomev2.1.fa"
+scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+
 #Combine GVCFs
 samples=$(ls $gatk/*.g.vcf | sed 's/^/--variant /')
 gatk CombineGVCFs \
     $(echo $samples) \
     -O $gatk/KIWA_comb.vcf \
-    -R $ref >& $gatk/KIWA_gvcfs.log
+    -R $ref \
+    >& $gatk/log/KIWA_gvcfs.log
 
 #Zip and Index
 for i in `cat $scripts/KIWA_IDS_e759877.txt`; do 

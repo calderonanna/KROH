@@ -123,15 +123,15 @@ nano $scripts/filter_sites.bash
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 gatk="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gatk"
 
-# #Count Sites
-# echo "KIWA.vcf.gz" >> $gatk/log/snps.log
-# zgrep -v ^## $gatk/KIWA.vcf.gz | wc -l >> $gatk/log/snps.log
-# echo "" >> $gatk/log/snps.log
+#Count Sites
+echo "KIWA.vcf.gz" >> $gatk/log/snps.log
+zgrep -v ^## $gatk/KIWA.vcf.gz | wc -l >> $gatk/log/snps.log
+echo "" >> $gatk/log/snps.log
 
-# #Biallelic Sites
-# bcftools view -m2 -M2 -v snps $gatk/KIWA.vcf.gz -Oz -o $gatk/KIWA_bi.vcf.gz
-# echo "KIWA_bi.vcf.gz" >> $gatk/log/snps.log
-# zgrep -v ^## $gatk/KIWA_bi.vcf.gz | wc -l >> $gatk/log/snps.log
+#Biallelic Sites
+bcftools view -m2 -M2 -v snps $gatk/KIWA.vcf.gz -Oz -o $gatk/KIWA_bi.vcf.gz
+echo "KIWA_bi.vcf.gz" >> $gatk/log/snps.log
+zgrep -v ^## $gatk/KIWA_bi.vcf.gz | wc -l >> $gatk/log/snps.log
 echo "" >> $gatk/log/snps.log
 
 #Site Quality
@@ -177,7 +177,7 @@ gatk="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gatk"
 # done
 
 #Genotype Read Depth
-bcftools filter $gatk/KIWA_bi_qual.vcf.gz -e 'FMT/DP<1' || 'FMT/DP>34' -S . -Oz -o $gatk/KIWA_bi_qual_gtdp.vcf.gz
+bcftools filter $gatk/KIWA_bi_qual.vcf.gz -e 'FMT/DP<1 || FMT/DP>34' -S . -Oz -o $gatk/KIWA_bi_qual_gtdp.vcf.gz
 
 #Genotype Quality
 bcftools filter $gatk/KIWA_bi_qual_gtdp.vcf.gz -e 'FMT/GQ<20' -S . -Oz -o $gatk/KIWA_bi_qual_gtdp_gtgq.vcf.gz

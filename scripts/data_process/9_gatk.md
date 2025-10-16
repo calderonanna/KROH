@@ -85,11 +85,11 @@ gatk="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gatk"
 bam="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/bam"
 ref="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_reference/mywagenomev2.1.fa"
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+samples=$(realpath /storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gatk/*.g.vcf | sed 's/^/--variant /')
 
 #Combine GVCFs
-samples=$(ls $gatk/*.g.vcf | sed 's/^/--variant /')
 gatk CombineGVCFs \
-    $(echo $samples) \
+    $samples \
     -O $gatk/KIWA_comb.vcf \
     -R $ref \
     >& $gatk/log/KIWA_gvcfs.log

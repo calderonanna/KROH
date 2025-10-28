@@ -53,14 +53,14 @@ gatk HaplotypeCaller \\
     -R \$ref \\
     -I \$bam/${i}_sorted_marked.rescaled.bam\\
     -ERC GVCF \\
-    -O \$gatk/${i}.g.vcf \\
+    -O \$gatk/gvcf/${i}.g.vcf \\
     --native-pair-hmm-threads 2 \\
     >& \$gatk/log/${i}gvcf.log
 EOT
 done
 
 # Check For Completion
-cd $gatk
+cd $gatk/gcvf
 for file in $(ls); do 
     echo $file
     grep "Caller done" $file
@@ -85,27 +85,27 @@ gatk="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gatk"
 bam="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/bam"
 ref="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_reference/mywagenomev2.1.fa"
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
-samples=$(realpath /storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gatk/*.g.vcf | sed 's/^/--variant /')
+samples=$(realpath /storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gatk/gvcf/*.g.vcf | sed 's/^/--variant /')
 
 #Combine GVCFs
 gatk CombineGVCFs \
     $samples \
-    -O $gatk/KIWA_comb.vcf \
+    -O $gatk/gvcf/KIWA_comb.vcf \
     -R $ref \
     >& $gatk/log/KIWA_gvcfs.log
 
 #Zip and Index
 for i in `cat $scripts/KIWA_IDS_e759877.txt`; do 
-    nohup bgzip $gatk/${i}.g.vcf; 
+    nohup bgzip $gatk/gvcf/${i}.g.vcf; 
 done
 
-nohup bgzip $gatk/KIWA_comb.vcf
-nohup tabix $gatk/KIWA_comb.vcf.gz
+nohup bgzip $gatk/gvcf/KIWA_comb.vcf
+nohup tabix $gatk/gvcf/KIWA_comb.vcf.gz
 
 #Genotype
 gatk --java-options "-Xmx100g" GenotypeGVCFs \
     -R $ref \
-    -V $gatk/KIWA_comb.vcf.gz -O $gatk/KIWA.vcf.gz
+    -V $gatk/gvcf/KIWA_comb.vcf.gz -O $gatk/vcf/KIWA.vcf.gz
 ```
 
 ## Filter Sites
@@ -176,17 +176,17 @@ gatk="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gatk"
 #     >> $gatk/log/depth_per.txt;
 # done
 
-#Genotype Read Depth
-bcftools filter $gatk/KIWA_bi_qual.vcf.gz -e 'FMT/DP<1 || FMT/DP>34' -S . -Oz -o $gatk/KIWA_bi_qual_gtdp.vcf.gz
+# #Genotype Read Depth
+# bcftools filter $gatk/KIWA_bi_qual.vcf.gz -e 'FMT/DP<1 || FMT/DP>34' -S . -Oz -o $gatk/KIWA_bi_qual_gtdp.vcf.gz
 
-#Genotype Quality
-bcftools filter $gatk/KIWA_bi_qual_gtdp.vcf.gz -e 'FMT/GQ<20' -S . -Oz -o $gatk/KIWA_bi_qual_gtdp_gtgq.vcf.gz
+# #Genotype Quality
+# bcftools filter $gatk/KIWA_bi_qual_gtdp.vcf.gz -e 'FMT/GQ<20' -S . -Oz -o $gatk/KIWA_bi_qual_gtdp_gtgq.vcf.gz
 
-#Missing Data
-bcftools view -e 'F_MISSING > 0.5' $gatk/KIWA_bi_qual_gtdp_gtgq.vcf.gz -Oz -o $gatk/KIWA_bi_qual_gtdp_gtgq_fmiss.vcf.gz
+# #Missing Data
+# bcftools view -e 'F_MISSING > 0.5' $gatk/KIWA_bi_qual_gtdp_gtgq.vcf.gz -Oz -o $gatk/KIWA_bi_qual_gtdp_gtgq_fmiss.vcf.gz
 
 #Excess Heterozygosity
-bcftools view -e 'COUNT(GT="het")>=11' $gatk/KIWA_bi_qual_gtdp_gtgq_fmiss.vcf.gz -Oz -o $gatk/KIWA_bi_qual_gtdp_gtgq_fmiss_exhet.vcf.gz
+bcftools view -e 'COUNT(GT="het")>=11' $gatk/vcf/KIWA_bi_qual_gtdp_gtgq_fmiss.vcf.gz -Oz -o $gatk/vcf/KIWA_bi_qual_gtdp_gtgq_fmiss_exhet.vcf.gz
 
 #Autosomes
-bcftools view $gatk/KIWA_bi_qual_gtdp_gtgq_fmiss_exhet.vcf.gz --regions-file $scripts/autochrs.txt -Oz -o $gatk/KIWA_bi_qual_gtdp_gtgq_fmiss_exhet.vcf.gz
+bcftools view $gatk/vcf/KIWA_bi_qual_gtdp_gtgq_fmiss_exhet.vcf.gz --regions-file $scripts/autochrs.txt -Oz -o $gatk/vcf/KIWA_bi_qual_gtdp_gtgq_fmiss_exhet_auto.vcf.gz

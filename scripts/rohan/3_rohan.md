@@ -68,4 +68,12 @@ for i in $(cat $scripts/KIWA_IDS_e759877.txt); do
     | sed "s/^Segments in ROH(%)       :/$i/" \
     | sed "s/ /\t/g" >> percent_ROH.txt
 done
+```
 
+## Download
+```bash
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/percent_ROH.txt /Users/annamariacalderon/Desktop/KROH/data/rohan
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/gw_theta_inc_ROH.txt /Users/annamariacalderon/Desktop/KROH/data/rohan
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/gw_theta_outside_ROH.txt /Users/annamariacalderon/Desktop/KROH/data/rohan

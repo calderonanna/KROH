@@ -30,14 +30,15 @@ allsites="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gatk/allsites"
 # bcftools view -M2 -i '((ALT="." && INFO/DP>10) || (ALT!="." && STRLEN(REF)==1 && STRLEN(ALT)==1 && INFO/DP>10 && QUAL>=30))' $allsites/KIWA_allsites.vcf.gz -Oz -o $allsites/KIWA_allsites_bi_dp_qual.vcf.gz
 # nohup tabix $allsites/KIWA_allsites_bi_dp_qual.vcf.gz
 
-#Intergenic Sites
-bedtools makewindows -b $pixy/intergenic.bed -w 1 | sed 1d | cut -f1,2 > $pixy/intergenic.txt
+# #Intergenic Sites
+# bedtools makewindows -b $pixy/intergenic.bed -w 1 | sed 1d | cut -f1,2 > $pixy/intergenic.txt
 
 pixy --stats pi \
 --vcf $allsites/KIWA_allsites.vcf.gz \
 --populations $pixy/2pops.txt \
 --n_cores 8 \
 --sites_file $pixy/intergenic.txt \
+--window_size 1 \
 --output_folder $pixy \
 --output_prefix intergenic_2pops
 

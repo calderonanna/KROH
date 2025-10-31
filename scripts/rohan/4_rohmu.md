@@ -10,5 +10,4 @@ Rohmu is the number of "heterozygous sites" in an ROH the user is willing to tol
 ## Inspect .hmm.pdf
 ```bash
 rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/rohmu_2e-4_1Mb_hmm/29779.hmm_1_3.pdf  /Users/abc6435/Desktop
-
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/183195332.het_*.pdf /Users/abc6435/Desktop
+```

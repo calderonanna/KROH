@@ -1,0 +1,79 @@
+initialize(){
+	//CHR1
+	initializeMutationType("m1", 0.5, "f", 0);
+	initializeMutationType("m2", 0.0, "g", -0.03, 0.2);
+	initializeGenomicElementType("g1", c(m1,m2), c(9,1));
+	initializeChromosome(id=1, length=114063801); 
+	lines = readFile("~/Desktop/KROH/data/slim/genome_structure/exon_chr1.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR1a
+	initializeChromosome(id=100, length=71386623); 
+	lines = readFile("~/Desktop/KROH/data/slim/genome_structure/exon_chr1a.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+
+	//CHR2
+	initializeChromosome(id=2, length=150066519); 
+	lines = readFile("~/Desktop/KROH/data/slim/genome_structure/exon_chr2.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+}
+
+
+// SIMULATE POPULATION
+1 early() {
+	sim.addSubpop("p1", 700);
+	}
+20000 early() {
+	p1.setSubpopulationSize(295);
+	inds = p1.sampleIndividuals(7);
+	inds.outputIndividuals();
+	inds.outputIndividualsToVCF(filePath="/Users/abc6435/Desktop/KROH/data/slim/rxy/h00/h00_1929.vcf");
+}
+
+20040 early() {
+	p1.setSubpopulationSize(161);
+	inds = p1.sampleIndividuals(7);
+	inds.outputIndividuals();
+	inds.outputIndividualsToVCF(filePath="/Users/abc6435/Desktop/KROH/data/slim/rxy/h00/h00_2009.vcf");
+}
+
+20045 late() {
+	} //2019
+
+//https://groups.google.com/g/slim-discuss
+
+//// SIMULATE POPULATION
+//1 early() {
+//	sim.addSubpop("p1", 700);
+//	}
+//20000 early() {
+//	p1.setSubpopulationSize(295);
+//	p1.outputVCFSample(sampleSize=7, chromosome=c(1,100,2), filePath="/Users/abc6435/Desktop/KROH/data/slim/rxy/h00/h00_1929.vcf");
+//	} //1929*
+//20040 early() {
+//	p1.setSubpopulationSize(161);
+//	p1.outputVCFSample(sampleSize=7, chromosome=c(1,100,2), filePath="/Users/abc6435/Desktop/KROH/data/slim/rxy/h00/h00_2009.vcf");
+//} //2009*
+//
+//20045 late() {
+//	} //2019
+//
+////https://groups.google.com/g/slim-discuss

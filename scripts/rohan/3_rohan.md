@@ -9,7 +9,8 @@ for i in $(cat $scripts/KIWA_IDS_e759877.txt); do
 #SBATCH --time=48:00:00
 #SBATCH --account=dut374_sc_default
 #SBATCH --job-name=rohan_${i}
-#SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.out
+#SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.err
+#SBATCH --output=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.out
 
 #Set Variables
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
@@ -26,14 +27,16 @@ module use gsl
 \$rohan \\
 -t 8 \\
 --tstv 2.03 \\
---rohmu 1e-03 \\
+--rohmu 2e-04 \\
 --name ${i} \\
 --deam5p \$work/${i}_5p.prof \\
 --deam3p \$work/${i}_3p.prof \\
 --auto \$scripts/autochrs.txt \\
 --size 1000000 \\
--o \$results/rohmu_1e-3_1Mb/${i} \\
+-o \$results/${i} \\
 \$ref \\
-\$bam/${i}_sorted_marked_rescaled_qc.bam
+\$bam/${i}_sorted_marked_rescaled_qc.bam \\
+> \$results/${i}.log \\
+2> \$results/${i}.err
 EOT
 done

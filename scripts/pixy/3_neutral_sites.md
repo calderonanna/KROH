@@ -4,7 +4,7 @@
 ```bash
 #Set Variables
 ref="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_reference/mywagenomev2.1.fa.fai"
-work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/pixy"
+pixy="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/pixy"
 annotations="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/sift4g/AnnotationsSplit"
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
@@ -20,8 +20,11 @@ done
 #intergenic.bed
 bedtools subtract -a $pixy/genome.bed -b $pixy/genic.bed > $pixy/intergenic.bed
 
+#intergenic.txt
+bedtools makewindows -b $pixy/intergenic.bed -w 1 | sed 1d | cut -f1,2 > $pixy/intergenic.txt
+
 #file clean up
-rm -rf $pixy/genome* $pixy/genic.bed
+rm -rf $pixy/genome.* $pixy/*.bed
 ```
 
 

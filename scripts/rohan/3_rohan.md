@@ -40,3 +40,32 @@ module use gsl
 2> \$results/${i}.err
 EOT
 done
+```
+## Compile Results
+```bash
+#Set Variables
+scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+results="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results"
+
+#Genome-wide theta outside ROH
+echo -e "sample\tthetamid\tthetamin\tthetamax" > gw_theta_outside_ROH.txt
+for i in $(cat $scripts/KIWA_IDS_e759877.txt); do
+    grep "^Genome-wide theta outside ROH:" ${i}.summary.txt \
+    | sed "s/^Genome-wide theta outside ROH:/$i/" >> gw_theta_outside_ROH.txt
+done
+
+#Genome-wide theta inc. ROH
+echo -e "sample\tthetamid\tthetamin\tthetamax" > gw_theta_inc_ROH.txt
+for i in $(cat $scripts/KIWA_IDS_e759877.txt); do
+    grep "^Genome-wide theta inc. ROH:" ${i}.summary.txt \
+    | sed "s/^Genome-wide theta inc. ROH:/$i/" >> gw_theta_inc_ROH.txt
+done
+
+#Segments in ROH(%)
+echo -e "sample\tROH(%)\tCI" > percent_ROH.txt
+for i in $(cat $scripts/KIWA_IDS_e759877.txt); do
+    grep "^Segments in ROH(%)       :" ${i}.summary.txt \
+    | sed "s/^Segments in ROH(%)       :/$i/" \
+    | sed "s/ /\t/g" >> percent_ROH.txt
+done
+

@@ -31,23 +31,24 @@ allsites="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gatk/allsites"
 # nohup tabix $allsites/KIWA_allsites_bi_dp_qual.vcf.gz
 
 #Intergenic Sites
+bedtools makewindows -b $pixy/intergenic.bed -w 1 | sed 1d | cut -f1,2 > $pixy/intergenic.txt
+
 pixy --stats pi \
 --vcf $allsites/KIWA_allsites.vcf.gz \
 --populations $pixy/2pops.txt \
 --n_cores 8 \
---bed_file $pixy/intergenic.bed \
---window_size 1 \
+--sites_file $pixy/intergenic.txt \
 --output_folder $pixy \
 --output_prefix intergenic_2pops
 
-#Genomewide
-pixy --stats pi \
---vcf $allsites/KIWA_allsites.vcf.gz \
---populations $pixy/2pops.txt \
---n_cores 8 \
---window_size 100000 \
---output_folder $pixy \
---output_prefix genomewide_2pops
+# #Genomewide
+# pixy --stats pi \
+# --vcf $allsites/KIWA_allsites.vcf.gz \
+# --populations $pixy/2pops.txt \
+# --n_cores 8 \
+# --window_size 100000 \
+# --output_folder $pixy \
+# --output_prefix genomewide_2pops
 
 #Average Pi
 awk 'NR>1 && $1=="cKIWA" {sum+=$5; count++} END {print "cKIWA intergenic_pi =",sum/count}' $pixy/intergenic_2pops_pi.txt >> $pixy/avg_neutral_pi.txt

@@ -30,9 +30,7 @@ rxy="/storage/group/zps5164/default/abc6435/KROH/data/rxy"
 muts="deleterious lossoffunction nonsynonymous tolerated noncoding synonymous"
 
 for mut in $muts; do
-    echo $mut >> $rxy/results_4fold.txt
-    python3 $scripts/RABmafs.py --fileA $maf/hKIWA_derived.maf --fileB $maf/cKIWA_derived.maf --fileN $rxy/4fold_synonymous.txt --fileM $rxy/${mut}.txt --seed 100 --psites 0.30 --iter 20 >> $rxy/results_4fold.txt
-    echo '' >> $rxy/results_4fold.txt;
+    python3 $scripts/RABmafs.py --fileA $maf/hKIWA_derived.maf --fileB $maf/cKIWA_derived.maf --fileN $rxy/4fold_synonymous.txt --fileM $rxy/${mut}.txt --seed 100 --psites 0.30 --iter 20
 done
 
 for mut in $muts; do

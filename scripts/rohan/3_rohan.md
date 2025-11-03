@@ -68,12 +68,28 @@ for i in $(cat $scripts/KIWA_IDS_e759877.txt); do
     | sed "s/^Segments in ROH(%)       :/$i/" \
     | sed "s/ /\t/g" >> percent_ROH.txt
 done
+
+#NROH and SROH
+echo "sample,sroh,nroh,hmm_posterior_decoding" > nroh_sroh.txt
+for i in $(cat $scripts/KIWA_IDS_e759877.txt); do
+  for type in min mid max; do
+    zcat ${i}.${type}.hmmrohl.gz \
+    | awk -v sample="$i" -v t="$type" 'NR>1 {sum += $5; count++} END {print sample, sum, count, t}' OFS="," \
+    >> nroh_sroh.txt
+  done
+done
+
+#Heterozygosity
+echo -e "chrom\tend\th\thlow\thhigh\tsample\tpop" > het.txt
+for i in $(cat $scripts/hKIWA_IDS_e759877.txt); do
+  zcat ${i}.hEst.gz \
+  | awk -v sample="$i" 'NR>1 {print $1,$3,$5,$7,$8,sample,"hKIWA"}' OFS="\t" \
+  >> het.txt
+done
+
+for i in $(cat $scripts/cKIWA_IDS.txt); do
+  zcat ${i}.hEst.gz \
+  | awk -v sample="$i" 'NR>1 {print $1,$3,$5,$7,$8,sample,"cKIWA"}' OFS="\t" \
+  >> het.txt
+done
 ```
-
-## Download
-```bash
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/percent_ROH.txt /Users/annamariacalderon/Desktop/KROH/data/rohan
-
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/gw_theta_inc_ROH.txt /Users/annamariacalderon/Desktop/KROH/data/rohan
-
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/gw_theta_outside_ROH.txt /Users/annamariacalderon/Desktop/KROH/data/rohan

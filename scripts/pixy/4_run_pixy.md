@@ -55,3 +55,8 @@ pixy --stats pi \
 awk 'NR>1 && $1=="cKIWA" {sum+=$5; count++} END {print "cKIWA intergenic_pi =",sum/count}' $pixy/intergenic_2pops_pi.txt >> $pixy/avg_neutral_pi.txt
 awk 'NR>1 && $1=="hKIWA" {sum+=$5; count++} END {print "hKIWA intergenic_pi =",sum/count}' $pixy/intergenic_2pops_pi.txt >> $pixy/avg_neutral_pi.txt
 ```
+
+## Download Data
+```bash
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/pixy/genomewide_2pops_pi.txt /Users/annamariacalderon/Desktop/KROH/data/pixy
+```

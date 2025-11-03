@@ -1,0 +1,73 @@
+---
+title: "slim_s_coef"
+author: "Anna Maria Calderon"
+date: "2025-10-29"
+output: html_document
+---
+
+# Extract Selection Coef
+
+```{bash}
+#Download to Local
+work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/slim/rxy"
+rsync abc6435@submit.hpc.psu.edu:$work/h10/h10_s.txt /Users/abc6435/Desktop/KROH/data/slim/rxy/h10
+```
+
+# Set Up
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+```
+
+# Import Data and Modify
+
+```{r import_data, include=FALSE}
+setwd("/Users/abc6435/Desktop/KROH/data/slim/rxy")
+
+#h=0
+s_00 <- read.table("h00/h00_s.txt")
+s_00 <- data.frame(s_00[s_00!=0])
+colnames(s_00) <- "value"
+
+#h=0.5
+s_05 <- read.table("h05/h05_s.txt")
+s_05 <- data.frame(s_05[s_05!=0])
+colnames(s_05) <- "value"
+
+#h=1.0
+s_10 <- read.table("h10/h10_s.txt")
+s_10 <- data.frame(s_10[s_10!=0])
+colnames(s_10) <- "value"
+```
+
+# Plot
+
+```{r plot, include=FALSE}
+#h=0.0
+hist(s_00$value,
+     breaks=100,
+     main="h=0.0",
+     xlab="s",
+     ylab="count",
+     col="#EAD6FF")
+
+#h=0.5
+hist(s_05$value,
+     breaks=100,
+     main="h=0.5",
+     xlab="s",
+     ylab="count",
+     col="#C478FF")
+
+#h=1.0
+hist(s_10$value,
+     breaks=100,
+     main="h=1.0",
+     xlab="s",
+     ylab="count",
+     col="#6A00B5")
+
+```

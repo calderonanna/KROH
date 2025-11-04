@@ -52,7 +52,7 @@ pixy --stats pi \
 # --output_prefix genomewide_2pops
 
 #Average Pi
-awk 'NR>1 && $1=="cKIWA" {sum+=$5; count++} END {print "cKIWA intergenic_pi =",sum/count}' $pixy/intergenic_2pops_pi.txt >> $pixy/avg_neutral_pi.txt
+awk 'NR>1 && $1=="cKIWA" {sum+=$7; count++} END {print "cKIWA intergenic_pi =",sum/count}' $pixy/intergenic_2pops_pi.txt >> $pixy/avg_neutral_pi.txt
 awk 'NR>1 && $1=="hKIWA" {sum+=$5; count++} END {print "hKIWA intergenic_pi =",sum/count}' $pixy/intergenic_2pops_pi.txt >> $pixy/avg_neutral_pi.txt
 ```
 

@@ -5,12 +5,14 @@ date: "2025-10-29"
 output: html_document
 ---
 
-# Extract Selection Coef
+# Extract S
 
 ```{bash}
-#Download to Local
 work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/slim/rxy"
-rsync abc6435@submit.hpc.psu.edu:$work/h10/h10_s.txt /Users/abc6435/Desktop/KROH/data/slim/rxy/h10
+h_coef="h00 h05 h10"
+for h in $h_coef; do
+    rsync abc6435@submit.hpc.psu.edu:$work/$h/$h_s.txt /Users/abc6435/Desktop/KROH/data/slim/rxy/$h
+done
 ```
 
 # Set Up
@@ -47,27 +49,52 @@ colnames(s_10) <- "value"
 
 ```{r plot, include=FALSE}
 #h=0.0
-hist(s_00$value,
-     breaks=100,
-     main="h=0.0",
-     xlab="s",
-     ylab="count",
-     col="#EAD6FF")
+h00 <- hist(s_00$value,
+            breaks = c(-0.25, -0.10, -0.05, 0.00), plot = FALSE)
+plot(h00,
+     freq = TRUE,
+     main = "h=0.0",
+     xlab = "s",
+     ylab = "count",
+     col = "#FFB700",
+     ylim = c(0, max(h00$counts) * 1.2))
+text(x = h00$mids,
+     y = h00$counts,
+     labels = h00$counts,
+     pos = 3,
+     cex = 0.8)
 
 #h=0.5
-hist(s_05$value,
-     breaks=100,
-     main="h=0.5",
-     xlab="s",
-     ylab="count",
-     col="#C478FF")
+h05 <- hist(s_05$value,
+            breaks = c(-0.25, -0.10, -0.05, 0.00), plot = FALSE)
+plot(h05,
+     freq = TRUE,
+     main = "h=0.5",
+     xlab = "s",
+     ylab = "count",
+     col = "#006359",
+     ylim = c(0, max(h05$counts) * 1.2))
+text(x = h05$mids,
+     y = h05$counts,
+     labels = h05$counts,
+     pos = 3,
+     cex = 0.8)
 
 #h=1.0
-hist(s_10$value,
-     breaks=100,
-     main="h=1.0",
-     xlab="s",
-     ylab="count",
-     col="#6A00B5")
+h10 <- hist(s_10$value,
+            breaks = c(-0.25, -0.10, -0.05, 0.00), plot = FALSE)
+plot(h10,
+     freq = TRUE,
+     main = "h=1.0",
+     xlab = "s",
+     ylab = "count",
+     col = "#9E005C",
+     ylim = c(0, max(h10$counts) * 1.2))
+text(x = h10$mids,
+     y = h10$counts,
+     labels = h10$counts,
+     pos = 3,
+     cex = 0.8)
+
 
 ```

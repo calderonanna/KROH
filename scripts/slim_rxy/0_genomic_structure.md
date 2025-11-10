@@ -3,16 +3,20 @@
 ## Obtain Exons
 ```bash
 #Set Variables
-gtf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/sift4g/AnnotationsSplit/mywagenomev2.1.gene_chr1a.gtf"
+gtf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/sift4g/AnnotationsSplit"
 work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/slim/genome_structure"
+scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 
-awk '$3=="exon" && $7=="+"' $gtf \
+for i in $(cat $scripts/autochrs.txt); do
+  awk '$3=="exon" && $7=="+"' $gtf/mywagenomev2.1.gene_${i}.gtf \
   | awk '{print $4"\t"$5}' \
   | sort -k1,1n -k2,2n \
-  | uniq > $work/exon_chr1a.txt
-
+  | uniq > $work/exon_${i}.txt
+done
 
   #Download
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/slim/genome_structure/exon_chr1a.txt /Users/abc6435/Desktop/KROH/data/slim/genome_structure
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/slim/genome_structure/exon_*.txt /Users/abc6435/Desktop/KROH/data/slim/genome_structure
 ```
+
+
 

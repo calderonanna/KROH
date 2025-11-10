@@ -1,2 +1,8 @@
 data/pixy/*.txt
 ~/Desktop/KROH/data/pixy/*
+
+data/slim/rxy/*
+data/slim/genome_structure/*
+~/Desktop/KROH/data/slim/genome_structure/*
+~/Desktop/KROH/data/slim/rxy/*
+.Rproj.user

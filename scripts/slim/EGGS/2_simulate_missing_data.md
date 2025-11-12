@@ -36,9 +36,9 @@ eggs="/storage/home/abc6435/SzpiechLab/bin/EGGS/bin/eggs"
 h_coef="h00 h05 h10"
 
 
-\$eggs -b \$emp_vcf/cKIWA.vcf.gz -d 0.681942,0.05 < \$sim_vcf/${h}/${h}_2009.vcf > \$sim_vcf/${h}/${h}_2009_eggs.vcf
+\$eggs -b \$emp_vcf/cKIWA.vcf.gz -d 0.681942,0.05 < \$sim_vcf/${h}/${h}_2009.vcf > \$sim_vcf/${h}/${h}_2009_eggs.vcf.gz
 
-\$eggs -b \$emp_vcf/hKIWA.vcf.gz -d 0.681942,0.05 < \$sim_vcf/${h}/${h}_1929.vcf > \$sim_vcf/${h}/${h}_1929_eggs.vcf
+\$eggs -b \$emp_vcf/hKIWA.vcf.gz -d 0.681942,0.05 < \$sim_vcf/${h}/${h}_1929.vcf > \$sim_vcf/${h}/${h}_1929_eggs.vcf.gz
 
 EOT
 done

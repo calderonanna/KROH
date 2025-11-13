@@ -32,9 +32,9 @@ for i in $(cat $scripts/autochrs.txt); do
 done
 
 # Summarize Pairwise Differences, Comparsions, and Sequence Length
-awk '{sum_diff+=$7; sum_comp+=$8; count++} END {print "hKIWA", sum_diff, sum_comp, count}' OFS="\t" hKIWA_pi.txt >> genomewide_pi.txt
+awk '{sum_diff+=$7; sum_comp+=$8; count++} END {print "hKIWA", sum_diff, sum_comp, sum_diff/sum_comp}' OFS="\t" hKIWA_pi.txt >> genomewide_pi.txt
 
-awk '{sum_diff+=$7; sum_comp+=$8; count++} END {print "cKIWA", sum_diff, sum_comp, count}' OFS="\t" cKIWA_pi.txt >> genomewide_pi.txt
+awk '{sum_diff+=$7; sum_comp+=$8; count++} END {print "cKIWA", sum_diff, sum_comp, sum_diff/sum_comp}' OFS="\t" cKIWA_pi.txt >> genomewide_pi.txt
 
 
 

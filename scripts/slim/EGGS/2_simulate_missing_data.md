@@ -1,4 +1,5 @@
 # Simulate Missing Data
+https://github.com/TQ-Smith/EGGS
 eggs -b empirical.vcf.gz -d 0.7,0.05 < simulated.vcf.gz > simulated_missing.vcf.gz
 
 - -d, --deamin:Two comma-seperated proportions "prob1,prob2" where prob1 is the probability the site is a transition and prob2 is the probability of deamination. ts/ts+tv
@@ -23,7 +24,7 @@ for h in $h_coef; do
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --mem=10GB
-#SBATCH --time=12:00:00
+#SBATCH --time=5:00:00
 #SBATCH --account=open
 #SBATCH --job-name=eggs_${h}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.out
@@ -36,9 +37,9 @@ eggs="/storage/home/abc6435/SzpiechLab/bin/EGGS/bin/eggs"
 h_coef="h00 h05 h10"
 
 
-\$eggs -b \$emp_vcf/cKIWA.vcf.gz -d 0.681942,0.05 < \$sim_vcf/${h}/${h}_2009.vcf > \$sim_vcf/${h}/${h}_2009_eggs.vcf.gz
+\$eggs -b \$emp_vcf/cKIWA.vcf.gz -d 0.681942,0.05 -k < \$sim_vcf/${h}/${h}_2009.vcf.gz > \$sim_vcf/${h}/${h}_2009_eggs.vcf.gz
 
-\$eggs -b \$emp_vcf/hKIWA.vcf.gz -d 0.681942,0.05 < \$sim_vcf/${h}/${h}_1929.vcf > \$sim_vcf/${h}/${h}_1929_eggs.vcf.gz
+\$eggs -b \$emp_vcf/hKIWA.vcf.gz -d 0.681942,0.05 -k < \$sim_vcf/${h}/${h}_1929.vcf.gz > \$sim_vcf/${h}/${h}_1929_eggs.vcf.gz
 
 EOT
 done

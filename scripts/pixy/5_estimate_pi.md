@@ -5,8 +5,8 @@ nano $scripts/pixy_gw_pi.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --mem=100GB
-#SBATCH --time=100:00:00
-#SBATCH --account=dut374_sc_default
+#SBATCH --time=6:00:00
+#SBATCH --account=open
 #SBATCH --job-name=pixy_gw_pi
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.out
 

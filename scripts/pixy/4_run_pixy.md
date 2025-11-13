@@ -16,10 +16,9 @@ bcftools view -i 'N_MISSING = 0' $allsites/KIWA_allsites_bi_dp_qual.vcf.gz
 nohup tabix $allsites/KIWA_allsites_bi_dp_qual_nmiss.vcf.gz
 ```
 
-## Run Pixy
+## Run Pixy: Sites
 ```bash
-#Macrochromosomes
-for i in $(cat $scripts/macrochrs.txt);do
+for i in $(cat $scripts/autochrs.txt);do
     cat <<EOT > $scripts/pixy_pi_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
@@ -54,21 +53,18 @@ pixy --stats pi \\
   --output_prefix ${i}
 EOT
 done
+```
 
-for i in $(cat $scripts/macrochrs.txt);do
-    sbatch $scripts/pixy_pi_${i}.bash
-done
-
-#Microchromosomes
-for i in $(cat $scripts/microchrs.txt);do
-    cat <<EOT > $scripts/pixy_pi_${i}.bash
+## Run Pixy: Windows
+```bash
+nano $scripts/pixy_pi_window.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=4
-#SBATCH --mem=50GB
-#SBATCH --time=48:00:00
-#SBATCH --account=dut374_sc_default
-#SBATCH --job-name=pixy_pi_${i}
+#SBATCH --mem=300GB
+#SBATCH --time=100:00:00
+#SBATCH --account=dut374_hc_default
+#SBATCH --job-name=pixy_pi_window
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.out
 
 # Load Python 3.11.2
@@ -85,18 +81,10 @@ gatk="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gatk"
 allsites="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/gatk/allsites"
 
 #Run Pixy
-pixy --stats pi \\
-  --vcf "\$allsites/KIWA_allsites_bi_dp_qual_nmiss.vcf.gz" \\
-  --populations "\$pixy/pops.txt" \\
-  --n_cores 4 \\
-  --chromosomes "${i}" \\
-  --window_size 1 \\
-  --output_folder \$pixy \\
-  --output_prefix ${i}
-EOT
-done
-
-for i in $(cat $scripts/microchrs.txt);do
-    sbatch $scripts/pixy_pi_${i}.bash;
-done
-```
+pixy --stats pi \
+  --vcf $allsites/KIWA_allsites_bi_dp_qual_nmiss.vcf.gz \
+  --populations $pixy/pops.txt \
+  --n_cores 4 \
+  --window_size 100000 \
+  --output_folder $pixy \
+  --output_prefix 100kb

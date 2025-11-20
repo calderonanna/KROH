@@ -5,9 +5,9 @@ bin="/storage/home/abc6435/SzpiechLab/bin/Rxy-kin"
 work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/slim/eggs"
 
 #Pop Files
-echo -e "i0_1929\ni1_1929\ni2_1929\ni3_1929\ni4_1929\ni5_1929\ni6_1929" > $work/1929IDS.txt
-echo -e "i0_2009\ni1_2009\ni2_2009\ni3_2009\ni4_2009\ni5_2009\ni6_2009" > $work/2009IDS.txt
-> $work/rxy.txt
+
+echo -e "i0_1929_eggs\ni1_1929_eggs\ni2_1929_eggs\ni3_1929_eggs\ni4_1929_eggs\ni5_1929_eggs\ni6_1929_eggs" > $work/1929IDS.txt
+echo -e "i0_2009_eggs\ni1_2009_eggs\ni2_2009_eggs\ni3_2009_eggs\ni4_2009_eggs\ni5_2009_eggs\ni6_2009_eggs" > $work/2009IDS.txt
 
 for h in h00 h05 h10; do
     cd $work/${h}

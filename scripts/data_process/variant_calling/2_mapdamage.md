@@ -16,16 +16,16 @@ Rscript -e "options(repos = c(CRAN = 'https://cloud.r-project.org')); install.pa
 export R_LIBS_USER="/storage/group/zps5164/default/bin/.R"
 
 # Git Install mapDamage
-bin="/storage/home/abc6435/SzpiechLab/bin"
-cd $bin
-git clone https://github.com/ginolhac/mapDamage.git
-cd mapDamage
-python3 setup.py install --user
+python3 -m venv ~/mapdamage_env
+source ~/mapdamage_env/bin/activate
+pip install /storage/home/abc6435/SzpiechLab/bin/mapDamage
+mapDamage --version
+
 
 ```
-## Run Mapdamage
+## Run Mapdamage hKIWA
 ```bash
-for i in `cat $scripts/KIWA_IDS_e759877.txt`; do
+for i in `cat $scripts/hKIWA_IDS_e759877.txt`; do
     cat<<EOT > $scripts/mapdamage_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
@@ -37,7 +37,6 @@ for i in `cat $scripts/KIWA_IDS_e759877.txt`; do
 
 #Set Variables
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
-mapdamage="/storage/home/abc6435/SzpiechLab/bin/mapDamage"
 bam="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/bam"
 work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mapdamage"
 ref="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_reference/mywagenomev2.1.fa"
@@ -46,9 +45,10 @@ ref="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_reference/mywagenom
 module use /storage/icds/RISE/sw8/modules/r 
 module load r/4.2.1-gcc-8.5.0
 export R_LIBS_USER="/storage/group/zps5164/default/bin/.R"
+source ~/mapdamage_env/bin/activate
 
 # Run MapDamage
-/usr/bin/time -v \$mapdamage \\
+mapDamage \\
     -i \$bam/${i}_sorted_marked.bam \\
     -r \$ref \\
     -d \$work/${i} \\
@@ -60,6 +60,48 @@ export R_LIBS_USER="/storage/group/zps5164/default/bin/.R"
 
 # Move re-scaled bams
 mv \$work/${i}/${i}_sorted_marked.rescaled.bam \$bam
+
+EOT
+done
+```
+
+## Run Mapdamage cKIWA
+```bash
+for i in `cat $scripts/cKIWA_IDS.txt`; do
+    cat<<EOT > $scripts/mapdamage_${i}.bash
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH --mem=1GB
+#SBATCH --time=24:00:00
+#SBATCH --account=dut374_sc_default
+#SBATCH --job-name=mapdamage_${i}
+#SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.out
+
+#Set Variables
+scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
+bam="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/bam"
+work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mapdamage"
+ref="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_reference/mywagenomev2.1.fa"
+
+#Load Modules and Define R Lib Path
+module use /storage/icds/RISE/sw8/modules/r 
+module load r/4.2.1-gcc-8.5.0
+export R_LIBS_USER="/storage/group/zps5164/default/bin/.R"
+source ~/mapdamage_env/bin/activate
+
+# Run MapDamage
+mapDamage \\
+    -i \$bam/${i}_sorted_marked_down.bam \\
+    -r \$ref \\
+    -d \$work/${i} \\
+    -l 20 \\
+    -m 15 \\
+    -Q 15 \\
+    --merge-libraries \\
+    --rescale
+
+# Move re-scaled bams
+mv \$work/${i}/${i}_sorted_marked_down.rescaled.bam \$bam
 
 EOT
 done

@@ -14,9 +14,5 @@ for i in $(cat $scripts/autochrs.txt); do
   | uniq > $work/exon_${i}.txt
 done
 
-  #Download
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/slim/genome_structure/exon_*.txt /Users/abc6435/Desktop/KROH/data/slim/genome_structure
-```
-
 
 

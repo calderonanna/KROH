@@ -7,15 +7,17 @@ date: "2025-10-31"
 # Download
 
 ```{bash}
-#rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/percent_ROH.txt /Users/annamariacalderon/Desktop/KROH/data/rohan
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/percent_ROH.txt ~/Desktop/KROH/data/rohan
 
-#rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/gw_theta_inc_ROH.txt /Users/annamariacalderon/Desktop/KROH/data/rohan
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/gw_theta_inc_ROH.txt ~/Desktop/KROH/data/rohan
 
-#rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/gw_theta_outside_ROH.txt /Users/annamariacalderon/Desktop/KROH/data/rohan
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/gw_theta_outside_ROH.txt ~/Desktop/KROH/data/rohan
 
-#rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/nroh_sroh.txt /Users/annamariacalderon/Desktop/KROH/data/rohan
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/nroh_sroh.txt ~/Desktop/KROH/data/rohan
 
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/het.txt /Users/annamariacalderon/Desktop/KROH/data/rohan 
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/het.txt ~/Desktop/KROH/data/rohan 
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/rohan_cov.txt ~/Desktop/KROH/data/rohan 
 ```
 
 # Set Up
@@ -30,17 +32,19 @@ library(dplyr)
 # Import Data and Modify
 
 ```{r import_datq, include=FALSE}
-setwd("/Users/annamariacalderon/Desktop/KROH/data/rohan")
+setwd("~/Desktop/KROH/data/rohan")
+
+#ROHan Coverage
+cov <- read.table("rohan_cov.txt", header=FALSE)
+colnames(cov) <- c("sample", "cov")
+cov$cov <- round(cov$cov,2)
+cov$cov <- paste0(cov$cov, "x")
+
 #Segments in ROH (%)
 roh <- read.table("percent_ROH.txt", header=TRUE)
 colnames(roh) <- c("sample", "fROH", "CI")
 roh$sample <- as.character(roh$sample)
 roh$pop <- c(rep("ckIWA",7), rep("hKIWA",6))
-roh$sample <- factor(roh$sample,
-                     levels = c("183194841","183195304","183195332",
-                                "183195312","183195321","183194861",
-                                "183195326","507264","29779", 
-                                "383194", "383202","383205","507265"))
 
 # Genome-wide theta outside ROH
 theta_o_roh <- read.table("gw_theta_outside_ROH.txt", header=TRUE)
@@ -49,10 +53,16 @@ theta_o_roh <- read.table("gw_theta_outside_ROH.txt", header=TRUE)
 theta_inc_roh <- read.table("gw_theta_inc_ROH.txt", header=TRUE)
 colnames(theta_inc_roh) <- c("sample","mid","min","max")
 
-#Combine Data
-roh_theta <- cbind(roh, 
-                   theta_o_roh[,c("thetamid", "thetamin","thetamax")],
-                   theta_inc_roh[,c("mid", "min","max")])
+#Merge Data
+tmp1 <- merge(cov,roh,by="sample")
+tmp2 <- merge(theta_o_roh, theta_inc_roh, by="sample")
+roh_theta <- merge(tmp1, tmp2, by="sample")
+roh_theta$sample <- factor(roh_theta$sample,
+                     levels = c("183195332","183195312","183194841",
+                                "183195321","183194861","183195304",
+                                "183195326","507264","29779", 
+                                "383194", "383202","383205","507265"))
+
 
 #nroh_sroh
 nroh_sroh <- read.csv("nroh_sroh.txt", header=TRUE, fill = TRUE)
@@ -63,8 +73,6 @@ nroh_sroh$hmm_posterior_decoding <- factor(nroh_sroh$hmm_posterior_decoding,
 
 #Heterozygosity
 h <- read.table("het.txt", header=TRUE)
-
-
 ```
 
 # Plot ROH Theta
@@ -72,29 +80,26 @@ h <- read.table("het.txt", header=TRUE)
 ```{r plot_roh_theta, include=FALSE}
 ggplot(roh_theta, aes(x=sample, y=fROH, fill=pop)) +
   geom_bar(stat="identity") +
+  geom_text(aes(label = cov), y=-1, size=2) +
   geom_point(aes(y = thetamid * 5000), 
-             color = "#00FF45", 
+             color = "#0099FF", 
              size = 2,
              alpha=1.0,
              show.legend = FALSE) +
   geom_point(aes(y = mid * 5000), 
-             color = "#FF00BB", 
+             color = "#FF6600", 
              size = 2,
              alpha=0.8,
              show.legend = FALSE) +
   geom_errorbar(aes(y=thetamid*5000, ymin=thetamin*5000, ymax=thetamax*5000),
-                color = "#00FF45",
+                color = "#0099FF",
                 width = 0.3,
                 alpha=1.0) +
   geom_errorbar(aes(y=mid*5000, ymin=min*5000, ymax=max*5000),
-                color = "#FF00BB",
+                color = "#FF6600",
                 width = 0.3,
                 alpha=0.8) +
   scale_fill_manual(values=c("gray","black")) +
-  scale_y_continuous(name = "Segments in ROH (%)",
-                     expand = c(0,0.2),
-                     sec.axis = 
-                       sec_axis(~./5000, name=expression("Genome-wide " * theta))) +
   labs(x = NULL) +
   theme(
     panel.background = element_blank(),
@@ -102,14 +107,18 @@ ggplot(roh_theta, aes(x=sample, y=fROH, fill=pop)) +
     panel.border = element_rect(color = "black", fill = NA),
     legend.background = element_blank(),
     legend.title = element_blank(),
-    legend.position = "top",
-    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5))
+    legend.position = c(0.9,0.90),
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+    axis.text = element_text(color="black")) +
+  scale_y_continuous(name = "Segments in ROH (%)",
+                     expand = c(0,2), limits = c(0,50),
+                     sec.axis = sec_axis(~./5000, 
+                                         name=expression("Genome-wide "*theta))) 
 ```
 
 # Plot NROH SROH
 
 ```{r plot_nroh_sroh, include=FALSE}
-
 ggplot(nroh_sroh, aes(x = sroh/1e6, y = nroh, color = pop)) +
   geom_point(size = 2) +
   scale_color_manual(values = c("gray", "black")) +
@@ -122,7 +131,10 @@ ggplot(nroh_sroh, aes(x = sroh/1e6, y = nroh, color = pop)) +
     panel.border = element_rect(color = "black", fill = NA),
     legend.background = element_blank(),
     legend.title = element_blank(),
-    legend.position = "none")
+    legend.position = "none", 
+    strip.text = element_text(color="white"),
+    strip.background = element_rect(fill="black", color=NA),
+    axis.text = element_text(color="black"))
 ```
 
 # Plot Heterozygosity
@@ -131,6 +143,7 @@ ggplot(nroh_sroh, aes(x = sroh/1e6, y = nroh, color = pop)) +
 h$chrom <- factor(h$chrom, levels = unique(h$chrom))
 ggplot(h, aes(x = end, y = h, color=pop)) +
   geom_line(alpha=0.7) + 
+  scale_y_continuous(expand = c(0,0)) +
   scale_color_manual(values=c("gray","black")) +
   facet_grid(. ~ chrom, scales = "free_x", space = "free_x", switch="x") +
   theme_minimal() +
@@ -150,5 +163,6 @@ ggplot(h, aes(x = end, y = h, color=pop)) +
         panel.spacing = unit(0.0, 'points'),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        legend.title = element_blank()) 
+        legend.title = element_blank(),
+        axis.text = element_text(color="black")) 
 ```

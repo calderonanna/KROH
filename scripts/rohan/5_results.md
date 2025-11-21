@@ -51,4 +51,8 @@ for i in $(cat $scripts/cKIWA_IDS.txt); do
   | awk -v sample="$i" 'NR>1 {print $1,$3,$5,$7,$8,sample,"cKIWA"}' OFS="\t" \
   >> het.txt
 done
+
+#Coverage
+grep "coverage=" * \
+| sed -E 's/\.err.*coverage=/\t/' > rohan_cov.txt
 ```

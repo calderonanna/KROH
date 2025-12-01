@@ -36,11 +36,13 @@ rxy$h <- factor(rxy$h, levels = c("h00","h05","h10"))
 ```{r plot, include=FALSE}
 P1=c("#1AABFF","#FFE01A","#FF1A39")
 P2=c("#8FD3FF","#FFF48F","#FF8F9A")
-ggplot(rxy, aes(x=rxy, y=s, fill=h)) +
+
+rxy_slim <- 
+  ggplot(rxy[rxy$rxy<2,], aes(x=rxy, y=s, fill=h)) +
   geom_violin(alpha=0.5, color="black", width=1.0) +
   geom_boxplot(width=0.05, color="black", outlier.shape = NA) +
-  geom_jitter(shape = 16, height = 0.05, size=0.5) +
-  scale_fill_manual(values = P2) +
+  geom_jitter(shape = 16, height = 0.05, size=0.3, alpha=0.3) +
+  scale_fill_manual(values = P1) +
   geom_vline(xintercept = 1.0,
              color="black",
              linetype="dashed",
@@ -54,4 +56,16 @@ ggplot(rxy, aes(x=rxy, y=s, fill=h)) +
     strip.background = element_rect(fill="black", color=NA),
     axis.text = element_text(color="black")
   )
+```
+
+# Save
+
+```{r save, include=FALSE}
+ggsave(filename = "rxy_slim.png",
+       plot = rxy_slim, 
+       width = 6,
+       height = 6,
+       units = "in",
+       dpi = 300,
+       path = "~/Desktop/KROH/figures/")
 ```

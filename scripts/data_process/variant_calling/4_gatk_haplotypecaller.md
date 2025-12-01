@@ -103,13 +103,10 @@ gatk HaplotypeCaller \\
 EOT
 done
 ```
-for i in $(cat $scripts/SETO_IDS.txt); do 
-    sbatch $scripts/haplotypecaller_${i}.bash;
-done
 
-
-# Check For Completion
-cd $gatk/gcvf
+## Check For Completion
+```bash
+cd $gatk/log
 for file in $(ls); do 
     echo $file
     grep "Caller done" $file

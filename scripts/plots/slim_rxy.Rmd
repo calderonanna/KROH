@@ -48,6 +48,7 @@ rxy_slim <-
              linetype="dashed",
              linewidth=0.15) +
   facet_wrap(~h, ncol=3, scales="free_x") +
+  xlab("RAB") +
   theme(
     panel.background = element_blank(),
     panel.border = element_rect(fill=NA, color="black"),
@@ -61,11 +62,11 @@ rxy_slim <-
 # Save
 
 ```{r save, include=FALSE}
-ggsave(filename = "rxy_slim.png",
+ggsave(filename = "rab_slim_plot.png",
        plot = rxy_slim, 
        width = 6,
        height = 6,
        units = "in",
        dpi = 300,
-       path = "~/Desktop/KROH/figures/")
+       path = "~/Desktop/KROH/figures")
 ```

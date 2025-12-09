@@ -17,14 +17,14 @@ rm -rf $pixy/ids.tmp
 
 ## Run Pixy
 ```bash
-for i in $(cat $scripts/autochrs.txt);do
+for i in $(cat $scripts/microchrs.txt);do
     cat <<EOT > $scripts/pixy_pi_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=4
-#SBATCH --mem=300GB
+#SBATCH --mem=50GB
 #SBATCH --time=100:00:00
-#SBATCH --account=dut374_hc_default
+#SBATCH --account=dut374_sc_default
 #SBATCH --job-name=pixy_pi_${i}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.out
 
@@ -49,5 +49,10 @@ pixy --stats pi \\
   --output_folder \$pixy \\
   --output_prefix ${i}_sites
 EOT
+done
+
+#Submit
+for i in $(cat $scripts/autochrs.txt);do
+    sbatch $scripts/pixy_pi_${i}.bash
 done
 ```

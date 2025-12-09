@@ -1,0 +1,76 @@
+---
+title: "divstats_pi"
+author: "Anna Maria Calderon"
+date: "2025-10-21"
+output: html_document
+---
+
+# Set Up
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+library(reshape2)
+```
+
+# Download Data
+
+```{bash}
+rsync abc6435@submit.hpc.psu.edu:/storage/group/zps5164/default/abc6435/KROH/data/pixy/window_pi.txt /Users/abc6435/Desktop/KROH/data/pixy
+```
+
+# Import Data
+
+```{r import_data, include=FALSE}
+setwd("~/Desktop/KROH/data/pixy")
+df <- read.table("window_pi.txt", header = TRUE)
+df <- na.omit(df)
+
+pi<- subset(df, df$chromosome!="chrz")
+pi$chromosome <- factor(pi$chromosome, levels = unique(pi$chromosome))
+```
+
+# Plot Data
+
+```{r plot_data, include=FALSE}
+pixy_pi <- 
+  ggplot(pi, aes(x = window_pos_2, y = avg_pi, color=pop)) +
+  geom_line() + 
+  scale_color_manual(values=c("gray","black")) +
+  #facet_grid(pop ~ chromosome, scales="free_x", space="free_x", switch="x") +
+  facet_grid(. ~ chromosome, scales = "free_x", space = "free_x", switch="x") +
+  theme_minimal() +
+  theme(axis.line = element_line(color="black"),
+        axis.ticks = element_blank(),
+        axis.text.y = element_text(size=10, color="black"),
+        axis.title.y = element_text(size=10, color="black"),
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        strip.text = element_text(size=8),
+        strip.text.x = element_text(angle=90, vjust = 0.5),
+        strip.placement = "outside",
+        plot.background = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_blank(),
+        panel.spacing = unit(0.0, 'points'),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.title = element_blank()) +
+  labs(y = expression(pi))
+```
+
+# Save Plot
+
+```{r save_plot, include=FALSE}
+ggsave(plot = pixy_pi,
+       "pixy_pi.png",
+       path = "~/Desktop/KROH/figures",
+       dpi=300,
+       units = "in",
+       height = 3,
+       width = 8
+       )
+
+```

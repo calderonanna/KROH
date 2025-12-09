@@ -2,26 +2,24 @@
 
 ```bash
 #Set Variables
-work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/slim/eggs"
+work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/slim"
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 h_coef="h00 h05 h10"
+#Index Files and Merge
 
 for h in $h_coef; do
-    cd $work/${h}
 
-    #Sample Names
-    echo -e "i0_1929_eggs\ni1_1929_eggs\ni2_1929_eggs\ni3_1929_eggs\ni4_1929_eggs\ni5_1929_eggs\ni6_1929_eggs" > 1929IDS.txt
-    echo -e "i0_2009_eggs\ni1_2009_eggs\ni2_2009_eggs\ni3_2009_eggs\ni4_2009_eggs\ni5_2009_eggs\ni6_2009_eggs" > 2009IDS.txt
+    for i in {1..100}; do
+        gunzip $work/${h}_1929_eggs_R${i}.vcf.gz
+        gunzip $work/${h}_2009_eggs_R${i}.vcf.gz
+        bgzip $work/${h}_1929_eggs_R${i}.vcf
+        bgzip $work/${h}_2009_eggs_R${i}.vcf
+        bcftools index $work/${h}_1929_eggs_R${i}.vcf.gz
+        bcftools index $work/${h}_2009_eggs_R${i}.vcf.gz
 
-    #Zip and Index
-    bcftools index ${h}_1929_eggs_reheadered.vcf.gz
-    bcftools index ${h}_2009_eggs_reheadered.vcf.gz
+        # Merge VCFs
+        bcftools merge $work/${h}_1929_eggs_R${i}.vcf.gz $work/${h}_2009_eggs_R${i}.vcf.gz -Oz -o $work/${h}_R${i}_eggs.vcf.gz
+    done
 
-    # Merge VCFs and Filter
-    bcftools merge ${h}_1929_eggs_reheadered.vcf.gz ${h}_2009_eggs_reheadered.vcf.gz -Oz -o ${h}_eggs.vcf.gz
-    bcftools view -i 'F_MISSING == 0' ${h}_eggs.vcf.gz -Oz -o ${h}_eggs_fmiss.vcf.gz
-
-    #File Clean Up
-    rm -rf *IDS* *rehead* *csi* *.vcf ${h}.vcf.gz;
 done
 ```

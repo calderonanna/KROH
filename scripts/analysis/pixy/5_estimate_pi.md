@@ -18,14 +18,14 @@ cd $pixy
 
 #Parse Data
 for i in $(cat $scripts/autochrs.txt); do
-    sed 1d ${i}_pi.txt \
+    sed 1d ${i}_sites_pi.txt \
     | grep -v "NA" \
     | grep "cKIWA" \
     >> cKIWA_pi.txt
 done
 
 for i in $(cat $scripts/autochrs.txt); do
-    sed 1d ${i}_pi.txt \
+    sed 1d ${i}_sites_pi.txt \
     | grep -v "NA" \
     | grep "hKIWA" \
     >> hKIWA_pi.txt

@@ -8,7 +8,7 @@ output: html_document
 # Download Data
 
 ```{bash}
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rab/results.txt /Users/abc6435/Desktop/KROH/data/rab
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rab/tv/results.txt ~/Desktop/KROH/data/rab
 ```
 
 # Setup
@@ -20,7 +20,7 @@ library(ggpubr)
 library(tidyr)
 library(dplyr)
 library(reshape2)
-setwd("/Users/abc6435/Desktop/KROH/data/rab")
+setwd("~/Desktop/KROH/data/rab")
 df <- read.table("results.txt", header = TRUE)
 ```
 

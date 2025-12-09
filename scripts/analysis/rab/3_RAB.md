@@ -11,12 +11,13 @@ pip install pandas numpy argparse
 
 ## Run RABmafs.py
 ```bash
+salloc --nodes=1 --mem=100GB --time=8:00:00 --account=open
 #activate env
 source ~/RABmafs_env/bin/activate
 
 #Set Variables
 scripts="/storage/group/zps5164/default/abc6435/KROH/scripts"
-maf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/angsd/maf"
+maf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/angsd/maf/tv"
 rab="/storage/group/zps5164/default/abc6435/KROH/data/rab"
 muts="deleterious lossoffunction nonsynonymous tolerated noncoding synonymous"
 neus="4fold_synonymous intergenic"
@@ -62,4 +63,4 @@ done
 sed -i '1d' results_intergenic.txt
 cat results_4fold_synonymous.txt results_intergenic.txt >> results.txt
 
-rm results_*.txt
+rm -rf results_*.txt

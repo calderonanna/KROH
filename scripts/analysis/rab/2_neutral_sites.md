@@ -4,19 +4,10 @@
 `bedtools instersect -v -a fileA -b fileB`
 Report entries in A `.maf` that do not overlap any entry in B `transcript.gtf`
 ```bash
-nano $scripts/rab_neutral.bash
-#!/bin/bash
-#SBATCH --nodes=1
-#SBATCH --mem=50GB
-#SBATCH --time=1:00:00
-#SBATCH --account=open
-#SBATCH --job-name=rab_neutral
-#SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.out
-
 #Set Variables
 annotations="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/sift4g/AnnotationsSplit"
 rab='/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rab'
-maf='/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/angsd/maf'
+maf='/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/angsd/maf/tv'
 scripts='/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts'
 
 for i in $(cat $scripts/autochrs.txt); do

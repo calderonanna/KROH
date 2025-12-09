@@ -2,7 +2,7 @@
 
 ```bash
 #Upload Files
-scp /Users/abc6435/Desktop/KROH/data/rab/* abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rab
+scp ~/Desktop/KROH/data/rab/* abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rab
 
 #Reformat
 muts="deleterious lossoffunction nonsynonymous tolerated noncoding synonymous"

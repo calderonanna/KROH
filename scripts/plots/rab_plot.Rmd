@@ -8,7 +8,7 @@ output: html_document
 # Download Data
 
 ```{bash}
-rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rab/tv/results.txt ~/Desktop/KROH/data/rab
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rab/tv_ts/results.txt ~/Desktop/KROH/data/rab
 ```
 
 # Setup
@@ -51,6 +51,16 @@ colors = c(
   "noncoding"="#FFD400"
 )
 
+
+colors = c(
+  "lossoffunction"="#750B54",
+  "deleterious"="#6B3D78",
+  "nonsynonymous"="#3D4778",
+  "tolerated"="#3D8072",
+  "synonymous"="#4F5C2F",
+  "noncoding"="#8F7703"
+)
+
 rab_plot <- ggplot(rab, aes(y=NUM, fill=MUT, alpha=NEUTRAL)) +
   geom_rect(aes(xmin=1, xmax=AVG, ymin=NUM-0.4, ymax=NUM+0.4),
             color="black") +
@@ -77,7 +87,7 @@ rab_plot <- ggplot(rab, aes(y=NUM, fill=MUT, alpha=NEUTRAL)) +
 # Arrange and Save
 
 ```{r arrange_save, include=FALSE}
-ggsave("rab.png", plot=rab_plot, 
+ggsave("rab_tstv_plot.png", plot=rab_plot, 
        path ="~/Desktop/KROH/figures",
        width = 4, height = 4.5, units = "in", dpi = 300)
 ```

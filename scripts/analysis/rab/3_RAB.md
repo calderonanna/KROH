@@ -18,7 +18,7 @@ source ~/RABmafs_env/bin/activate
 #Set Variables
 scripts="/storage/group/zps5164/default/abc6435/KROH/scripts"
 maf="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/angsd/maf/tv"
-rab="/storage/group/zps5164/default/abc6435/KROH/data/rab"
+rab="/storage/group/zps5164/default/abc6435/KROH/data/rab/tv"
 muts="deleterious lossoffunction nonsynonymous tolerated noncoding synonymous"
 neus="4fold_synonymous intergenic"
 
@@ -60,7 +60,7 @@ for neu in $neus; do
 done
 
 #Compile All Results
-sed -i '1d' results_intergenic.txt
-cat results_4fold_synonymous.txt results_intergenic.txt >> results.txt
+sed -i '1d' $rab/results_intergenic.txt
+cat $rab/results_4fold_synonymous.txt $rab/results_intergenic.txt >> $rab/results.txt
 
-rm -rf results_*.txt
+rm -rf $rab/results_*.txt

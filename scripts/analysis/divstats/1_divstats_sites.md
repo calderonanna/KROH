@@ -1,4 +1,4 @@
-# Pi Per Site
+# Divstats Sites
 
 ```bash
 nano $scripts/divstats_pi_per_site.bash

@@ -3,6 +3,8 @@ data/pixy/*.txt
 
 /Users/abc6435/Desktop/KROH/data/divstats/*
 
+/Users/abc6435/Desktop/KROH/data/mapdamage/Stats_out_MCMC_iter.tsv
+
 data/slim/rxy/*
 data/slim/genome_structure/*
 ~/Desktop/KROH/data/slim/genome_structure/*

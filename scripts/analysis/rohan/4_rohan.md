@@ -44,17 +44,19 @@ EOT
 done
 ```
 
-## cKIWA
+
+## Run cKIWA without deamination profiles
+Note: When I re-ran ROHan on cKIWA with deamination profiles, ROHan reported the coverage way low and it also caused ROH estimates to be very very inflated.  
 ```bash
 for i in $(cat $scripts/cKIWA_IDS.txt); do
-    cat <<EOT > $scripts/rohan_${i}.bash
+    cat <<EOT > $scripts/rohan_cKIWA_${i}.bash
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=8
 #SBATCH --mem=50GB
 #SBATCH --time=48:00:00
 #SBATCH --account=dut374_sc_default
-#SBATCH --job-name=rohan_${i}
+#SBATCH --job-name=rohan_cKIWA_${i}
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.err
 #SBATCH --output=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.out
 
@@ -62,7 +64,7 @@ for i in $(cat $scripts/cKIWA_IDS.txt); do
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"
 rohan="/storage/home/abc6435/SzpiechLab/bin/rohan/bin/rohan"
 work="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan"
-results="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results"
+results="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results_cKIWA"
 ref="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/mywa_reference/mywagenomev2.1.fa"
 bam="/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/bam"
 
@@ -75,8 +77,6 @@ module use gsl
 --tstv 2.03 \\
 --rohmu 1.5e-04 \\
 --name ${i} \\
---deam5p \$work/${i}_5p.prof \\
---deam3p \$work/${i}_3p.prof \\
 --auto \$scripts/autochrs.txt \\
 --size 1000000 \\
 -o \$results/${i} \\

@@ -29,7 +29,8 @@ nano $scripts/rohan_qc_cKIWA.bash
 #SBATCH --nodes=1
 #SBATCH --mem=10GB
 #SBATCH --time=24:00:00
-#SBATCH --account=dut374_sc_default
+#SBATCH --account=open
+#SBATCH --partition=standard
 #SBATCH --job-name=rohan_qc
 #SBATCH --error=/storage/home/abc6435/SzpiechLab/abc6435/KROH/err/%x.%j.out
 

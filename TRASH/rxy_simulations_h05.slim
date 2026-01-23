@@ -1,0 +1,365 @@
+initialize(){
+	//CHR1
+	initializeMutationType("m1", 0.5, "f", 0);
+	initializeMutationType("m2", 0.5, "g", -0.03, 0.2);
+	initializeGenomicElementType("g1", c(m1,m2), c(9,1));
+	initializeChromosome(id=1, length=114063801);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr1.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR1a
+	initializeChromosome(id=100, length=71386623);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr1a.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR2
+	initializeChromosome(id=2, length=150066519);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr2.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR3
+	initializeChromosome(id=3, length=111140737);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr3.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	
+	//CHR4
+	initializeChromosome(id=4, length=70957965);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr4.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR4a
+	initializeChromosome(id=400, length=19902516);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr4a.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR5
+	initializeChromosome(id=5, length=62006421);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr5.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR6	
+	initializeChromosome(id=6, length=35832348);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr6.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR7
+	initializeChromosome(id=7, length=38264695);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr7.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR8
+	initializeChromosome(id=8, length=31225694);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr8.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR9
+	initializeChromosome(id=9, length=25769210);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr9.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR10
+	initializeChromosome(id=10, length=20450569);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr10.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR11
+	initializeChromosome(id=11, length=20895826);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr11.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR12
+	initializeChromosome(id=12, length=20804877);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr12.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR13
+	initializeChromosome(id=13, length=18063608);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr13.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR14
+	initializeChromosome(id=14, length=16588652);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr14.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR15
+	initializeChromosome(id=15, length=14319805);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr15.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR17
+	initializeChromosome(id=17, length=11726895);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr17.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR18
+	initializeChromosome(id=18, length=12543585);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr18.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR19
+	initializeChromosome(id=19, length=11332392);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr19.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR20
+	initializeChromosome(id=20, length=15069120);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr20.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR21
+	initializeChromosome(id=21, length=7790416);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr21.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR22
+	initializeChromosome(id=22, length=4356307);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr22.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR23
+	initializeChromosome(id=23, length=7079006);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr23.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR24
+	initializeChromosome(id=24, length=7805957);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr24.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR25
+	initializeChromosome(id=25, length=1781809);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr25.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR26
+	initializeChromosome(id=26, length=6243642);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr26.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR27
+	initializeChromosome(id=27, length=4714420);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr27.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR28
+	initializeChromosome(id=28, length=5445509);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr28.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+	
+	//CHR29
+	initializeChromosome(id=29, length=962733);
+	lines = readFile("/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/exon_chr29.txt");
+	for (line in lines)
+	{
+		components = strsplit(line, "\t");
+		initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+	}
+	initializeMutationRate(4e-7);
+	initializeRecombinationRate(5e-9);
+}
+
+
+// SIMULATE POPULATION
+1 early() {
+	sim.addSubpop("p1", 700);
+}
+
+10000 early() {
+	p1.setSubpopulationSize(295);
+}
+
+10500 early() {
+	inds = p1.sampleIndividuals(6); // 1900's samples
+	inds.outputIndividuals();
+	inds.outputIndividualsToVCF(filePath="/storage/group/zps5164/default/abc6435/KROH/data/slim/rxy/h05/h05_historical.vcf");
+}
+
+10550 early() {
+	p1.setSubpopulationSize(161); //1950's bottleneck
+}
+
+10606 early() {
+	inds = p1.sampleIndividuals(7); // 2000's samples
+	inds.outputIndividuals();
+	inds.outputIndividualsToVCF(filePath="/storage/group/zps5164/default/abc6435/KROH/data/slim/rxy/h05/h05_contemporary.vcf");
+}
+
+10620 late() {
+}
+

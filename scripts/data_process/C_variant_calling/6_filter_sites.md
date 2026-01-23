@@ -29,26 +29,3 @@ bcftools filter $gatk/vcf/dSETO_auto_bi_qual.vcf.gz -e 'FMT/DP<1 || FMT/DP>27' -
 #Genotype Quality
 bcftools filter $gatk/vcf/dSETO_auto_bi_qual_dp.vcf.gz -e 'FMT/GQ<20' -S . -Oz -o $gatk/vcf/dSETO_auto_bi_qual_dp_gq.vcf.gz
 ```
-
-```bash
-#Extract Genotype Read Depth at 95% and 5%
-# echo "95%" >> $gatk/log/5_95_depth.txt
-# for i in {1..25}; do 
-#     bcftools query -f '[%DP\t]\n' $gatk/vcf/dSETO_bi_qual.vcf.gz \
-#     | cut -f${i} \
-#     | grep -v '\.' \
-#     | sort -n \
-#     | awk '{array[NR] = $0} END {print array[int(NR*0.95 + 0.5)]}' \
-#     >> $gatk/log/5_95_depth.txt;
-# done
-
-# echo "5%" >> $gatk/log/5_95_depth.txt
-# for i in {1..25}; do 
-#     bcftools query -f '[%DP\t]\n' $gatk/vcf/dSETO_bi_qual.vcf.gz \
-#     | cut -f${i} \
-#     | grep -v '\.' \
-#     | sort -n \
-#     | awk '{array[NR] = $0} END {print array[int(NR*0.05 + 0.5)]}' \
-#     >> $gatk/log/5_95_depth.txt;
-# done
-```

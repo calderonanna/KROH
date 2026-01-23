@@ -1,6 +1,5 @@
 # Results
 
-## Compile
 ```bash
 #Set Variables
 scripts="/storage/home/abc6435/SzpiechLab/abc6435/KROH/scripts"

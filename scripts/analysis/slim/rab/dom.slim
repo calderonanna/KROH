@@ -586,19 +586,19 @@ initialize(){
 	p1.setSubpopulationSize(259);
 }
 
-10500 early() {
+10250 late() {
 	inds = p1.sampleIndividuals(6); // 1900's samples
 	inds.outputIndividualsToVCF(filePath="/storage/group/zps5164/default/abc6435/KROH/data/slim/vcf/dom/hKIWA_dom.vcf");
 }
 
-10550 early() {
+10275 early() {
 	p1.setSubpopulationSize(161); //1950's bottleneck
 }
 
-10606 early() {
+10303 late() {
 	inds = p1.sampleIndividuals(7); // 2000's samples
 	inds.outputIndividualsToVCF(filePath="/storage/group/zps5164/default/abc6435/KROH/data/slim/vcf/dom/cKIWA_dom.vcf");
 }
 
-10620 late() {
+10310 late() {
 }

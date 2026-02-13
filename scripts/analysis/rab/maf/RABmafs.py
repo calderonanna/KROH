@@ -38,7 +38,6 @@ def readmafs(fileA, fileB, fileN, fileM):
     mut_der = pd.merge(der, mutation, on=['chromo','position'],how='inner', indicator=True)
     neu_der = neu_der[neu_der['_merge']=='both'].drop(columns=['_merge'])
     mut_der = mut_der[mut_der['_merge']=='both'].drop(columns=['_merge'])
-    print("Number of derived mutations =", len(mut_der))
     return neu_der, mut_der
 
 #Define calcRAB()
@@ -118,6 +117,10 @@ jx_array = jackknife(neu_der, mut_der, float(args.psites), int(args.iter))
 q025, q975 = np.percentile(jx_array, [2.5, 97.5])
 avg = np.mean(jx_array)
 
+#Report Number of Sites 
+print("N_Sites = ", len(mut_der))
+
+#Report RAB Results
 print("RAB =", calcRAB(neu_der, mut_der, args.seed))
 print("avg[2.5%,97.5%] = ", avg,"[",q025,",",q975,"]")
 print("RAB_neutral = ", calcRAB_neu(neu_der, args.seed))

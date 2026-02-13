@@ -24,62 +24,51 @@ def readvcf(vcf_file, pop_file, simulated_vcf=False):
     loci = data[['CHROM','POS','REF','ALT']]
     samples = data.drop(columns=['CHROM', 'POS', 'REF', 'ALT','ID','QUAL','FILTER','INFO','FORMAT'])
     samples = samples.apply(lambda col: col.str.split(":").str[0])
-    genotypes = pd.concat([loci,samples], axis=1)
+    alleles = pd.concat([loci,samples], axis=1)
+
+    #Count alleles
+    aA = alleles[popA].astype(str)
+    alleles['popA_0'] = aA.apply(lambda col: col.str.count('0')).sum(axis=1) 
+    alleles['popA_1'] = aA.apply(lambda col: col.str.count('1')).sum(axis=1)
+    aB = alleles[popB].astype(str)
+    alleles['popB_0'] = aB.apply(lambda col: col.str.count('0')).sum(axis=1)
+    alleles['popB_1'] = aB.apply(lambda col: col.str.count('1')).sum(axis=1)
 
     #Count Genotypes
-    genotypes['popA_0'] = 0
-    genotypes['popA_1'] = 0
-    genotypes['popB_0'] = 0
-    genotypes['popB_1'] = 0
-
-    for sample in popA:
-        for row in range(len(genotypes)):
-            if genotypes.loc[row, sample] == '0/0' or genotypes.loc[row, sample] == '0|0':
-                genotypes.loc[row, 'popA_0'] += 2
-            if genotypes.loc[row, sample] == '1/1' or genotypes.loc[row, sample] == '1|1':
-                genotypes.loc[row, 'popA_1'] += 2
-            if genotypes.loc[row, sample] == '0/1' or genotypes.loc[row, sample] == '0|1':
-                genotypes.loc[row, 'popA_0'] += 1
-                genotypes.loc[row, 'popA_1'] += 1
-            if genotypes.loc[row, sample] == '1/0' or genotypes.loc[row, sample] == '1|0':
-                genotypes.loc[row, 'popA_0'] += 1
-                genotypes.loc[row, 'popA_1'] += 1
-                
-    for sample in popB:
-        for row in range(len(genotypes)):
-            if genotypes.loc[row, sample] == '0/0' or genotypes.loc[row, sample] == '0|0':
-                genotypes.loc[row, 'popB_0'] += 2
-            if genotypes.loc[row, sample] == '1/1' or genotypes.loc[row, sample] == '1|1':
-                genotypes.loc[row, 'popB_1'] += 2
-            if genotypes.loc[row, sample] == '0/1' or genotypes.loc[row, sample] == '0|1':
-                genotypes.loc[row, 'popB_0'] += 1
-                genotypes.loc[row, 'popB_1'] += 1
-            if genotypes.loc[row, sample] == '1/0' or genotypes.loc[row, sample] == '1|0':
-                genotypes.loc[row, 'popB_0'] += 1
-                genotypes.loc[row, 'popB_1'] += 1
-
-    #Calculate Frequencies (Empirical VCF)
-    genotypes['f_popA_0'] = genotypes['popA_0']/(genotypes['popA_0'] + genotypes['popA_1'])
-    genotypes['f_popA_1'] = genotypes['popA_1']/(genotypes['popA_0'] + genotypes['popA_1'])
-    genotypes['f_popB_0'] = genotypes['popB_0']/(genotypes['popB_0'] + genotypes['popB_1'])
-    genotypes['f_popB_1'] = genotypes['popB_1']/(genotypes['popB_0'] + genotypes['popB_1'])
-    genotypes['nA'] = (genotypes['popA_0'] + genotypes['popA_1']) / 2
-    genotypes['nB'] = (genotypes['popB_0'] + genotypes['popB_1']) / 2
-    freq = genotypes[['CHROM','POS','REF','ALT',
-                      'f_popA_1','f_popB_1','nA','nB']].dropna(axis="rows")
+    alleles['popA_hom'] = aA.apply(lambda col: col.str.count(r'1/1|1\|1')).sum(axis=1)
+    alleles['popA_het'] = aA.apply(lambda col: col.str.count(r'0/1|0\|1|1/0|1\|0')).sum(axis=1)
+    alleles['popB_hom'] = aB.apply(lambda col: col.str.count(r'1/1|1\|1')).sum(axis=1)
+    alleles['popB_het'] = aB.apply(lambda col: col.str.count(r'0/1|0\|1|1/0|1\|0')).sum(axis=1)
+           
+    #Calculate Allele Frequencies (Empirical VCF)
+    alleles['f_popA_0'] = alleles['popA_0']/(alleles['popA_0'] + alleles['popA_1'])
+    alleles['f_popA_1'] = alleles['popA_1']/(alleles['popA_0'] + alleles['popA_1'])
+    alleles['f_popB_0'] = alleles['popB_0']/(alleles['popB_0'] + alleles['popB_1'])
+    alleles['f_popB_1'] = alleles['popB_1']/(alleles['popB_0'] + alleles['popB_1'])
+    alleles['nA'] = (alleles['popA_0'] + alleles['popA_1']) / 2
+    alleles['nB'] = (alleles['popB_0'] + alleles['popB_1']) / 2
+    freq = alleles[['CHROM','POS','REF','ALT',
+                      'f_popA_1','f_popB_1',
+                      'popA_hom', 'popA_het',
+                      'popB_hom', 'popB_het',
+                      'nA','nB']].dropna(axis="rows")
     freq = freq[(freq["nA"] > 1) & (freq["nB"] > 1)]
 
-    #Adjust Frequencies for sites lost/gained (Simulated VCF)
+    #Adjust Allele Frequencies for sites lost/gained (Simulated VCF)
     if simulated_vcf: 
-        miss_popA = (genotypes['popA_0'] == 0) & (genotypes['popA_1'] == 0)
-        genotypes.loc[miss_popA, 'f_popA_0'] = 0
-        genotypes.loc[miss_popA, 'f_popA_1'] = 0
-        miss_popB = (genotypes['popB_0'] == 0) & (genotypes['popB_1'] == 0)
-        genotypes.loc[miss_popB, 'f_popB_0'] = 0
-        genotypes.loc[miss_popB, 'f_popB_1'] = 0
-        genotypes.loc[miss_popA, 'nA'] = len(popA)
-        genotypes.loc[miss_popA, 'nB'] = len(popB)
-        freq = genotypes[['CHROM','POS','REF','ALT','f_popA_1','f_popB_1','nA','nB']]
+        miss_popA = (alleles['popA_0'] == 0) & (alleles['popA_1'] == 0)
+        alleles.loc[miss_popA, 'f_popA_0'] = 0
+        alleles.loc[miss_popA, 'f_popA_1'] = 0
+        miss_popB = (alleles['popB_0'] == 0) & (alleles['popB_1'] == 0)
+        alleles.loc[miss_popB, 'f_popB_0'] = 0
+        alleles.loc[miss_popB, 'f_popB_1'] = 0
+        alleles.loc[miss_popA, 'nA'] = len(popA)
+        alleles.loc[miss_popA, 'nB'] = len(popB)
+        freq = alleles[['CHROM','POS','REF','ALT',
+                      'f_popA_1','f_popB_1',
+                      'popA_hom', 'popA_het',
+                      'popB_hom', 'popB_het',
+                      'nA','nB']]
     return freq
 
 #Define importsites()
@@ -92,8 +81,6 @@ def importsites(neutral_file, mutation_file, derived_sites):
     mut_der = pd.merge(derived_sites, mutation, on=['CHROM','POS'],how='inner', indicator=True)
     neu_der = neu_der[neu_der['_merge']=='both'].drop(columns=['_merge'])
     mut_der = mut_der[mut_der['_merge']=='both'].drop(columns=['_merge'])
-    #Report Number of Sites
-    print("Number of derived mutations =", len(mut_der))
     return neu_der, mut_der
 
 #Define calcRAB()
@@ -146,16 +133,15 @@ def samplesites(sites, psites):
     subsamp = sites.iloc[indices]
     return subsamp
 
-#Define jackknife()
-def jackknife(neu_der, mut_der, psites, iter):
-    jx = []
+#Define bootstrap()
+def bootstrap(neu_der, mut_der, psites, iter):
+    bts = []
     for i in range(iter):
         neu_sub = samplesites(neu_der, psites)
         mut_sub = samplesites(mut_der, psites)
-        jx.append(calcRAB_sub(neu_sub, mut_sub))
-    return np.array(jx)
+        bts.append(calcRAB_sub(neu_sub, mut_sub))
+    return np.array(bts)
     
-
 #Argparse
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Compute RAB from .vcf file.")
@@ -164,18 +150,27 @@ if __name__ == "__main__":
     parser.add_argument("--fileN", required=True, help="tab separated list of neutral sites. Column 1 should be labelled 'chromo' and column 2 should be labelled 'position'")
     parser.add_argument("--fileM", required=True, help="tab separated list of mutation sites (e.g, lof). Column 1 should be labelled 'chromo' and column 2 should be labelled 'position'")
     parser.add_argument("--seed", required=True, type=int, help="Set seed for subsampling 10000 neutral sites.")
-    parser.add_argument("--psites", required=True, type=float, help="Proportion of sites to retain for jackknife (e.g: 0.90 for 90%)")
-    parser.add_argument("--iter", required=True, type=int, help="Number of iterations for jackknife.")
+    parser.add_argument("--psites", required=True, type=float, help="Proportion of sites to retain for bootstrap (e.g: 0.90 for 90%)")
+    parser.add_argument("--iter", required=True, type=int, help="Number of iterations for bootstraps.")
     parser.add_argument("--simulated_vcf", action="store_true", help="Set if the VCF is simulated")
     args = parser.parse_args()
 #Run
 der = readvcf(args.vcf, args.pop, args.simulated_vcf)
 neu_der, mut_der = importsites(args.fileN, args.fileM, der)
-jx_array = jackknife(neu_der, mut_der, float(args.psites), int(args.iter))
-q025, q975 = np.percentile(jx_array, [2.5, 97.5])
-avg = np.mean(jx_array)
+bts_array = bootstrap(neu_der, mut_der, float(args.psites), int(args.iter))
+q025, q975 = np.percentile(bts_array, [2.5, 97.5])
+avg = np.mean(bts_array)
 
-#Report Results
+#Report Number of Sites 
+print("N_Sites = ", len(mut_der))
+
+#Report Genotype Counts
+print("PopA Homozygotes = ", mut_der['popA_hom'].sum())
+print("PopA Heterozygotes = ", mut_der['popA_het'].sum())
+print("PopB Homozygotes = ", mut_der['popB_hom'].sum())
+print("PopB Heterozygotes = ", mut_der['popB_het'].sum())
+
+#Report RAB Results
 print("RAB =", calcRAB(neu_der, mut_der, args.seed))
 print("avg[2.5%,97.5%] = ", avg,"[",q025,",",q975,"]")
 print("RAB_neutral = ", calcRAB_neu(neu_der, args.seed))

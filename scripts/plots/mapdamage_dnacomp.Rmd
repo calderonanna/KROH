@@ -1,0 +1,138 @@
+---
+title: "mapdamage_misincorporation"
+author: "Anna Maria Calderon"
+date: "2025-05-08"
+output: html_document
+---
+
+# Setup
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(readr)
+library(tidyr)
+library(dplyr)
+library(reshape2)
+library(ggpubr)
+setwd("/Users/abc6435/Desktop/KROH/data/mapdamage/")
+
+dnacomp <- read_tsv("dnacomp.txt", comment = "#")
+```
+
+# Modify Data
+
+```{r modify_data, include=FALSE}
+#Calculate Proportions
+dnacomp$pA <- dnacomp$A/dnacomp$Total
+dnacomp$pC <- dnacomp$C/dnacomp$Total
+dnacomp$pG <- dnacomp$G/dnacomp$Total
+dnacomp$pT <- dnacomp$T/dnacomp$Total
+
+#Subset Dataframe
+prop <- as.data.frame(cbind(dnacomp$Sample, dnacomp$Library,
+              dnacomp$End, dnacomp$Pos, 
+              dnacomp$pA, dnacomp$pC,
+              dnacomp$pG, dnacomp$pT))
+
+colnames(prop) <- c("sample", "library", "end",
+                    "pos", "A", "C","G", "T")
+
+#Melt Dataframe and Factor
+prop_m <- melt(prop,id.vars=c("sample","library", "end","pos"),
+                   variable.name="nucelotide",
+                   value.name="proportion")
+
+prop_m$end <- factor(prop_m$end, levels = c("5p","3p"))
+prop_m$proportion <- as.numeric(prop_m$proportion)
+prop_m$pos <- as.numeric(prop_m$pos)
+
+#Subset by pop
+prop_m_c <- subset(prop_m, prop_m$library=="contemporary")
+prop_m_h <- subset(prop_m, prop_m$library=="historical")
+```
+
+# Plot
+
+```{r plot, include=FALSE}
+#Contemporary 
+prop_m_c_plot <- 
+  ggplot(prop_m_c, aes(x = pos, y = proportion, color = nucelotide)) +
+  geom_line(linewidth = 1) +
+  facet_grid(rows=vars(sample), cols=vars(end), scale="free") +
+  scale_y_continuous(limits = c(0,0.7), expand = c(0,0)) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_color_manual(values=
+                       c("#FFBF00","#FF7F50",
+                         "#40E0D0","#6495ED")) +
+  theme(panel.background = element_blank(),
+        panel.border = element_blank(),
+        strip.background = element_rect(fill="gray", color="gray"),
+        strip.text=element_text(color="black", face="bold", size=8),
+        panel.spacing.x = unit(15, "points"),
+        legend.title = element_blank(),
+        axis.text = element_text(size=8, color="black"),
+        axis.title = element_text(size=8, color="black")) +
+  xlab("Distance from read end (bp)") +
+  ylab("Proportion") +
+  geom_rect(data = subset(prop_m_c, end == "5p"), 
+            aes(xmin = 0, xmax = 19.9, ymin = 0.05, ymax = 0.6), 
+            color = "black", fill=NA) +
+  geom_rect(data = subset(prop_m_c, end == "3p"), 
+            aes(xmin = -19.9, xmax = 0, ymin = 0.05, ymax = 0.6), 
+            color = "black", fill=NA)+
+  geom_hline(yintercept = 0, color="black", linewidth=0.5) +
+  geom_vline(data = subset(prop_m_c, end == "5p"),
+             aes(xintercept = -9.7) , color="black", linewidth=0.5)
+
+
+#Historical
+prop_m_h_plot <- 
+  ggplot(prop_m_h, aes(x = pos, y = proportion, color = nucelotide)) +
+  geom_line(linewidth = 1) +
+  facet_grid(rows=vars(sample), cols=vars(end), scale="free") +
+  scale_y_continuous(limits = c(0,0.7), expand = c(0,0)) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_color_manual(values=
+                       c("#FFBF00","#FF7F50",
+                         "#40E0D0","#6495ED")) +
+  theme(panel.background = element_blank(),
+        panel.border = element_blank(),
+        strip.background = element_rect(fill="black", color="black"),
+        strip.text=element_text(color="white", face="bold", size=8),
+        panel.spacing.x = unit(15, "points"),
+        legend.title = element_blank(),
+        axis.text = element_text(size=8, color="black"),
+        axis.title = element_text(size=8, color="black")) +
+  xlab("Distance from read end (bp)") +
+  ylab("Proportion") +
+  geom_rect(data = subset(prop_m_h, end == "5p"), 
+            aes(xmin = 0, xmax = 19.9, ymin = 0.05, ymax = 0.6), 
+            color = "black", fill=NA) +
+  geom_rect(data = subset(prop_m_h, end == "3p"), 
+            aes(xmin = -19.9, xmax = 0, ymin = 0.05, ymax = 0.6), 
+            color = "black", fill=NA) +
+  geom_hline(yintercept = 0, color="black", linewidth=0.5) +
+  geom_vline(data = subset(prop_m_h, end == "5p"),
+             aes(xintercept = -9.7) , color="black", linewidth=0.5)
+
+```
+
+# Arrange/Save
+
+```{r save_plots, include=FALSE}
+
+dnacomp_plot <- ggarrange(prop_m_h_plot, prop_m_c_plot,
+                          labels = c("A","B"),
+                          common.legend = TRUE,
+                          ncol=2,
+                          nrow=1)
+
+ggsave("dnacomp.png", 
+       plot=dnacomp_plot,
+       path = "/Users/abc6435/Desktop/KROH/figures",
+       width = 6,
+       height = 6,
+       units = "in",
+       dpi = 300)
+```

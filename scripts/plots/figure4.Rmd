@@ -1,0 +1,180 @@
+---
+title: "RAB Simulation Plots"
+author: "Anna Maria Calderon"
+date: "2025-03-26"
+output: html_document
+---
+
+# Download Data
+
+```{bash}
+rsync abc6435@submit.hpc.psu.edu:/storage/group/zps5164/default/abc6435/KROH/data/slim/vcf/results/c7_h6/results.txt ~/Desktop/KROH/data/slim/results/c7h6_results.txt
+
+rsync abc6435@submit.hpc.psu.edu:/storage/group/zps5164/default/abc6435/KROH/data/slim/vcf/results/c7_h6/results_eggs.txt ~/Desktop/KROH/data/slim/results/c7h6_eggs_results.txt
+
+rsync abc6435@submit.hpc.psu.edu:/storage/group/zps5164/default/abc6435/KROH/data/slim/vcf/results/c7_h6/results_eggs.txt ~/Desktop/KROH/data/slim/results/c7h6_eggs_results.txt
+
+rsync abc6435@submit.hpc.psu.edu:/storage/group/zps5164/default/abc6435/KROH/data/slim/vcf/results/c20_h20/results_eggs.txt ~/Desktop/KROH/data/slim/results/c20h20_eggs_results.txt
+
+rsync abc6435@submit.hpc.psu.edu:/storage/group/zps5164/default/abc6435/KROH/data/slim/vcf/results/c20_h20/results.txt ~/Desktop/KROH/data/slim/results/c20h20_results.txt
+```
+
+# Setup and Import Data
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(ggpubr)
+library(tidyr)
+library(dplyr)
+library(reshape2)
+library(ggpattern)
+library(tidyverse)
+setwd("~/Desktop/KROH/data/slim/results")
+
+#c7h6
+c7h6 <- read.table("c7h6_results.txt", sep="\t", header = FALSE,
+                 na.strings = TRUE,
+                 fill=TRUE,
+                 col.names = c("mut","n_sites","rab", "rab_neu",
+                               "ahom","ahet","bhom","bhet","h","rep"))
+c7h6 <- c7h6[,c("mut","n_sites","rab","h")]
+c7h6$model <- "Npre=6, Npost=7"
+
+#c7h6 eggs
+c7h6_eggs <- read.table("c7h6_eggs_results.txt", sep="\t", header = FALSE,
+                 na.strings = TRUE,
+                 fill=TRUE,
+                 col.names = c("mut","n_sites","rab", "rab_neu",
+                               "ahom","ahet","bhom","bhet","h","rep"))
+c7h6_eggs <- c7h6_eggs[,c("mut","n_sites","rab","h")]
+c7h6_eggs$model <- "Npre=6, Npost=7*"
+
+#c20h20
+c20h20 <- read.table("c20h20_results.txt", sep="\t", header = FALSE,
+                 na.strings = TRUE,
+                 fill=TRUE,
+                 col.names = c("mut","n_sites","rab", "rab_neu",
+                               "ahom","ahet","bhom","bhet","h","rep"))
+c20h20 <- c20h20[,c("mut","n_sites","rab","h")]
+c20h20$model <- "Npre=20, Npost=20"
+
+#c20h20 eggs
+c20h20_eggs <- read.table("c20h20_eggs_results.txt", sep="\t", header = FALSE,
+                 na.strings = TRUE,
+                 fill=TRUE,
+                 col.names = c("mut","n_sites","rab", "rab_neu",
+                               "ahom","ahet","bhom","bhet","h","rep"))
+c20h20_eggs <- c20h20_eggs[,c("mut","n_sites","rab","h")]
+c20h20_eggs$model <- "Npre=20, Npost=20*"
+```
+
+# Modify Data
+
+```{r modify_data, include=FALSE}
+#Bind Data sets
+rabs <- rbind(c7h6, c7h6_eggs, c20h20, c20h20_eggs)
+rabs$rab <- as.numeric(rabs$rab)
+rabs$n_sites <- as.numeric(rabs$n_sites)
+rabs$h <- as.numeric(rabs$h)
+
+rabs$mut <- str_replace_all(rabs$mut, "^neutral$", "s=0")
+rabs$mut <- str_replace_all(rabs$mut, "^nearlyneutral$", "-0.0001<s<0") 
+rabs$mut <- str_replace_all(rabs$mut, "^weak$", "-0.001<s≤-0.0001")
+rabs$mut <- str_replace_all(rabs$mut, "^mild$", "-0.01<s≤-0.001")
+rabs$mut <- str_replace_all(rabs$mut, "^moderate$", "-0.1<s≤-0.01")
+rabs$mut <- str_replace_all(rabs$mut, "^strong$", "s<-0.1")
+rabs$mut <- factor(rabs$mut, levels = c("s=0", "-0.0001<s<0",
+                                      "-0.001<s≤-0.0001","-0.01<s≤-0.001",
+                                      "-0.1<s≤-0.01", "s<-0.1"))
+rabs <- na.omit(rabs)
+
+# Extract Medians
+medians <- rabs %>%
+  filter(is.finite(log(rab))) %>%
+  group_by(h, mut, model) %>%
+  summarise(median_lnRAB = median(log(rab)), .groups = "drop")
+
+medians$model <- factor(medians$model,
+                        levels = c("Npre=20, Npost=20*",
+                                   "Npre=20, Npost=20",
+                                   "Npre=6, Npost=7*",
+                                   "Npre=6, Npost=7"))
+```
+
+# Plot RABS - Missing GT
+
+```{r rabs_missing, include=FALSE}
+rabs_miss_plot <- 
+  ggplot(medians %>% filter(model %in% c("Npre=20, Npost=20", "Npre=20, Npost=20*")),
+         aes(y = mut, x = median_lnRAB, fill = model)) +
+  geom_col(position = position_dodge(width = 0.7),width = 0.6, color = "black") +
+  geom_vline(xintercept = 0, color = "black") +
+  scale_x_continuous(limits = c(-1,1),
+                     breaks = seq(-1,1,0.5)) +
+  scale_fill_manual(values = c("Npre=20, Npost=20*" = "#E6FF91",
+                               "Npre=20, Npost=20"  = "#ACD149")) +
+  facet_wrap(~h, nrow = 2) +
+  xlab("Median ln(RAB)") +
+  theme(
+    axis.title.y = element_blank(),
+    panel.background = element_blank(),
+    panel.border = element_rect(fill=NA, color="black"),
+    legend.title = element_blank(),
+    legend.position = "top",
+    panel.grid.minor.x = element_line(linetype="dashed", color="black", linewidth=.05),
+    axis.text = element_text(size = 8),
+    strip.background = element_blank(),
+    strip.text = element_text(size = 8))
+rabs_miss_plot
+```
+
+# Plot RABS - Sample Size
+
+```{r rabs_samplesize, include=FALSE}
+rabs_samplesize_plot <- 
+  ggplot(medians %>% filter(model %in% c("Npre=20, Npost=20", "Npre=6, Npost=7")),
+         aes(y = mut, x = median_lnRAB, fill = model)) +
+  geom_col(position = position_dodge(width = 0.7),width = 0.6, color = "black") +
+  geom_vline(xintercept = 0, color = "black") +
+  scale_x_continuous(limits = c(-1,1),
+                     breaks = seq(-1,1,0.5)) +
+  scale_fill_manual(values = c("Npre=6, Npost=7" = "#6D49D1",
+                               "Npre=20, Npost=20"  = "#ACD149")) +
+  facet_wrap(~h, nrow = 2) +
+  xlab("Median ln(RAB)") +
+  theme(
+    axis.title.y = element_blank(),
+    panel.background = element_blank(),
+    panel.border = element_rect(fill=NA, color="black"),
+    legend.title = element_blank(),
+    legend.position = "top",
+    panel.grid.minor.x = element_line(linetype="dashed", color="black", linewidth=.05),
+    axis.text = element_text(size = 8),
+    strip.background = element_blank(),
+    strip.text = element_text(size = 8))
+rabs_samplesize_plot
+```
+
+# Arrange and Save
+
+```{r}
+#Figure 4
+fig4A <- ggarrange(rabs_miss_plot, labels="A") 
+ggsave(filename = "fig4A.png",
+       plot = fig4A,
+       width = 4,
+       height = 4,
+       units = "in",
+       dpi = 300,
+       path = "~/Desktop/KROH/figures")
+
+fig4B <- ggarrange(rabs_samplesize_plot, labels="B") 
+ggsave(filename = "fig4B.png",
+       plot = fig4B,
+       width = 4,
+       height = 4,
+       units = "in",
+       dpi = 300,
+       path = "~/Desktop/KROH/figures")
+```

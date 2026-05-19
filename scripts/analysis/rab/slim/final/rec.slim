@@ -1,0 +1,59 @@
+initialize() {
+	initializeMutationType("m1", 0.5, "f", 0);
+	initializeMutationType("m2", 0.0, "g", -0.0131, 0.186);
+	initializeGenomicElementType("g1", c(m1,m2), c(2,3));
+	initializeGenomicElementType("g2", m1, 1);
+	path = "/storage/group/zps5164/default/abc6435/KROH/data/slim/genome_structure/";
+	chrs = c(1,100,2:4,400,5:15,17:29);
+	lengths = c(114063801,71386623,150066519,111140737,70957965,19902516,62006421,35832348,38264695,31225694,25769210,20450569,20895826,20804877,18063608,16588652,14319805,11726895,12543585,11332392,15069120,7790416,4356307,7079006,7805957,1781809,6243642,4714420,5445509,962733);
+	
+	for (i in 0:(size(chrs)-1)) {
+		chr = chrs[i];
+		length = lengths[i];
+		
+		initializeChromosome(id=chr, length=length);
+		
+		exons = readFile(path + "exon_chr" + chr + ".txt");
+		for (exon in exons) {
+			components = strsplit(exon, "\t");
+			initializeGenomicElement(g1, asInteger(components[0])-1, asInteger(components[1])-1);
+		}
+		
+		intergenics = readFile(path + "intergenic_chr" + chr + ".txt");
+		for (intergenic in intergenics) {
+			components = strsplit(intergenic, "\t");
+			initializeGenomicElement(g2, asInteger(components[0])-1, asInteger(components[1])-1);
+		}
+		
+		initializeRecombinationRate(3e-8);
+		initializeMutationRate(4e-9);
+	}
+}
+
+// SIMULATE POPULATION
+1 early() {
+	sim.addSubpop("p1", 700);
+}
+
+10000 early() {
+	p1.setSubpopulationSize(259);
+}
+
+10250 late() {
+	inds = p1.sampleIndividuals(20); // 1900's samples
+	out="/storage/group/zps5164/default/abc6435/KROH/data/slim/vcf/rec/";
+	inds.outputIndividualsToVCF(filePath= out + "hKIWA_rec.vcf");
+}
+
+10275 early() {
+	p1.setSubpopulationSize(161); //1950's bottleneck
+}
+
+10333 late() {
+	inds = p1.sampleIndividuals(20); // 2000's samples
+	out="/storage/group/zps5164/default/abc6435/KROH/data/slim/vcf/rec/";
+	inds.outputIndividualsToVCF(filePath=out + "cKIWA_rec.vcf");
+}
+
+10310 late() {
+}

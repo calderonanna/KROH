@@ -1,0 +1,113 @@
+---
+title: "rxy"
+author: "Anna Maria Calderon"
+date: "2025-03-26"
+output: html_document
+---
+
+# Download Data
+
+```{bash}
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rab/tv_ts/results.txt ~/Desktop/KROH/data/rab
+```
+
+# Setup
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(ggpubr)
+library(tidyr)
+library(dplyr)
+library(reshape2)
+library(tidyverse)
+setwd("~/Desktop/KROH/data/rab")
+rab <- read.table("results.txt", 
+                  header = FALSE, 
+                  col.names=c("NEUTRAL","MUT","RAB",
+                              "RAB_NEU","AVG","Q25","Q975","N_SITES"))
+```
+
+# Modify Data
+
+```{r modify_data, include=FALSE}
+rab$MUT <- str_replace_all(rab$MUT, "4fold_synonymous", "FOURFOLD")
+rab$MUT <- str_replace_all(rab$MUT, "noncoding", "UTR")
+rab$MUT <- str_replace_all(rab$MUT, "deleterious", "DEL")
+rab$MUT <- str_replace_all(rab$MUT, "tolerated", "TOL")
+rab$MUT <- str_replace_all(rab$MUT, "nonsynonymous", "NONSYN")
+rab$MUT <- str_replace_all(rab$MUT, "synonymous", "SYN")
+rab$MUT <- str_replace_all(rab$MUT, "lossoffunction", "LOF")
+rab$MUT <- str_replace_all(rab$MUT, "intergenic", "INTER")
+rab$MUT <- factor(rab$MUT, levels = c("INTER", "FOURFOLD","UTR",
+                                      "SYN", "TOL",
+                                      "NONSYN", "DEL",
+                                      "LOF"))
+
+#Subset by Neutral Sites
+fourfold_rab <- (rab %>% filter(NEUTRAL=="4fold_synonymous"))[c(1:7),]
+intergenic_rab <- (rab %>% filter(NEUTRAL=="intergenic"))[c(1:6,8),]
+```
+
+# Plot 
+
+```{r plot, include=FALSE}
+colors = c(
+  "LOF"="#FF4917",
+  "DEL"="#FF8533",
+  "NONSYN"="#FFD82B",
+  "TOL"="#99DA78",
+  "SYN"="#00BF98",
+  "UTR"="#82FFD5",
+  "INTER"="#82E8FF")
+rab_plot_intergenic <- 
+  ggplot(intergenic_rab,aes(x=log(RAB), y=MUT, fill=MUT)) +
+  geom_bar(stat="identity") +
+  geom_text(aes(label=N_SITES), x=-3, hjust=0, size=3) + 
+  scale_fill_manual(values = colors, guide="none") +
+  geom_errorbarh(aes(xmin = log(Q25), xmax = log(Q975), y = MUT), height = 0.2) +
+  scale_x_continuous(limits=c(-3,3), breaks=seq(-3,3,0.5)) +
+  geom_vline(xintercept = 0, color="black") +
+  theme(
+    panel.background = element_blank(),
+    panel.grid.minor.x = element_line(linetype="dashed", color="black", linewidth=.05),
+    panel.border = element_rect(color="black", fill=NA), 
+    axis.title.y = element_blank(),
+    axis.text.x = element_text(size=8, color="black"),
+    axis.text.y = element_text(size=8, color="black"),
+    text = element_text(size = 8),
+    legend.position = "bottom") +
+  xlab("ln(RAB)") +
+  ggtitle("Transversions and Transitions")
+
+rab_plot_fourfold <- 
+  ggplot(fourfold_rab,aes(x=log(RAB), y=MUT, fill=MUT)) +
+  geom_bar(stat="identity") +
+  geom_text(aes(label=N_SITES), x=-3, hjust=0, size=3) + 
+  scale_fill_manual(values = colors, guide="none") +
+  geom_errorbarh(aes(xmin = log(Q25), xmax = log(Q975), y = MUT), height = 0.2) +
+  scale_x_continuous(limits=c(-3,3), breaks=seq(-3,3,0.5)) +
+  geom_vline(xintercept = 0, color="black") +
+  theme(
+    panel.background = element_blank(),
+    panel.grid.minor.x = element_line(linetype="dashed", color="black", linewidth=.05),
+    panel.border = element_rect(color="black", fill=NA), 
+    axis.title.y = element_blank(),
+    axis.text.x = element_text(size=8, color="black"),
+    axis.text.y = element_text(size=8, color="black"),
+    text = element_text(size = 8),
+    legend.position = "bottom") +
+  xlab("ln(RAB)") +
+  ggtitle("Transversions and Transitions")
+```
+
+# Arrange and Save
+
+```{r arrange_save, include=FALSE}
+rab_maf <- ggarrange(rab_plot_fourfold, rab_plot_intergenic, 
+          labels = c("A","B"), nrow = 2)
+
+ggsave("rab_maf_tstv_plot.png", plot=rab_maf, 
+       path ="~/Desktop/KROH/figures",
+       width = 4, height = 4, units = "in", dpi = 300)
+```

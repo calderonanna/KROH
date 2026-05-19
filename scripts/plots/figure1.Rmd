@@ -1,0 +1,411 @@
+---
+title: "ROHan"
+output: html_document
+date: "2025-10-31"
+---
+
+# Download
+
+```         
+ii2eb3hs245v
+```
+
+```{bash}
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/percent_ROH.txt ~/Desktop/KROH/data/rohan
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/gw_theta_inc_ROH.txt ~/Desktop/KROH/data/rohan
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/gw_theta_outside_ROH.txt ~/Desktop/KROH/data/rohan
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/nroh_sroh.txt ~/Desktop/KROH/data/rohan
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/het.txt ~/Desktop/KROH/data/rohan 
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/rohan/results/rohan_cov.txt ~/Desktop/KROH/data/rohan 
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/pca/KIWA.eigenval /Users/abc6435/Desktop/KROH/data/pca
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/pca/KIWA.eigenvec /Users/abc6435/Desktop/KROH/data/pca
+```
+
+# Set Up
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(ggrepel)
+library(tidyverse)
+library(dplyr)
+library(ggpubr)
+library(maps)
+library(ebirdst)
+library(png)
+#Access Code expires Sep29, 2026; see https://ebird.github.io/ebirdst/
+#set_ebirdst_access_key("ii2eb3hs245v", overwrite = FALSE) 
+```
+
+# Import Data and Modify
+
+```{r import_data, include=FALSE}
+#Census Data
+setwd("~/Desktop/KROH/data/census/")
+census <- read.csv("census_1951_2025.csv")
+census <- census[,c("Year", "Rangewide.Singing.Males")]
+colnames(census) <- c("year", "count")
+census$count <- as.numeric(census$count)
+census <- na.omit(census)
+
+#PCA
+setwd("/Users/abc6435/Desktop/KROH/data/pca")
+pca <- read_table2("KIWA.eigenvec", col_names = FALSE)
+eigenval <- scan("KIWA.eigenval")
+pca <- pca[,-1]
+names(pca)[1] <- "ind"
+pca$ind <- as.character(pca$ind)
+names(pca)[2:ncol(pca)] <- paste0("PC", 1:(ncol(pca)-1))
+pca$pop <- c(rep("cKIWA", 7), rep("hKIWA", 6))
+pca$cov <- c(rep(4, 7), 2.13, 5.34, 2.03, 2.88, 8.95, 3.69)
+
+#ROHan Coverage
+setwd("~/Desktop/KROH/data/rohan")
+cov <- read.table("rohan_cov.txt", header=FALSE)
+colnames(cov) <- c("sample", "cov")
+cov$cov <- round(cov$cov,2)
+cov$cov <- paste0(cov$cov, "x")
+
+#Segments in ROH (%)
+roh <- read.table("percent_ROH.txt", header=TRUE)
+colnames(roh) <- c("sample", "fROH", "CI")
+roh$sample <- as.character(roh$sample)
+roh$pop <- c(rep("cKIWA",7), rep("hKIWA",6))
+roh$CI <- gsub("[()]", "", roh$CI)
+roh <- separate(data=roh, col="CI", into = c("min_CI","max_CI"), sep = ",")
+roh$min_CI <- as.numeric(roh$min_CI)
+roh$max_CI <- as.numeric(roh$max_CI)
+
+
+# Genome-wide theta outside ROH
+theta_o_roh <- read.table("gw_theta_outside_ROH.txt", header=TRUE)
+
+# Genome-wide theta including ROH
+theta_inc_roh <- read.table("gw_theta_inc_ROH.txt", header=TRUE)
+colnames(theta_inc_roh) <- c("sample","mid","min","max")
+
+#Merge Data
+tmp1 <- merge(cov,roh,by="sample")
+tmp2 <- merge(theta_o_roh, theta_inc_roh, by="sample")
+roh_theta <- merge(tmp1, tmp2, by="sample")
+roh_theta$sample <- factor(roh_theta$sample,
+                     levels = c("183195332","183195312","183194841",
+                                "183195321","183194861","183195304",
+                                "183195326","507264","29779", 
+                                "383194", "383202","383205","507265"))
+
+
+#nroh_sroh
+nroh_sroh <- read.csv("nroh_sroh.txt", header=TRUE, fill = TRUE)
+nroh_sroh[is.na(nroh_sroh)] <- 0
+nroh_sroh$pop <- c(rep("ckIWA",21), rep("hKIWA",18))
+nroh_sroh$hmm_posterior_decoding <- factor(nroh_sroh$hmm_posterior_decoding,
+                                           levels = c("min","mid","max"))
+
+#Heterozygosity
+h <- read.table("het.txt", header=TRUE)
+het_kb <- h %>% 
+  group_by(sample) %>%
+  summarise(weighted_h = weighted.mean(h, w=valid_sites, na.rm = TRUE) * 1000)
+het_kb$pop <- c(rep("hKIWA", 6), rep("cKIWA", 7))
+het_kb$SROH <- (nroh_sroh %>% group_by(sample) %>% summarise(SROH = sum(sroh, na.rm=TRUE)/1e6))$SROH
+
+# Sampling Locations
+hKIWA_MI <- data.frame(
+  pop=rep("hKIWA", 4),
+  sample=c("383194", "383202", "383205", "507265"),
+  lat=c(44.6164, 44.6666, 44.6891, 44.6822),
+  lon=c(-84.2726, -84.1420, -84.0576, -84.6067))
+cKIWA_MI <- data.frame(
+  pop=rep("cKIWA", 7),
+  sample=c("183194841","183194861","183195304","183195312","183195321",
+           "183195326","183195332"), 
+  lat=c(44.504087,44.110771,44.50399,44.50399,44.891716,44.863815,44.532657),
+  lon=c(-83.613606,-84.978099,-83.593434,-83.593434,-84.423292,-84.462937,
+        -84.841283))
+MI_sites <- rbind(hKIWA_MI, cKIWA_MI)
+BA_sites <- data.frame(
+  pop=rep("hKIWA", 2),
+  sample=c("507264", "29779"),
+  lat=c(24.4826, 25.0218),
+  lon=c(-77.9110, -77.4498))
+
+#Range Map
+ebirdst_download_status(species="kirwar", download_ranges=TRUE)
+KIWA_range <- load_ranges("kirwar")
+breeding_range <- KIWA_range %>%
+  filter(season == "breeding")
+```
+
+# Plot Map
+
+```{r plot_map, include=FALSE}
+#USA Map
+usa <- map_data("world") %>% filter(region == "USA", !subregion %in% c("Alaska", "Hawaii"))
+states <- map_data("state")
+
+usa_map <- 
+  ggplot() +
+    geom_polygon(data = usa, aes(long, lat, group = group),
+                fill = "#F5F5F5", color = NA) +
+    geom_polygon(data = states, aes(long, lat, group = group),
+                fill = NA, color = "black", linewidth = 0.3) +
+    coord_map("albers", lat0 = 39, lat1 = 45) + 
+    theme_void() 
+  
+
+#MI and WI Map
+mi_wi <- map_data("state") %>% filter(region == "michigan" | region == "wisconsin")
+breeding_map <- 
+  ggplot(mi_wi, aes(x = long, y = lat, group = group)) +
+  geom_polygon(fill = "#FFB8B8", color = "black") +
+  geom_sf(data=breeding_range, fill="#A30000", alpha=0.7, inherit.aes=FALSE)+
+  geom_text(data = data.frame(x = -84.7802, y = 43.6758, label = "MI"),
+            aes(x = x, y = y, label = label),
+            size = 5, inherit.aes = FALSE) +
+  geom_text(data = data.frame(x = -90.0457, y = 44.7209, label = "WI"),
+            aes(x = x, y = y, label = label),
+            size = 5, inherit.aes = FALSE) +
+  coord_sf() +
+  theme_void() +
+  theme(legend.title = element_blank())
+```
+
+# Plot Census Data
+
+```{r plot_census_data, include=FALSE}
+census_plot <- ggplot(census, aes(x=factor(year), y=count)) + 
+  geom_col(fill="#A30000", color="black", width = 0.7, linewidth=0.5) + 
+  scale_y_continuous(expand = c(0,0), 
+                     limits = c(0,2500),
+                     breaks = seq(0,2500, by=250)) +
+  labs(x=NULL, y="Number of Singing Males") +
+  theme(
+    axis.text.x = element_text(angle = 60, size=8, hjust=1,color="black"),
+    axis.text.y = element_text(size=8, color="black"),
+    text = element_text(size = 8),
+    panel.background = element_blank(),
+    panel.grid = element_blank(),
+    panel.border = element_rect(color = "black", fill = NA))
+```
+
+# Plot PCA
+
+```{r plot_data, include=FALSE}
+pve <- data.frame(PC = 1:13, pve= eigenval/sum(eigenval)*100)
+ggplot(pve, aes(PC, pve)) +
+  geom_bar(stat="identity")
+
+#pca
+pca_plot <-
+  ggplot(pca, aes(PC1, PC2, fill=pop)) +
+    geom_point(size=3, shape=21, color="black") +
+    scale_fill_manual(values = c("gray","black")) + 
+    geom_text_repel(data=pca, aes(label = cov),
+                    size = 2, color="black", vjust=-1.75, hjust=0.5) +
+    coord_equal() + 
+    xlab(paste0("PC1 (", signif(pve$pve[1], 3), "%)")) +
+    ylab(paste0("PC2 (", signif(pve$pve[2], 3), "%)")) +
+    theme(
+      axis.title.x = element_text(color="black", size=8),
+      axis.title.y = element_text(color="black", size=8),
+      axis.text = element_text(color="black", size=8),
+      legend.background = element_rect(fill="white", color="black", linewidth = 0.2),
+      legend.position = "none", 
+      legend.title = element_blank(),
+      panel.background = element_blank(), 
+      panel.border = element_rect(color="black", fill=NA),
+      panel.grid.major = element_line(color="grey90"),
+      panel.grid.minor = element_blank())
+```
+
+# Plot Het/kb
+
+```{r plot_het/kb, include=FALSE}
+het_kb_plot <-
+  ggplot(het_kb, aes(y=weighted_h, x=pop, fill=pop)) +
+    geom_violin() +
+    geom_point(shape=21, fill="white") +
+    scale_fill_manual(values=c("gray","black")) + 
+    scale_y_continuous(expand = c(0,0), limits=c(4,7), breaks = seq(4,7, by=0.5)) +
+    ylab("Hets/Kb") +
+    theme(
+      axis.title.y = element_text(color="black", size=8), 
+      axis.title.x = element_blank(),
+      axis.text = element_text(color="black", size=8),
+      legend.position="none",
+      panel.background = element_blank(),
+      panel.border = element_rect(color = "black", fill=NA))
+```
+
+# Plot ROH Theta
+
+```{r plot_roh_theta, include=FALSE}
+roh_theta_plot <- 
+  ggplot(roh_theta, aes(x=sample, y=fROH, fill=pop)) +
+  geom_bar(stat="identity") +
+  geom_errorbar(aes(ymin=min_CI, ymax=max_CI),
+                color="black",
+                width=0.1) +
+  #geom_text(aes(label = cov), y=-1, size=2) +
+  geom_point(aes(y = thetamid * 5000),
+             shape=0,
+             color = "black", 
+             size = 2,
+             alpha=1.0,
+             show.legend = FALSE) +
+  geom_point(aes(y = mid * 5000),
+             shape=1,
+             color = "black", 
+             size = 2,
+             alpha=0.8,
+             show.legend = FALSE) +
+  geom_errorbar(aes(y=thetamid*5000, ymin=thetamin*5000, ymax=thetamax*5000),
+                color = "black",
+                width = 0.3,
+                alpha=1.0) +
+  geom_errorbar(aes(y=mid*5000, ymin=min*5000, ymax=max*5000),
+                color = "black",
+                width = 0.3,
+                alpha=0.8) +
+  scale_fill_manual(values=c("gray","black")) +
+  scale_y_continuous(name="ROH (%)", expand=c(0,0), limits=c(0,30),
+                     sec.axis=sec_axis(~./5000,name=expression("Genomewide "*theta))) +
+  facet_grid(~pop, scales="free_x", space="free_x") +
+  labs(x = NULL) +
+  theme(
+    panel.background = element_blank(),
+    panel.grid = element_blank(),
+    panel.border = element_rect(color = "black", fill = NA),
+    legend.position = "none",
+    strip.background = element_blank(),
+    axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+    axis.text = element_text(color="black", size=8),
+    text = element_text(size = 8))
+```
+
+# Plot NROH SROH
+
+```{r plot_nroh_sroh, include=FALSE}
+nroh_sroh_plot <- 
+  ggplot(nroh_sroh, aes(x = sroh/1e6, y = nroh, color = pop)) +
+  geom_point(size = 2, alpha=0.5) +
+  scale_color_manual(values = c("gray", "black")) +
+  facet_wrap(~hmm_posterior_decoding, ncol = 3) +
+  xlab("SROH (Mb)") +
+  ylab("NROH") +
+  theme(
+    panel.background = element_blank(),
+    panel.grid = element_blank(),
+    panel.border = element_rect(color = "black", fill = NA),
+    legend.background = element_blank(),
+    legend.title = element_blank(),
+    legend.position = "none", 
+    strip.text = element_text(color="black"),
+    strip.background = element_blank(),
+    axis.text = element_text(color="black", size=8),
+    text = element_text(size = 8))
+nroh_sroh_plot
+```
+
+# Plot Het
+
+```{r plot_heterozygosity, include=FALSE}
+h$chrom <- factor(h$chrom, levels = unique(h$chrom))
+
+h_plot <- 
+  ggplot(h, aes(x = end, y = h, color=pop)) +
+  geom_line() + 
+  scale_y_continuous(expand = c(0,0)) +
+  scale_color_manual(values=c("gray","black")) +
+  facet_grid(. ~ chrom, scales = "free_x", space = "free_x", switch="x") +
+  ylab("Heterozygosity") +
+  theme(axis.line = element_line(color="black"),
+        axis.ticks = element_blank(),
+        axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        strip.text.x = element_text(angle=90, vjust = 0.5, size=8, color="black"),
+        strip.placement = "outside",
+        strip.background = element_blank(),
+        panel.background = element_blank(), 
+        panel.border = element_blank(),
+        panel.spacing = unit(0.0, 'points'),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.title = element_blank(),
+        legend.background = element_blank(),
+        legend.key = element_rect(fill = "white", color = NA),
+        legend.position = c(0.9,0.9),
+        axis.text = element_text(color="black", size=8),
+        text = element_text(size = 8)) 
+h_plot
+```
+
+# Arrange and Save
+
+fig1A \<- ggarrange(roh_theta_plot, labels = "A") fig1B \<- ggarrange(nroh_sroh_plot, labels = "B") fig1C \<- ggarrange(h_plot, labels = "C")
+
+```{r save, include=FALSE}
+fig1A <- ggarrange(census_plot, labels="A")
+fig1B <- ggarrange(pca_plot, labels="B")
+fig1C <- ggarrange(het_kb_plot, labels="C")
+fig1D <- ggarrange(roh_theta_plot, labels="D")
+
+ggsave(filename = "usa_map.png",
+       plot = usa_map,
+       width=3, 
+       height = 3,
+       units="in",
+       dpi=300,
+       path="~/Desktop/KROH/figures/")
+
+ggsave(filename = "breeding_map.png",
+       plot = breeding_map,
+       width=3, 
+       height = 3,
+       units="in",
+       dpi=300,
+       path="~/Desktop/KROH/figures/")
+
+ggsave(filename = "fig1A.png",
+       plot = fig1A, 
+       width = 9,
+       height = 3,
+       units = "in",
+       dpi = 300,
+       path = "~/Desktop/KROH/figures/")
+
+ggsave(filename = "fig1B.png",
+       plot = fig1B, 
+       width = 3,
+       height = 3,
+       units = "in",
+       dpi = 300,
+       path = "~/Desktop/KROH/figures/")
+
+ggsave(filename = "fig1C.png",
+       plot = fig1C, 
+       width = 3,
+       height = 3,
+       units = "in",
+       dpi = 300,
+       path = "~/Desktop/KROH/figures/")
+
+ggsave(filename = "fig1D.png",
+       plot = fig1D, 
+       width = 3,
+       height = 3,
+       units = "in",
+       dpi = 300,
+       path = "~/Desktop/KROH/figures/")
+
+
+
+```

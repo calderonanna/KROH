@@ -1,0 +1,265 @@
+---
+title: "RAB Simulation Plots"
+author: "Anna Maria Calderon"
+date: "2025-03-26"
+output: html_document
+---
+
+# Download Data
+
+```{bash}
+rsync abc6435@submit.hpc.psu.edu:/storage/group/zps5164/default/abc6435/KROH/data/slim/vcf/results/c20_h20/results.txt ~/Desktop/KROH/data/slim/results/c20h20_results.txt
+
+rsync abc6435@submit.hpc.psu.edu:/storage/group/zps5164/default/abc6435/KROH/data/slim/vcf/results/10313/results.txt ~/Desktop/KROH/data/slim/results/c20h20_10313_results.txt
+
+```
+
+# Import Data and Modify
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(ggpubr)
+library(tidyr)
+library(dplyr)
+library(reshape2)
+library(ggpattern)
+library(tidyverse)
+setwd("~/Desktop/KROH/data/slim/results")
+df2 <- read.table("c20h20_results.txt", sep="\t", header = FALSE,
+                 na.strings = TRUE,
+                 fill=TRUE,
+                 col.names = c("mut","n_sites","rab", "rab_neu",
+                               "ahom","ahet","bhom","bhet","h","rep"))
+  
+df <- read.table("c20h20_10313_results.txt", sep="\t", header = FALSE,
+                 na.strings = TRUE,
+                 fill=TRUE,
+                 col.names = c("mut","n_sites","rab", "rab_neu",
+                               "ahom","ahet","bhom","bhet","h","rep"))
+df <- rbind(df2, df)
+
+df <- df %>% filter(mut %in% c("neutral", "nearlyneutral", 
+                               "weak", "mild", "moderate","strong"))
+df <- na.omit(df)
+df$rab <- as.numeric(df$rab)
+df$n_sites <- as.numeric(df$n_sites)
+df$h <- as.numeric(df$h)
+
+df$mut <- str_replace_all(df$mut, "^neutral$", "s=0")
+df$mut <- str_replace_all(df$mut, "^nearlyneutral$", "-0.0001<s<0") 
+df$mut <- str_replace_all(df$mut, "^weak$", "-0.001<s≤-0.0001")
+df$mut <- str_replace_all(df$mut, "^mild$", "-0.01<s≤-0.001")
+df$mut <- str_replace_all(df$mut, "^moderate$", "-0.1<s≤-0.01")
+df$mut <- str_replace_all(df$mut, "^strong$", "s<-0.1")
+
+intergenic <- df %>%
+  filter(mut == "s=0") %>%
+  select(rab_neu, h, rep)
+colnames(intergenic) <- c("rab","h","rep")
+intergenic$rab <- as.numeric(intergenic$rab)
+intergenic$mut <- "intergenic"
+
+
+#RAB
+rab <- bind_rows(df,intergenic)[,c("mut","n_sites","rab","h","rep")]
+rab$mut <- factor(rab$mut, levels = c("intergenic", "s=0", "-0.0001<s<0",
+                                      "-0.001<s≤-0.0001","-0.01<s≤-0.001",
+                                      "-0.1<s≤-0.01", "s<-0.1"))
+rab <- rab[rab$h != 888, ]
+
+
+#zygosity proportions
+df$ahom <- as.numeric(df$ahom)
+df$bhom <- as.numeric(df$bhom)
+df$ahet <- as.numeric(df$ahet)
+df$bhet <- as.numeric(df$bhet)
+df$p_ahom <- df$ahom/(df$ahom+df$ahet)
+df$p_ahet <- df$ahet/(df$ahom+df$ahet)
+df$p_bhom <- df$bhom/(df$bhom+df$bhet)
+df$p_bhet <- df$bhet/(df$bhom+df$bhet)
+zygp <- df[,c("mut", "h", "p_ahom","p_ahet", "p_bhom","p_bhet")]
+zygp_m <- melt(zygp, id=c("mut", "h"), variable.name = "zygosity", value.name = "proportion")
+zygp_sum <- zygp_m %>%
+  group_by(mut, zygosity, h) %>%
+  summarise(mean_prop = mean(proportion, na.rm=TRUE),
+            sd = sd(proportion, na.rm = TRUE),
+            n = sum(!is.na(proportion)), 
+            se = sd/sqrt(n))
+
+zygp_sum$pop <- zygp_sum$zygosity
+zygp_sum$pop <- str_replace_all(zygp_sum$pop, "p_a[a-z]*", "A")
+zygp_sum$pop <- str_replace_all(zygp_sum$pop, "p_b[a-z]*", "B")
+zygp_sum$zygosity <- str_replace_all(zygp_sum$zygosity, "p_[ab]","")
+zygp_sum$mut <- factor(zygp_sum$mut, levels = c("s<-0.1","-0.1<s≤-0.01",
+                                                "-0.01<s≤-0.001",
+                                                "-0.001<s≤-0.0001",
+                                                "-0.0001<s<0","s=0"))
+zygp_sum <- zygp_sum[zygp_sum$h!=888.00,]
+
+
+colors = c(
+  "s<-0.1"="#FF230F",
+  "-0.1<s≤-0.01"="#FF8533",
+  "-0.01<s≤-0.001"="#FFD82B",
+  "-0.001<s≤-0.0001"="#2B2FFF",
+  "-0.0001<s<0"="#0F73FF",
+  "s=0"="#0FEBFF",
+  "intergenic"="white")
+```
+
+# Plot RAB
+
+```{r rab_plot, include=FALSE}
+rab_plot <- 
+  ggplot(rab, aes(x=log(rab), y=mut, fill=mut)) +
+  geom_vline(xintercept = 0, color="black") +
+  geom_boxplot(width=0.7, color="black", alpha=1.0, outlier.shape = NA) +
+  scale_x_continuous(limits = c(-2,2), breaks=seq(-2,2,1.0)) +
+  scale_fill_manual(values = colors) +
+  facet_wrap(~h, ncol=2, nrow=2, scales="free_x") +
+  xlab(expression(ln(RAB))) +
+  annotate("text", x = -Inf, y = -Inf, label = "Post-bot Excess",
+         hjust = -0.1, vjust = -1, size = 2.5) +
+  annotate("text", x = Inf, y = -Inf, label = "Post-bot Deficit",
+         hjust = 1.1, vjust = -1, size = 2.5) +
+  coord_cartesian(clip = "off") +
+  theme(panel.grid.minor.x = 
+          element_line(linetype="dashed", color="black", linewidth=.05),
+    panel.background = element_blank(),
+    panel.border = element_rect(fill=NA, color="black"),
+    legend.position="none",
+    strip.text = element_text(color="black"),
+    strip.background = element_blank(),
+    axis.text = element_text(color="black", size=8),
+    axis.title.y = element_blank())
+rab_plot
+```
+
+# Plot Zygosity
+
+```{r plot_zygosity, include=FALSE}
+pd <- position_dodge(width = 0.9)
+zyg_plot <- ggplot(zygp_sum %>% filter(zygosity=="hom"),
+       aes(x=1, y=mean_prop, fill=mut, alpha=pop)) +
+  geom_col(stat = identity, position=pd, color="black") +
+  geom_errorbar(aes(ymin = mean_prop-se, ymax = mean_prop+se), 
+                position=pd, width = 0.2) +
+  scale_fill_manual(values = colors) +
+  scale_alpha_manual(values = c(0.4,1), 
+                     labels=c(A="pre-bottleneck",
+                              B="post-bottleneck")) +
+  facet_grid(h~mut, scales = "free_y") +
+  scale_x_discrete(expand = c(0.1,0.1)) +
+  scale_y_continuous(expand = c(0.03,0)) +
+  theme(
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    panel.background = element_blank(),
+    panel.border = element_rect(fill=NA, color="black"),
+    strip.text.x = element_blank(),
+    strip.text.y = element_text(color="black"),
+    strip.background = element_blank(),
+    axis.text.y = element_text(size=8, color="black"),
+    axis.text = element_text(color="black", size=8),
+    axis.title.x = element_blank()) +
+  guides(fill="none") +
+  ylab("Mean Proportion")
+
+zyg_plot
+```
+
+# Plot Site Distribution
+
+```{r sites_distribution, include=FALSE}
+site_dist_plot <- 
+  ggplot(rab, aes(x=n_sites, fill=mut)) +
+  geom_density(alpha=0.7) + 
+  scale_y_continuous(expand = c(0,0)) +
+  scale_x_continuous(expand=c(0,0)) +
+  scale_fill_manual(values=colors) +
+  #facet_wrap(~h, nrow=2) +  
+  labs(x="count", y="density") +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom",
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(fill=NA, color="black"),
+        strip.text = element_text(color="black"),
+        strip.background = element_blank(),
+        axis.text.y = element_text(color="black", size=8),
+        axis.text.x = element_text(color="black", size=8),
+        axis.text = element_text(color="black", size=8))
+site_dist_plot
+```
+
+# Plot Site RAB Correlations
+
+```{r sites_rab_corr, include=FALSE}
+site_rab_cor_plot <- 
+  ggplot(rab, aes(x=n_sites, y=log(rab), color=mut)) +
+  geom_smooth(method="lm", se=TRUE) +
+  stat_cor(method="spearman", size=3,
+           aes(label = paste(..r.label.., ..p.label.., sep = "~`,`~"))) +
+  scale_y_continuous(limits = c(-0.5,0.5)) +
+  scale_color_manual(values=colors) +
+  xlab("N Sites") +
+  ylab("ln(RAB)") +
+  theme(legend.title = element_blank(),
+        legend.position = "none",
+        panel.grid.major.x = element_line(color="#EBEBEB", linewidth = 0.5),
+        panel.grid.minor.x = element_line(color="#EBEBEB", linewidth = 0.25),
+        panel.grid.major.y = element_line(color="#EBEBEB", linewidth = 0.5),
+        panel.grid.minor.y = element_line(color="#EBEBEB", linewidth = 0.5),
+        panel.background = element_blank(),
+        panel.border = element_rect(fill=NA, color="black"),
+        strip.text = element_text(color="black"),
+        strip.background = element_blank(),
+        axis.text = element_text(color="black", size=8))
+site_rab_cor_plot
+```
+
+# Arrange and Save
+
+```{r}
+#Figure 3
+fig3A <- ggarrange(rab_plot, labels="A") 
+fig3B <- ggarrange(zyg_plot, labels = "B")
+fig3C <- ggarrange(site_dist_plot, labels = "C")
+fig3D <- ggarrange(site_rab_cor_plot, labels = "D")
+
+ggsave(filename = "fig3A.png",
+       plot = fig3A,
+       width = 5,
+       height = 5,
+       units = "in",
+       dpi = 300,
+       path = "~/Desktop/KROH/figures")
+
+ggsave(filename = "fig3B.png",
+       plot = fig3B,
+       width = 5,
+       height = 5,
+       units = "in",
+       dpi = 300,
+       path = "~/Desktop/KROH/figures")
+
+ggsave(filename = "fig3C.png",
+       plot = fig3C,
+       width = 5,
+       height = 5,
+       units = "in",
+       dpi = 300,
+       path = "~/Desktop/KROH/figures")
+
+ggsave(filename = "fig3D.png",
+       plot = fig3D,
+       width = 5,
+       height = 5,
+       units = "in",
+       dpi = 300,
+       path = "~/Desktop/KROH/figures")
+```

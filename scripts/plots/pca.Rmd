@@ -1,0 +1,73 @@
+---
+title: "pca"
+author: "Anna Maria Calderon"
+date: "2026-04-01"
+output: html_document
+---
+
+# Download Data
+
+```{bash, include=FALSE}
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/pca/KIWA.eigenval /Users/abc6435/Desktop/KROH/data/pca
+
+rsync abc6435@submit.hpc.psu.edu:/storage/home/abc6435/SzpiechLab/abc6435/KROH/data/pca/KIWA.eigenvec /Users/abc6435/Desktop/KROH/data/pca
+```
+
+# Setup
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(ggrepel)
+```
+
+# Import Data
+
+```{r import_data, include=FALSE}
+setwd("/Users/abc6435/Desktop/KROH/data/pca")
+pca <- read_table2("KIWA.eigenvec", col_names = FALSE)
+eigenval <- scan("KIWA.eigenval")
+```
+
+# Modify Data
+
+```{r modify_data, include=FALSE}
+#Remove duplicated column
+pca <- pca[,-1]
+names(pca)[1] <- "ind"
+pca$ind <- as.character(pca$ind)
+names(pca)[2:ncol(pca)] <- paste0("PC", 1:(ncol(pca)-1))
+
+#Add population information
+pca$pop <- c(rep("cKIWA", 7), rep("hKIWA", 6))
+
+#Add coverage information
+pca$cov <- c(rep(4, 7), 2.13, 5.34, 2.03, 2.88, 8.95, 3.69)
+```
+
+# Plot Data
+
+```{r plot_data, include=FALSE}
+pve <- data.frame(PC = 1:13, pve= eigenval/sum(eigenval)*100)
+ggplot(pve, aes(PC, pve)) +
+  geom_bar(stat="identity")
+
+#pca
+ggplot(pca, aes(PC1, PC2, fill=pop)) +
+  geom_point(size=3, shape=21, color="black") +
+  scale_fill_manual(values = c("gray","black")) + 
+  coord_equal() +
+  geom_text_repel(aes(label = cov), size = 2) +
+  #geom_text(aes(label = cov), size = 2, vjust = -1, hjust = 1) +
+  xlab(paste0("PC1 (", signif(pve$pve[1], 3), "%)")) +
+  ylab(paste0("PC2 (", signif(pve$pve[2], 3), "%)")) +
+  theme(
+    legend.background = element_rect(fill="white", color="black", linewidth = 0.2),
+    legend.position = c(0.83,0.13), 
+    legend.title = element_blank(),
+    panel.background = element_blank(), 
+    panel.border = element_rect(color="black", fill=NA),
+    panel.grid.major = element_line(color="grey90"),
+    panel.grid.minor = element_blank())
+```

@@ -1,0 +1,126 @@
+---
+title: "mapdamage_misincorporation"
+author: "Anna Maria Calderon"
+date: "2025-05-08"
+output: html_document
+---
+
+# Setup
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(readr)
+library(tidyr)
+library(dplyr)
+library(reshape2)
+library(ggpubr)
+setwd("/Users/abc6435/Desktop/KROH/data/mapdamage/")
+
+d <- read_tsv("misincorporation.txt")
+```
+
+# Modify Data
+
+Deamination occurs when C--\>U. But uracils get interpreted as thymines. So in the end we observe C\>T substitutions on the 5' + strand.
+
+5' -CXXXXX- 3' (+) –\> 5' -UXXXXX- 3' (+) –\> 5' -TXXXXX- 3' (+)
+
+On the negative strand, the complement of G should be C. But, through deamination, the complement of U/T is A. So, on the negative 3' end, we observe G\>A substituions.
+
+3' -GXXXXX- 5' (-) -\> 3' -AXXXXX- 5' (-) –\> 3' -AXXXXX- 5' (-)
+
+```{r modify_data, include=FALSE}
+#Flip 3p x-axis
+d[d[, 3] == "3p", 5] <- -1*d[d[, 3] == "3p", 5]
+
+#Calculate Frequencies
+d$fga <- d$`G>A`/d$`G`
+d$fct <- d$`C>T`/d$`C`
+d$fcg <- d$`C>G`/d$`C`
+d$fca <- d$`C>A`/d$`C`
+d$fgt <- d$`G>T`/d$`G`
+d$fgc <- d$`G>C`/d$`G`
+
+
+#Subset Data
+misincorp <- d[,c("Sample", "Library", "End", "Std", "Pos",
+                  "fga", "fct",
+                  "fcg", "fca",
+                  "fgt", "fgc")]
+
+colnames(misincorp) <- c("sample", "library", "end", "std","pos",
+                  "G>A", "C>T","C>G", "C>A","G>T", "G>C")
+#Melt Data
+misincorp_m <- melt(misincorp,
+                   id.vars=c("sample","end","std", "pos","library"),
+                   variable.name="mutation",
+                   value.name="frequency")
+
+#
+deam <- misincorp_m %>%
+  filter((end == "5p" & std == "+" & mutation == "C>T") |
+         (end == "3p" & std == "-" & mutation == "G>A"))
+
+deam$end <- factor(deam$end, levels = c("5p","3p"))
+
+```
+
+# Plot
+
+```{r plot, include=FALSE}
+  deam_h_plot <- 
+  ggplot(deam %>% filter(library=="historical"),
+         aes(x=pos, y=frequency, color=mutation)) +
+  geom_line(linewidth = 1) +
+  scale_y_continuous(limits=c(0,0.05)) +
+  facet_grid(rows=vars(sample), cols=vars(end), scales="free_x") +
+  scale_color_manual(values=c("blue","red")) +
+  theme(legend.title = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(fill=NA, color="black"),
+        strip.background = element_blank(),
+        strip.text=element_text(color="black", face="bold"),
+        axis.text = element_text(size=8, color="black"),
+        axis.title = element_text(size=8, color="black")) +
+  xlab("Position From Fragment End") +
+  ylab("Frequency")
+
+deam_c_plot <- 
+  ggplot(deam %>% filter(library=="contemporary"),
+         aes(x=pos, y=frequency, color=mutation)) +
+  geom_line(linewidth = 1) +
+  scale_y_continuous(limits=c(0,0.05)) +
+  facet_grid(rows=vars(sample), cols=vars(end), scales="free_x") +
+  scale_color_manual(values=c("blue","red")) +
+  theme(legend.title = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(fill=NA, color="black"),
+        strip.background = element_blank(),
+        strip.text=element_text(color="black", face="bold"),
+        axis.text = element_text(size=8, color="black"),
+        axis.title = element_text(size=8, color="black")) +
+  xlab("Position From Fragment End") +
+  ylab("Frequency")
+
+```
+
+```{r arrange_save, include=FALSE}
+
+deam_figure <- 
+  ggarrange(deam_h_plot,
+            deam_c_plot,
+            labels = c("A","B"),
+            common.legend = TRUE,
+            ncol=2,
+            nrow=1)
+
+ggsave("misincorp.png", 
+       plot=deam_figure,
+       path = "/Users/abc6435/Desktop/KROH/figures",
+       width = 6,
+       height = 6,
+       units = "in",
+       dpi = 300)
+
+```
